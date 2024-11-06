@@ -17,3 +17,6 @@ assignees: ''
 
 ## 리뷰 요구사항
 > 리뷰어가 특별히 봐주었으면 하는 부분을 적어주세요!
+
+## -> 오른쪽 탭을 잘 확인 후 issue 등록해주세요.
+> Assignees,Labels, Projects
