@@ -6,12 +6,18 @@ labels: feat
 assignees: ''
 
 ---
-
-## ✅ Feat : 
-> 새롭게 추가할 기능을 작성해주세요.
-
 ## Description
-> 기능에 대해 설명해주세요.
+> 기능을 설명해 주세요.
 
-## To-Do
-> 작업할 내용을 작성해주세요.
+
+## Purpose / Background 
+> 필요한 목적이 작성(선택) 
+1.
+2.
+
+## Requirements
+> 기능 구현을 위한 요구사항
+-
+
+## to-do 
+> 기능 구현을 위한 할 일 작성
