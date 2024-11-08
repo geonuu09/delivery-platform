@@ -1,6 +1,6 @@
-package com.example.delivery.exception.dto;
+package com.example.delivery.common.exception.dto;
 
-import com.example.delivery.exception.code.ErrorCode;
+import com.example.delivery.common.exception.code.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 

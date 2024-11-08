@@ -1,7 +1,7 @@
-package com.example.delivery.exception;
+package com.example.delivery.common.exception;
 
-import com.example.delivery.exception.code.ErrorCode;
-import com.example.delivery.exception.dto.ErrorResponse;
+import com.example.delivery.common.exception.code.ErrorCode;
+import com.example.delivery.common.exception.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
