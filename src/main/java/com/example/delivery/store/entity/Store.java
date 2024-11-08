@@ -1,7 +1,11 @@
 package com.example.delivery.store.entity;
 
+import com.example.delivery.bookmark.entity.Bookmark;
 import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.menu.entity.Menu;
+import com.example.delivery.order.entity.Order;
+import com.example.delivery.review.entity.Review;
+import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,10 +41,23 @@ public class Store extends Timestamped {
     private boolean isDeleted; // 가게 삭제 여부
 
     @ManyToOne
-    @JoinColumn(name = "p_categorys_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Menu> menuList = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<Review>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menus = new ArrayList<Menu>();
+
+    @OneToMany(mappedBy = "store", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+
+    @OneToMany(mappedBy = "store", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Order> orders = new ArrayList<Order>();
 
 }
