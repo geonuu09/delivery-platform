@@ -7,10 +7,17 @@ import com.example.delivery.order.entity.Order;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +27,8 @@ import lombok.Setter;
 @Setter
 public class User extends Timestamped {
     @Id
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
 
     @Column(nullable = false)
     private String userName;
