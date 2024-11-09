@@ -2,10 +2,8 @@ package com.example.delivery.payment.entity;
 
 
 import com.example.delivery.common.entity.Timestamped;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.delivery.order.entity.Order;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +32,9 @@ public class Payment extends Timestamped {
   @Column(name = "unique_payment_num")
   private String uniquePaymentNum;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "order_id", nullable = false)
+  private Order order;
 
 
 

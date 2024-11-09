@@ -19,9 +19,8 @@ public class ReviewService {
   private final ReviewRepository reviewRepository;
 
   // 리뷰 등록
-  public boolean reviewRegister(ReviewRegisterRequestDTO reviewRegisterDTO, UUID userId) {
-    UUID uuid = UUID.randomUUID();
-    Review entity = reviewRegisterDTO.toEntity();
+  public boolean reviewRegister(ReviewRegisterRequestDTO reviewRegisterRequestDTO) {
+    Review entity = reviewRegisterRequestDTO.toEntity();
     reviewRepository.save(entity);
     return true;
   }
@@ -30,8 +29,5 @@ public class ReviewService {
   public ReviewShowResponseDTO reviewShow(UUID storeId) {
     return null;
   }
-
-
-
 
 }

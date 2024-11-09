@@ -1,6 +1,12 @@
-package com.example.delivery.order.entity;
+package com.example.delivery.cart.entity;
+
 
 import com.example.delivery.common.entity.Timestamped;
+import com.example.delivery.menu.entity.Menu;
+import com.example.delivery.menu.entity.MenuOption;
+import com.example.delivery.order.entity.Order;
+import com.example.delivery.store.entity.Store;
+import com.example.delivery.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,7 +24,7 @@ import java.util.UUID;
 public class Cart extends Timestamped {
     @Id
     @UuidGenerator
-    @Column(name = "id", nullable = false)
+    @Column(name = "cart_id", nullable = false)
     private UUID cartId;
 
     @Column(nullable = false)
@@ -40,4 +46,19 @@ public class Cart extends Timestamped {
             this.label = label;
         }
     }
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_option_id", nullable = false)
+    private MenuOption menuOption;
 }

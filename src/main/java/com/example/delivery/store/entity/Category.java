@@ -28,6 +28,6 @@ public class Category extends Timestamped {
     private boolean isDeleted;
 
     @OneToMany(mappedBy = "category")
-    private List<Store> storesList = new ArrayList<>();
+    private List<Store> stores = new ArrayList<Store>();
 
 }

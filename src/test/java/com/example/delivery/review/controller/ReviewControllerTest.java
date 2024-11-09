@@ -1,19 +1,26 @@
 package com.example.delivery.review.controller;
 
 import com.example.delivery.review.dto.request.ReviewRegisterRequestDTO;
+import com.example.delivery.review.repository.ReviewRepository;
 import com.example.delivery.review.service.ReviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+
+@ExtendWith(MockitoExtension.class)
 class ReviewControllerTest {
 
-  @Autowired
+  @InjectMocks
   private ReviewService reviewService;
+
+  @Mock
+  private ReviewRepository reviewRepository;
 
   @Test
   @DisplayName("리뷰 등록 테스트")
@@ -26,9 +33,9 @@ class ReviewControllerTest {
         .build();
 
     // when
-    boolean result = reviewService.reviewRegister(reviewRegisterRequestDTO, storeId);
-
+    boolean result = reviewService.reviewRegister(reviewRegisterRequestDTO);
     // then
-    System.out.println("result = " + result);
+    assertTrue(result);
+
   }
 }
