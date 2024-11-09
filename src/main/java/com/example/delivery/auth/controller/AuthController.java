@@ -14,18 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @Slf4j
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/auth/signin")
+    @PostMapping("/signin")
     public ResponseEntity<SigninResponseDto> signin(@RequestBody @Valid SigninRequestDto request) {
-        log.info("로그인 요청 받음 - 이메일: {}", request.getEmail());
-
         SigninResponseDto response = authService.signin(request.getEmail(), request.getPassword());
-
         return ResponseEntity.ok(response);
     }
 }
