@@ -24,8 +24,6 @@ public class AuthService {
 
     public SigninResponseDto signin(String email, String password) {
         try {
-            log.info("Authentication 시도 - 이메일: {}", email);
-
             UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(email, password);
 
