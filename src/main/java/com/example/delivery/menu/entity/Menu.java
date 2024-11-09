@@ -40,4 +40,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Cart> carts = new ArrayList<Cart>();
 
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuOption> menuOptions = new ArrayList<>();
+
 }
