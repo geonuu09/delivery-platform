@@ -5,6 +5,7 @@ import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
+import com.example.delivery.user.dto.UserUpdateRequestDto;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.repository.UserRepository;
@@ -68,4 +69,45 @@ public class UserService {
         return userRepository.findAll(pageable).map(UserResponseDto::new);
     }
 
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserById(Long userId) {
+//        Optional<User> checkuser = userRepository.findById(userId);
+//        if (!checkuser.isPresent()) {
+//            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+//        } else {
+//            return new UserResponseDto(checkuser.get());
+//        }
+        return userRepository.findById(userId)
+            .map(UserResponseDto::new)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // 유저 전용 수정
+    @Transactional
+    public UserResponseDto updateCustomer(Long userId, UserUpdateRequestDto requestDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateBasicInfo(
+            requestDto.getPassword(),
+            requestDto.getPhoneNum(),
+            requestDto.getStreetAddress(),
+            requestDto.getDetailAddress()
+        );
+        userRepository.save(user);
+
+        return new UserResponseDto(user);
+    }
+
+    // 관리자 전용 수정
+    @Transactional
+    public UserResponseDto updateByAdmin(UserUpdateRequestDto requestDto) {
+        User user = userRepository.findById(requestDto.getUserId())
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateAdminFields(requestDto);
+        userRepository.save(user);
+
+        return new UserResponseDto(user);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.delivery.user.entity;
 
 import com.example.delivery.common.entity.Timestamped;
+import com.example.delivery.user.dto.UserUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,22 +10,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "p_users")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 
 public class User extends Timestamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -64,5 +64,29 @@ public class User extends Timestamped {
         this.phoneNum = phoneNum;
         this.role = role;
     }
+
+    // 일반 사용자용 정보 업데이트 메소드
+    public void updateBasicInfo(String password, String phoneNum, String streetAddress,
+        String detailAddress) {
+        this.password = password;
+        this.phoneNum = phoneNum;
+        this.streetAddress = streetAddress;
+        this.detailAddress = detailAddress;
+    }
+
+    // 관리자용 전체 정보 업데이트 메소드
+    public void updateAdminFields(UserUpdateRequestDto requestDto) {
+        this.userName = requestDto.getUserName();
+        this.email = requestDto.getEmail();
+        this.password = requestDto.getPassword();
+        this.streetAddress = requestDto.getStreetAddress();
+        this.detailAddress = requestDto.getDetailAddress();
+        this.phoneNum = requestDto.getPhoneNum();
+
+        if (requestDto.getRole() != null) {
+            this.role = requestDto.getRole();
+        }
+    }
+
 }
 
