@@ -5,7 +5,6 @@ import com.example.delivery.auth.security.JwtAuthenticationFilter;
 import com.example.delivery.auth.security.JwtAuthorizationFilter;
 import com.example.delivery.auth.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +32,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -60,10 +60,10 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-            authorizeHttpRequests
-                .requestMatchers("/api/auth/**").permitAll()
+                authorizeHttpRequests
+                    .requestMatchers("/api/auth/**").permitAll()
 //                .requestMatchers("/api/users/**").permitAll()
-                .anyRequest().authenticated() // 그 외 모든 요청 인증처리
+                    .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
         // 추후 프론트 작업을 한다면 사용
