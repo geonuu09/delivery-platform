@@ -10,7 +10,6 @@ import com.example.delivery.user.dto.UserUpdateRequestDto;
 import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.service.UserService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
