@@ -26,7 +26,9 @@ public class OrderCreateRequestDto {
     @NotBlank(message = "상세 주소는 필수입니다.")
     private String dDetailAddress;
 
+    @NotBlank(message = "요청사항 입력은 필수입니다.")
     private String requirements;
+
     private int totalCount;
     private int totalPrice;
     private Order.OrderStatus orderStatus;

@@ -1,15 +1,19 @@
 package com.example.delivery.order.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
+import com.example.delivery.common.exception.CustomException;
+import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.order.dto.request.OrderCreateRequestDto;
 import com.example.delivery.order.dto.response.OrderDetailResponseDto;
 import com.example.delivery.order.dto.response.OrderListResponseDto;
 import com.example.delivery.order.dto.response.OrderResponseDto;
 import com.example.delivery.order.service.OrderService;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,19 +63,29 @@ public class OrderController {
     @PutMapping("/{orderId}/delete")
     public ResponseEntity<OrderResponseDto> deleteOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long orderId
+            @PathVariable UUID orderId
     ){
-        return null;
+        Long userId = userDetails.getUser().getUserId();
+        OrderResponseDto responseDto = orderService.deleteOrder(userId, orderId);
+        return ResponseEntity.ok(responseDto);
     }
 
     // 주문 상태 변경
     @PutMapping("/{orderId}/{orderStatus}")
+    @PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long orderId,
+            @PathVariable UUID orderId,
             @PathVariable String orderStatus
     ){
-        return null;
+        Long userId = userDetails.getUser().getUserId();
+        UserRoleEnum userRole = userDetails.getUser().getRole();
+
+        if(userRole == UserRoleEnum.CUSTOMER) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED, "해당 권한은 접근할 수 없습니다.");
+        }
+        OrderResponseDto responseDto = orderService.updateOrderStatus(userId, orderId, orderStatus);
+        return ResponseEntity.ok(responseDto);
     }
 
 }
