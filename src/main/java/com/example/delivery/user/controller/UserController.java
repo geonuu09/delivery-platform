@@ -1,8 +1,6 @@
 package com.example.delivery.user.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.common.exception.CustomException;
-import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
@@ -69,7 +67,6 @@ public class UserController {
     @PutMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER')")
     public ResponseEntity<UserResponseDto> updateUserAdmin(
-        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody UserUpdateRequestDto requestDto, @PathVariable Long userId) {
 
         UserResponseDto responseDto = userService.updateUser(userId, requestDto);
