@@ -20,7 +20,7 @@ public class OrderResponseDto {
     private int totalCount;
     private int totalPrice;
     private String orderStatus;
-//    private Long userId;
+    private Long userId;
     private UUID storeId;
 
     public static OrderResponseDto from(Order order) {
@@ -32,7 +32,7 @@ public class OrderResponseDto {
                 .totalCount(order.getTotalCount())
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus().getLabel())
-//                .userId(order.getUser().getUserId())
+                .userId(order.getUser().getUserId())
                 .storeId(order.getStore().getStoreId())
                 .build();
     }

@@ -1,4 +1,4 @@
-package com.example.delivery.store.respository;
+package com.example.delivery.store.repository;
 
 import com.example.delivery.store.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
