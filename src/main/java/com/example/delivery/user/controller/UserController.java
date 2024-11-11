@@ -7,9 +7,7 @@ import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
-import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -59,25 +57,24 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Valid @RequestBody UserUpdateRequestDto requestDto) {
+        @RequestBody UserUpdateRequestDto requestDto) {
 
-        UserRoleEnum userRole = userDetails.getUser().getRole();
-        Long userId = userDetails.getUser().getUserId();
-
-        UserResponseDto responseDto;
-        if(userRole == UserRoleEnum.CUSTOMER) {
-            responseDto = userService.updateCustomer(userId, requestDto);
-        } else if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            responseDto = userService.updateByAdmin(requestDto);
-        } else {
-            throw new CustomException(ErrorCode.UNAUTHORIZED, "해당 권한은 접근할 수 없습니다.");
-        }
+        UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    @PutMapping("/admin/{userId}")
+    @PreAuthorize("hasAnyRole('MASTER')")
+    public ResponseEntity<UserResponseDto> updateUserAdmin(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestBody UserUpdateRequestDto requestDto, @PathVariable Long userId) {
+
+        UserResponseDto responseDto = userService.updateUser(userId, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
 
 }
 

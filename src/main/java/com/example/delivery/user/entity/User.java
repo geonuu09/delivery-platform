@@ -1,7 +1,6 @@
 package com.example.delivery.user.entity;
 
 import com.example.delivery.common.entity.Timestamped;
-import com.example.delivery.user.dto.UserUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,6 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @DynamicUpdate
 
 public class User extends Timestamped {
@@ -51,41 +51,18 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String phoneNum;
 
-
-    @Builder
-    public User(String userName, String email, String password,
-        String streetAddress, String detailAddress,
-        String phoneNum, UserRoleEnum role) {
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.streetAddress = streetAddress;
-        this.detailAddress = detailAddress;
-        this.phoneNum = phoneNum;
-        this.role = role;
-    }
-
-    // 일반 사용자용 정보 업데이트 메소드
-    public void updateBasicInfo(String password, String phoneNum, String streetAddress,
-        String detailAddress) {
-        this.password = password;
-        this.phoneNum = phoneNum;
-        this.streetAddress = streetAddress;
-        this.detailAddress = detailAddress;
-    }
-
-    // 관리자용 전체 정보 업데이트 메소드
-    public void updateAdminFields(UserUpdateRequestDto requestDto) {
-        this.userName = requestDto.getUserName();
-        this.email = requestDto.getEmail();
-        this.password = requestDto.getPassword();
-        this.streetAddress = requestDto.getStreetAddress();
-        this.detailAddress = requestDto.getDetailAddress();
-        this.phoneNum = requestDto.getPhoneNum();
-
-        if (requestDto.getRole() != null) {
-            this.role = requestDto.getRole();
-        }
+    public void updateUserInfo(
+        String userName,
+        String password,
+        String phoneNum,
+        String streetAddress,
+        String detailAddress
+    ) {
+        if (userName != null) this.userName = userName;
+        if (password != null) this.password = password;
+        if (phoneNum != null) this.phoneNum = phoneNum;
+        if (streetAddress != null) this.streetAddress = streetAddress;
+        if (detailAddress != null) this.detailAddress = detailAddress;
     }
 
 }
