@@ -13,7 +13,6 @@ public class UserDetailsImpl implements UserDetails {
     private final User user;
 
 
-
     public UserDetailsImpl(User user) {
         this.user = user;
     }
@@ -25,6 +24,7 @@ public class UserDetailsImpl implements UserDetails {
     public Long getUserId() {
         return user.getUserId();
     }
+
     public UserRoleEnum getRole() {
         return user.getRole();
     }
