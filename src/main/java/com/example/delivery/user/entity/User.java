@@ -3,6 +3,7 @@ package com.example.delivery.user.entity;
 import com.example.delivery.bookmark.entity.Bookmark;
 import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.common.entity.Timestamped;
+import com.example.delivery.order.entity.Order;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,9 +35,9 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String password;
 
-//    @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private UserRoleEnum role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum role;
 
     @Column(nullable = false)
     private String streetAddress;

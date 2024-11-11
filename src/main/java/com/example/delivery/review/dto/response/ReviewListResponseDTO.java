@@ -1,6 +1,9 @@
 package com.example.delivery.review.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -8,9 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
-public class ReviewShowResponseDTO {
-
+public class ReviewListResponseDTO {
   private String content;
   private int starRating;
   private LocalDateTime createdAt;
@@ -18,4 +19,8 @@ public class ReviewShowResponseDTO {
   private String reviewImage;
 
 //  private String storeName;
+
+
+
+
 }
