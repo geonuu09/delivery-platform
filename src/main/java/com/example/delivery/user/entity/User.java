@@ -1,20 +1,17 @@
 package com.example.delivery.user.entity;
 
+import com.example.delivery.bookmark.entity.Bookmark;
+import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "p_users")
@@ -22,7 +19,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-
 public class User extends Timestamped {
 
     @Id
@@ -38,9 +34,9 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRoleEnum role;
+//    @Column(nullable = false)
+//    @Enumerated(EnumType.STRING)
+//    private UserRoleEnum role;
 
     @Column(nullable = false)
     private String streetAddress;
@@ -51,11 +47,19 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String phoneNum;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     @Builder
     public User(String userName, String email, String password,
-        String streetAddress, String detailAddress,
-        String phoneNum, UserRoleEnum role) {
+                String streetAddress, String detailAddress,
+                String phoneNum, UserRoleEnum role) {
         this.userName = userName;
         this.email = email;
         this.password = password;
@@ -67,7 +71,7 @@ public class User extends Timestamped {
 
     // 일반 사용자용 정보 업데이트 메소드
     public void updateBasicInfo(String password, String phoneNum, String streetAddress,
-        String detailAddress) {
+                                String detailAddress) {
         this.password = password;
         this.phoneNum = phoneNum;
         this.streetAddress = streetAddress;
@@ -87,6 +91,4 @@ public class User extends Timestamped {
             this.role = requestDto.getRole();
         }
     }
-
 }
-

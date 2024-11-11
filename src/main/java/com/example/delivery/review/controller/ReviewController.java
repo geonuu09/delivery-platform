@@ -21,9 +21,8 @@ public class ReviewController {
 
   // 리뷰 등록
   @PostMapping("/register")
-  public ResponseEntity<?> reviewRegister(@Validated @RequestBody ReviewRegisterRequestDTO reviewRegisterDTO,
-                                          UUID userId) {
-    boolean result = reviewService.reviewRegister(reviewRegisterDTO, userId);
+  public ResponseEntity<?> reviewRegister(@Validated @RequestBody ReviewRegisterRequestDTO reviewRegisterRequestDTO) {
+    boolean result = reviewService.reviewRegister(reviewRegisterRequestDTO);
     return ResponseEntity.ok().body(result);
   }
 

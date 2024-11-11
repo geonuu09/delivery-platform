@@ -1,5 +1,6 @@
 package com.example.delivery.menu.entity;
 
+import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
 
@@ -33,10 +34,13 @@ public class Menu {
     private String menuImage;
 
     @ManyToOne
-    @JoinColumn(name = "p_stores_id", nullable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Cart> carts = new ArrayList<Cart>();
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuOption> menuOptionsList = new ArrayList<>();
+    private List<MenuOption> menuOptions = new ArrayList<>();
 
 }
