@@ -1,20 +1,17 @@
 package com.example.delivery.user.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.common.exception.CustomException;
-import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
-import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,25 +56,41 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Valid @RequestBody UserUpdateRequestDto requestDto) {
+        @RequestBody UserUpdateRequestDto requestDto) {
 
-        UserRoleEnum userRole = userDetails.getUser().getRole();
-        Long userId = userDetails.getUser().getUserId();
-
-        UserResponseDto responseDto;
-        if(userRole == UserRoleEnum.CUSTOMER) {
-            responseDto = userService.updateCustomer(userId, requestDto);
-        } else if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            responseDto = userService.updateByAdmin(requestDto);
-        } else {
-            throw new CustomException(ErrorCode.UNAUTHORIZED, "해당 권한은 접근할 수 없습니다.");
-        }
+        UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    @PutMapping("/admin/{userId}")
+    @PreAuthorize("hasAnyRole('MASTER')")
+    public ResponseEntity<UserResponseDto> updateUserAdmin(
+        @RequestBody UserUpdateRequestDto requestDto, @PathVariable Long userId) {
+
+        UserResponseDto responseDto = userService.updateUser(userId, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUser(userDetails.getUserId(), userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/admin/{userId}")
+    @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
+    public ResponseEntity<?> deleteUserAdmin(
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUser(userId, userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
 
 }
 

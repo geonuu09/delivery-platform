@@ -1,5 +1,6 @@
 package com.example.delivery.user.service;
 
+import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
@@ -7,10 +8,13 @@ import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.User.UserStatus;
 import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.repository.UserRepository;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,6 +48,7 @@ public class UserService {
             .detailAddress(requestDto.getDetailAddress())
             .phoneNum(requestDto.getPhoneNum())
             .role(requestDto.getRole() != null ? requestDto.getRole() : UserRoleEnum.CUSTOMER)
+            .status(requestDto.getStatus())
             .build();
         User savedUser = userRepository.save(user);
 
@@ -56,14 +61,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserResponseDto> getAllUsers(int page, int size, String sortBy, boolean isAsc) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 정렬 방향 설정
-        // isAsc = true -> 오름차순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         // 모든 유저 조회
         return userRepository.findAll(pageable).map(UserResponseDto::new);
@@ -71,12 +69,6 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDto getUserById(Long userId) {
-//        Optional<User> checkuser = userRepository.findById(userId);
-//        if (!checkuser.isPresent()) {
-//            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-//        } else {
-//            return new UserResponseDto(checkuser.get());
-//        }
         return userRepository.findById(userId)
             .map(UserResponseDto::new)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -84,30 +76,35 @@ public class UserService {
 
     // 유저 전용 수정
     @Transactional
-    public UserResponseDto updateCustomer(Long userId, UserUpdateRequestDto requestDto) {
+    public UserResponseDto updateUser(Long userId, UserUpdateRequestDto requestDto) {
+        return updateUserInfo(userId, requestDto);
+    }
+
+    // 공통 로직을 private 메소드로 분리
+    private UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto requestDto) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        user.updateBasicInfo(
-            requestDto.getPassword(),
+        String encodePassword = passwordEncoder.encode(requestDto.getPassword());
+
+        user.updateUserInfo(
+            requestDto.getUserName(),
+            encodePassword,
             requestDto.getPhoneNum(),
             requestDto.getStreetAddress(),
             requestDto.getDetailAddress()
         );
-        userRepository.save(user);
-
         return new UserResponseDto(user);
     }
 
-    // 관리자 전용 수정
     @Transactional
-    public UserResponseDto updateByAdmin(UserUpdateRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId())
+    public void deleteUser(Long userId, String deleteBy) {
+        User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        user.updateAdminFields(requestDto);
-        userRepository.save(user);
-
-        return new UserResponseDto(user);
+        user.setStatus(UserStatus.INACTIVE);
+        // deletedAt 및 deletedBy 필드 설정
+        user.setDeletedAt(LocalDateTime.now());
+        user.setDeletedBy(deleteBy);
     }
 }
