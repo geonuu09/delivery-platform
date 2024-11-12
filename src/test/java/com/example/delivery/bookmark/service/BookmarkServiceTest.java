@@ -139,8 +139,7 @@ class BookmarkServiceTest {
         List<Bookmark> bookmarks = new ArrayList<>();
         bookmarks.add(testBookmark);
 
-        Pageable pageable = PageRequest.of(page, size,
-            isAsc ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortBy);
         Page<Bookmark> bookmarkPage = new PageImpl<>(bookmarks, pageable, bookmarks.size());
 
         // when - 실제 테스트 수행
