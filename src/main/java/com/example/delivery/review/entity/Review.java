@@ -1,8 +1,7 @@
 package com.example.delivery.review.entity;
 
-import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.common.entity.Timestamped;
-import com.example.delivery.review.dto.request.ReviewRegisterRequestDTO;
+import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
@@ -43,6 +42,10 @@ public class Review extends Timestamped {
 //  @ManyToOne(fetch = FetchType.LAZY)
 //  @JoinColumn(name = "store_id")
 //  private Store store;
+
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "menu_id")
+//  private Menu menu;
 
   public void markAsDeleted(String deletedByUser) {
     this.setDeletedAt(LocalDateTime.now());

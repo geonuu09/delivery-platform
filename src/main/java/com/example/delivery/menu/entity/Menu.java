@@ -1,6 +1,7 @@
 package com.example.delivery.menu.entity;
 
 import com.example.delivery.cart.entity.Cart;
+import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
 
@@ -42,5 +43,8 @@ public class Menu {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuOption> menuOptions = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    private List<Review> reviews = new ArrayList<>();
 
 }
