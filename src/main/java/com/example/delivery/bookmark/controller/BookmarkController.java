@@ -32,7 +32,7 @@ public class BookmarkController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/")
+    @GetMapping("/stores")
     public ResponseEntity<Page<BookmarkedStoreResponseDto>> getBookmarks(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestParam(defaultValue = "0") int page,

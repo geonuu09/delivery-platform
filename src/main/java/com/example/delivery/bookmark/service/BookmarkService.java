@@ -7,16 +7,14 @@ import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.store.entity.Store;
-import com.example.delivery.user.dto.UserResponseDto;
+import com.example.delivery.store.respository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.repository.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +52,8 @@ public class BookmarkService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BookmarkedStoreResponseDto> getUserBookmarKed(Long userId, int page, int size, String sortBy, boolean isAsc) {
+    public Page<BookmarkedStoreResponseDto> getUserBookmarKed(Long userId, int page, int size,
+        String sortBy, boolean isAsc) {
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         return bookmarkRepository.findAllByUserId(userId, pageable)
