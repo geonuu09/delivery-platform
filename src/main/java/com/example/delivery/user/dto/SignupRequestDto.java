@@ -1,5 +1,6 @@
 package com.example.delivery.user.dto;
 
+import com.example.delivery.user.entity.User.UserStatus;
 import com.example.delivery.user.entity.UserRoleEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +39,8 @@ public class SignupRequestDto {
     private String phoneNum;
 
     private UserRoleEnum role;
+
+    private UserStatus status = UserStatus.ACTIVE;
 
 
 }
