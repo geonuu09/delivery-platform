@@ -3,6 +3,7 @@ package com.example.delivery.order.entity;
 import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.payment.entity.Payment;
+import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
@@ -63,6 +64,9 @@ public class Order extends Timestamped {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Cart> carts = new ArrayList<>();
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Review review = new Review();
 
     @Getter
     public enum OrderStatus {
