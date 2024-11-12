@@ -21,11 +21,12 @@ public class CartCreateRequestDto {
     private int count;
     private Cart.CartStatus cartStatus;
 
-    public Cart toEntity(User user, Menu menu, List<MenuOption> menuOptions) {
+    public Cart toEntity(User user, Menu menu, List<MenuOption> menuOptions, int menuPrice) {
         Cart cart = Cart.builder()
                 .user(user)
                 .menu(menu)
                 .count(this.count)
+                .price(menuPrice)
                 .cartStatus(this.cartStatus)
                 .build();
 

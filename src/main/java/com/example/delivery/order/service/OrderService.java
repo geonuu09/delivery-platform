@@ -110,7 +110,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ORDER));
 
-        // 점주인지 확인
+        // OWNER라면 점주인지 확인
         if (!user.getUserId().equals(order.getStore().getUser().getUserId())) {
             throw new CustomException(ErrorCode.ORDER_PERMISSION_DENIED);
         }

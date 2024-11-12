@@ -30,6 +30,9 @@ public class Cart extends Timestamped {
     private int count = 1;
 
     @Column(nullable = false)
+    private int price;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CartStatus cartStatus =  CartStatus.PENDING;
 
