@@ -14,13 +14,10 @@ import com.example.delivery.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +60,6 @@ public class UserService {
     public Page<UserResponseDto> getAllUsers(int page, int size, String sortBy, boolean isAsc) {
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
-        // 모든 유저 조회
         return userRepository.findAll(pageable).map(UserResponseDto::new);
     }
 
@@ -80,7 +76,6 @@ public class UserService {
         return updateUserInfo(userId, requestDto);
     }
 
-    // 공통 로직을 private 메소드로 분리
     private UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto requestDto) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -103,7 +98,6 @@ public class UserService {
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         user.setStatus(UserStatus.INACTIVE);
-        // deletedAt 및 deletedBy 필드 설정
         user.setDeletedAt(LocalDateTime.now());
         user.setDeletedBy(deleteBy);
     }
