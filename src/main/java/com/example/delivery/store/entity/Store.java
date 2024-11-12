@@ -4,7 +4,6 @@ import com.example.delivery.bookmark.entity.Bookmark;
 import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.order.entity.Order;
-import com.example.delivery.review.entity.Review;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

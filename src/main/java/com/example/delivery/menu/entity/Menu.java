@@ -1,7 +1,6 @@
 package com.example.delivery.menu.entity;
 
 import com.example.delivery.cart.entity.Cart;
-import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
