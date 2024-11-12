@@ -26,8 +26,9 @@ public enum ErrorCode {
 
     // Cart 관련 에러
     NOT_FOUND_MENU(HttpStatus.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
+    NOT_FOUND_CART(HttpStatus.NOT_FOUND, "해당 장바구니를 찾을 수 없습니다."),
     UNAVAILABLE_MENU(HttpStatus.BAD_REQUEST, "해당 메뉴는 주문하실 수 없습니다."),
-    CART_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "해당 주문에 대한 접근 권한이 없습니다."),
+    CART_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "해당 장바구니에 대한 접근 권한이 없습니다."),
 
     // 공통 에러
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "유효하지 않은 입력값입니다."),

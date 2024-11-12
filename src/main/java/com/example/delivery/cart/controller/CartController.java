@@ -2,6 +2,7 @@ package com.example.delivery.cart.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.cart.dto.request.CartCreateRequestDto;
+import com.example.delivery.cart.dto.request.CartUpdateRequestDto;
 import com.example.delivery.cart.dto.response.CartResponseDto;
 import com.example.delivery.cart.service.CartService;
 import com.example.delivery.user.entity.User;
@@ -44,7 +45,7 @@ public class CartController {
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            List<CartResponseDto> orderList = cartService.getAllCartList();
+            List<CartResponseDto> orderList = cartService.getCartListByAdmin();
             return ResponseEntity.ok(orderList);
         }
 
@@ -53,5 +54,25 @@ public class CartController {
     }
 
     // 장바구니 수정
+    @PutMapping()
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER', 'MANAGER', 'MASTER')")
+    public ResponseEntity<CartResponseDto> updateCart(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody CartUpdateRequestDto requestDto
+
+    ){
+        Long userId = userDetails.getUser().getUserId();
+        UserRoleEnum userRole = userDetails.getUser().getRole();
+
+        if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
+            CartResponseDto ResponseDto = cartService.updateCartByAdmin(requestDto);
+            return ResponseEntity.ok(ResponseDto);
+        }
+
+        CartResponseDto ResponseDto = cartService.updateCart(userId,requestDto);
+        return ResponseEntity.ok(ResponseDto);
+    }
+
     // 장바구니 삭제
+
 }

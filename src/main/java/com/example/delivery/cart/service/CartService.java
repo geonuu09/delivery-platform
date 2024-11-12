@@ -1,6 +1,7 @@
 package com.example.delivery.cart.service;
 
 import com.example.delivery.cart.dto.request.CartCreateRequestDto;
+import com.example.delivery.cart.dto.request.CartUpdateRequestDto;
 import com.example.delivery.cart.dto.response.CartResponseDto;
 import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.cart.repository.CartRepository;
@@ -57,6 +58,14 @@ public class CartService {
         return CartResponseDto.from(cart);
     }
 
+    // 모든 장바구니 조회 : 관리자
+    public List<CartResponseDto> getCartListByAdmin() {
+        List<Cart> cartList = cartRepository.findAll();
+        return cartList.stream()
+                .map(CartResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
     // 장바구니 조회
     public List<CartResponseDto> getCartList(Long userId) {
         // 현재 로그인 유저
@@ -72,15 +81,69 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-     // 모든 장바구니 조회
-    public List<CartResponseDto> getAllCartList() {
-        List<Cart> cartList = cartRepository.findAll();
-        return cartList.stream()
-                .map(CartResponseDto::from)
-                .collect(Collectors.toList());
+    // 장바구니 수정 : 관리자
+    public CartResponseDto updateCartByAdmin(CartUpdateRequestDto requestDto) {
+        // 해당 장바구니
+        Cart cart = cartRepository.findById(requestDto.getCartId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CART));
+
+        // 해당 메뉴
+        Menu menu = menuRepository.findById(requestDto.getMenuId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MENU));
+
+        // 메뉴 수량
+        cart.setCount(requestDto.getMenuCount());
+
+        // 메뉴 옵션
+        cart.setMenuOptions(requestDto.getMenuOptions());
+
+        // 가격
+        int menuPrice = menu.getMenuPrice();
+        for (MenuOption option : requestDto.getMenuOptions()) {
+            menuPrice += option.getOptionPrice();
+        }
+        cart.setPrice(menuPrice);
+
+        cartRepository.save(cart);
+        return CartResponseDto.from(cart);
     }
 
     // 장바구니 수정
+    public CartResponseDto updateCart(Long userId, CartUpdateRequestDto requestDto) {
+        // 현재 로그인 유저
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 해당 장바구니
+        Cart cart = cartRepository.findById(requestDto.getCartId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CART));
+
+        // 접근제한 : 주문자인지 확인
+        if (!user.getUserId().equals(cart.getUser().getUserId())) {
+            throw new CustomException(ErrorCode.CART_PERMISSION_DENIED);
+        }
+
+        // 해당 메뉴
+        Menu menu = menuRepository.findById(requestDto.getMenuId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MENU));
+
+        // 메뉴 수량
+        cart.setCount(requestDto.getMenuCount());
+
+        // 메뉴 옵션
+        cart.setMenuOptions(requestDto.getMenuOptions());
+
+        // 가격
+        int menuPrice = menu.getMenuPrice();
+        for (MenuOption option : requestDto.getMenuOptions()) {
+            menuPrice += option.getOptionPrice();
+        }
+        cart.setPrice(menuPrice);
+
+        cartRepository.save(cart);
+        return CartResponseDto.from(cart);
+    }
+
     // 장바구니 삭제
 
 

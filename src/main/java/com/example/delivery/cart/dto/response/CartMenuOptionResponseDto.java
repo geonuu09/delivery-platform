@@ -6,16 +6,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartMenuOptionResponseDto {
+    private UUID optionID;
     private String optionName;
     private int optionPrice;
 
     public static CartMenuOptionResponseDto from(MenuOption MenuOption) {
         return CartMenuOptionResponseDto.builder()
+                .optionID(MenuOption.getMenuOptionId())
                 .optionName(MenuOption.getOptionName())
                 .optionPrice(MenuOption.getOptionPrice())
                 .build();
