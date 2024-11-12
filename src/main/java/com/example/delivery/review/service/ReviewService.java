@@ -1,8 +1,13 @@
 package com.example.delivery.review.service;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
+import com.example.delivery.cart.entity.Cart;
+import com.example.delivery.cart.repository.CartRepository;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
+import com.example.delivery.menu.repository.MenuRepository;
+import com.example.delivery.order.entity.Order;
+import com.example.delivery.order.repository.OrderRepository;
 import com.example.delivery.review.dto.request.ReviewEditRequestDTO;
 import com.example.delivery.review.dto.response.ReviewEditResponseDTO;
 import com.example.delivery.review.dto.response.ReviewListResponseDTO;
@@ -10,7 +15,7 @@ import com.example.delivery.review.dto.request.ReviewRegisterRequestDTO;
 import com.example.delivery.review.dto.response.ReviewShowResponseDTO;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.review.repository.ReviewRepository;
-import com.example.delivery.store.entity.Store;
+import com.example.delivery.store.respository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,23 +27,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ReviewService {
   private final ReviewRepository reviewRepository;
+  private final StoreRepository storeRepository;
+  private final OrderRepository orderRepository;
+  private final CartRepository cartRepository;
+  private final MenuRepository menuRepository;
+
 
   // 리뷰 등록
   public boolean reviewRegister(ReviewRegisterRequestDTO reviewRegisterRequestDTO, UserDetailsImpl userDetails, MultipartFile reviewImage) {
+    UUID orderId = reviewRegisterRequestDTO.getOrderId();
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+    // 주문이 배달 완료 상태일때 리뷰 등록 가능
+    if (order.getOrderStatus().equals(Order.OrderStatus.DELIVERED)) {
+      // 파일명 변경
+      String reviewImagePath = uploadReviewImage(reviewImage);
+      Review entity = reviewRegisterRequestDTO.toEntity(userDetails.getUser(), order, reviewImagePath);
+      reviewRepository.save(entity);
+      return true;
+    } else {
+      return false;
+    }
 
-    // 파일명 변경
-    String reviewImagePath = uploadReviewImage(reviewImage);
-    Store store = new Store();
-    Review entity = reviewRegisterRequestDTO.toEntity(userDetails.getUser(), store, reviewImagePath);
-    reviewRepository.save(entity);
-    return true;
   }
 
 
@@ -49,17 +66,28 @@ public class ReviewService {
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
     // 삭제된 리뷰 제외
-    Page<Review> reviewList = reviewRepository.findAllByDeletedAtIsNull(pageable);
-//    Page<Review> reviewList = reviewRepository.findAllByStoreAndDeletedAtIsNull(store, pageable);
+
+    Page<Review> reviewList = reviewRepository.findByOrder_Store_storeIdAndDeletedAtIsNull(storeId, pageable);
     User user = userDetails.getUser();
-    return reviewList.map(review ->
-        ReviewShowResponseDTO.builder()
-            .content(review.getContent())
-            .starRating(review.getStarRating())
-            .createdAt(review.getCreatedAt())
-            .reviewImage(review.getReviewImage())
-            .userName(user.getUserName())
-            .build());
+    Map<UUID, List<String>> menuNameMap = new HashMap<>();
+    for (Review review : reviewList) {
+      menuNameMap.put(review.getId(), new ArrayList<>());
+      List<String> menuNameList = menuNameMap.get(review.getId());
+      for (Cart cart : review.getOrder().getCarts()) {
+        menuNameList.add(cart.getMenu().getMenuName());
+      }
+    }
+
+      return reviewList.map(review ->
+          ReviewShowResponseDTO.builder()
+              .content(review.getContent())
+              .starRating(review.getStarRating())
+              .createdAt(review.getCreatedAt())
+              .reviewImage(review.getReviewImage())
+              .userName(user.getUserName())
+              .menuNameList(menuNameMap.get(review.getId()))
+              .build());
+
   }
 
   // 내 리뷰 정보 보기
@@ -69,8 +97,16 @@ public class ReviewService {
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, size, sort);
     // 삭제된 리뷰 제외
-    Page<Review> reviewList = reviewRepository.findAllByUserAndDeletedAtIsNull(userDetails.getUser(), pageable);
+    Page<Review> reviewList = reviewRepository.findByUserAndDeletedAtIsNull(userDetails.getUser(), pageable);
     User user = userDetails.getUser();
+    Map<UUID, List<String>> menuNameMap = new HashMap<>();
+    for (Review review : reviewList) {
+      menuNameMap.put(review.getId(), new ArrayList<>());
+      List<String> menuNameList = menuNameMap.get(review.getId());
+      for (Cart cart : review.getOrder().getCarts()) {
+        menuNameList.add(cart.getMenu().getMenuName());
+      }
+    }
     return reviewList.map(review ->
         ReviewListResponseDTO.builder()
             .content(review.getContent())
@@ -78,6 +114,7 @@ public class ReviewService {
             .createdAt(review.getCreatedAt())
             .reviewImage(review.getReviewImage())
             .userName(user.getUserName())
+            .menuNameList(menuNameMap.get(review.getId()))
             .build()
     );
   }

@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
-  Page<Review> findAllByUser(User user, Pageable pageable);
 
-  Page<Review> findAllByUserAndDeletedAtIsNull(User user, Pageable pageable);
 
-  Page<Review> findAllByDeletedAtIsNull(Pageable pageable);
+  Page<Review> findByOrder_Store_storeIdAndDeletedAtIsNull(UUID storeId, Pageable pageable);
+
+  Page<Review> findByUserAndDeletedAtIsNull(User user, Pageable pageable);
 }

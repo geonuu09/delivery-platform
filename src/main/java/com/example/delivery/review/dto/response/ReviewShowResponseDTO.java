@@ -1,8 +1,10 @@
 package com.example.delivery.review.dto.response;
 
+import com.example.delivery.menu.entity.Menu;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class ReviewShowResponseDTO {
   private LocalDateTime createdAt;
   private String userName;
   private String reviewImage;
+  private List<String> menuNameList;
 
 //  private String storeName;
 }
