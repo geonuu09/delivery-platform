@@ -1,5 +1,6 @@
 package com.example.delivery.user.service;
 
+import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
@@ -13,6 +14,7 @@ import com.example.delivery.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -59,14 +61,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserResponseDto> getAllUsers(int page, int size, String sortBy, boolean isAsc) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 정렬 방향 설정
-        // isAsc = true -> 오름차순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         // 모든 유저 조회
         return userRepository.findAll(pageable).map(UserResponseDto::new);
