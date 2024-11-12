@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
 
+    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final OrderRepository orderRepository;
 
     // 주문 접수
     @Transactional
@@ -47,7 +47,7 @@ public class OrderService {
     // 주문 목록 조회
     @Transactional
     public List<OrderListResponseDto> getOrderList(Long userId) {
-        List<Order> orderList = orderRepository.findByUserId(userId);
+        List<Order> orderList = orderRepository.findAll();
         return orderList.stream()
                 .map(OrderListResponseDto::from)
                 .collect(Collectors.toList());
