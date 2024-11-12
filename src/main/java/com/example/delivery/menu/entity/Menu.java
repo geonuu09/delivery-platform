@@ -4,12 +4,14 @@ import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Getter
 @Table(name = "p_menus")
 public class Menu {
 
@@ -44,7 +46,5 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuOption> menuOptions = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    private List<Review> reviews = new ArrayList<>();
 
 }
