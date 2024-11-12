@@ -3,13 +3,14 @@ package com.example.delivery.common.exception;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.common.exception.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -49,4 +50,5 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(response, ErrorCode.INTERNAL_SERVER_ERROR.getStatus());
     }
+
 }

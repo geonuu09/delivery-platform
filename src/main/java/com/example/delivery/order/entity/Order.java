@@ -8,9 +8,7 @@ import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
@@ -20,20 +18,18 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "p_order")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order extends Timestamped {
     @Id
     @UuidGenerator
     @Column(name = "order_id", nullable = false)
     private UUID orderId;
 
-    @PrePersist
-    public void generateOrderId() {
-        if (orderId == null) {
-            orderId = UUID.randomUUID();
-        }
-    }
+    @Column(nullable = false)
+    private Boolean isDelivery;
 
     @Column(nullable = false)
     private String dStreetAddress;
@@ -52,7 +48,21 @@ public class Order extends Timestamped {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus orderStatus = OrderStatus.RECEIVED;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
+    @OneToOne(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Payment payment = new Payment();
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Cart> carts = new ArrayList<>();
 
     @Getter
     public enum OrderStatus {
@@ -68,18 +78,4 @@ public class Order extends Timestamped {
             this.label = label;
         }
     }
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    private Store store;
-
-    @OneToOne(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Payment payment = new Payment();
-
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Cart> carts = new ArrayList<Cart>();
-
 }
