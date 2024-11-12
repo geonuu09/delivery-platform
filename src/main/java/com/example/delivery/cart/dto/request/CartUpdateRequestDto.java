@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CartUpdateRequestDto {
     private UUID cartId;
     private UUID menuId;
-    private List<MenuOption> menuOptions;
+    private List<MenuOption> menuOptionList;
     private int menuCount;
     private int menuPrice;
 }

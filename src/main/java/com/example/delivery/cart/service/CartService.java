@@ -10,14 +10,15 @@ import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
 import com.example.delivery.menu.repository.MenuRepository;
-import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +27,6 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
-    private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
     private final MenuRepository menuOptionRepository;
 
@@ -95,11 +95,11 @@ public class CartService {
         cart.setCount(requestDto.getMenuCount());
 
         // 메뉴 옵션
-        cart.setMenuOptions(requestDto.getMenuOptions());
+        cart.setMenuOptions(requestDto.getMenuOptionList());
 
         // 가격
         int menuPrice = menu.getMenuPrice();
-        for (MenuOption option : requestDto.getMenuOptions()) {
+        for (MenuOption option : requestDto.getMenuOptionList()) {
             menuPrice += option.getOptionPrice();
         }
         cart.setPrice(menuPrice);
@@ -131,11 +131,11 @@ public class CartService {
         cart.setCount(requestDto.getMenuCount());
 
         // 메뉴 옵션
-        cart.setMenuOptions(requestDto.getMenuOptions());
+        cart.setMenuOptions(requestDto.getMenuOptionList());
 
         // 가격
         int menuPrice = menu.getMenuPrice();
-        for (MenuOption option : requestDto.getMenuOptions()) {
+        for (MenuOption option : requestDto.getMenuOptionList()) {
             menuPrice += option.getOptionPrice();
         }
         cart.setPrice(menuPrice);
@@ -144,7 +144,40 @@ public class CartService {
         return CartResponseDto.from(cart);
     }
 
+    // 장바구니 삭제 : 관리자
+    public CartResponseDto deleteCartByAdmin(String userEmail, UUID cartId) {
+        // 해당 장바구니
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CART));
+
+        cart.setCartStatus(Cart.CartStatus.DELETED);
+
+        // 로그
+        cart.setDeletedAt(LocalDateTime.now());
+        cart.setDeletedBy(userEmail);
+        return CartResponseDto.from(cart);
+    }
+
     // 장바구니 삭제
+    public CartResponseDto deleteOrder(Long userId, UUID cartId) {
+        // 현재 로그인 유저
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 해당 장바구니
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CART));
 
+        // 접근제한 : 주문자인지 확인
+        if (!user.getUserId().equals(cart.getUser().getUserId())) {
+            throw new CustomException(ErrorCode.CART_PERMISSION_DENIED);
+        }
+
+        cart.setCartStatus(Cart.CartStatus.DELETED);
+
+        // 로그
+        cart.setDeletedAt(LocalDateTime.now());
+        cart.setDeletedBy(user.getEmail());
+        return CartResponseDto.from(cart);
+    }
 }

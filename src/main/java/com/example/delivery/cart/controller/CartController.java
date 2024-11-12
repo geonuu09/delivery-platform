@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,14 +42,13 @@ public class CartController {
     public ResponseEntity<List<CartResponseDto>> getCartList(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        Long userId = userDetails.getUser().getUserId();
+        Long userId = userDetails.getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             List<CartResponseDto> orderList = cartService.getCartListByAdmin();
             return ResponseEntity.ok(orderList);
         }
-
         List<CartResponseDto> orderList = cartService.getCartList(userId);
         return ResponseEntity.ok(orderList);
     }
@@ -61,18 +61,33 @@ public class CartController {
             @RequestBody CartUpdateRequestDto requestDto
 
     ){
-        Long userId = userDetails.getUser().getUserId();
+        Long userId = userDetails.getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             CartResponseDto ResponseDto = cartService.updateCartByAdmin(requestDto);
             return ResponseEntity.ok(ResponseDto);
         }
-
-        CartResponseDto ResponseDto = cartService.updateCart(userId,requestDto);
-        return ResponseEntity.ok(ResponseDto);
+        CartResponseDto responseDto = cartService.updateCart(userId,requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     // 장바구니 삭제
+    @DeleteMapping("/{cartId}/delete")
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER', 'MANAGER', 'MASTER')")
+    public ResponseEntity<CartResponseDto> deleteCart(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID cartId
+    ){
+        Long userId = userDetails.getUserId();
+        String userEmail = userDetails.getUsername();
+        UserRoleEnum userRole = userDetails.getUser().getRole();
 
+        if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
+            CartResponseDto responseDto = cartService.deleteCartByAdmin(userEmail, cartId);
+            return ResponseEntity.ok(responseDto);
+        }
+        CartResponseDto responseDto = cartService.deleteOrder(userId, cartId);
+        return ResponseEntity.ok(responseDto);
+    }
 }
