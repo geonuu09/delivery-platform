@@ -1,8 +1,7 @@
 package com.example.delivery.review.entity;
 
 import com.example.delivery.common.entity.Timestamped;
-import com.example.delivery.menu.entity.Menu;
-import com.example.delivery.store.entity.Store;
+import com.example.delivery.order.entity.Order;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,13 +38,10 @@ public class Review extends Timestamped {
   @JoinColumn(name = "user_id")
   private User user;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "store_id")
-//  private Store store;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "order_id")
+  private Order order;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "menu_id")
-//  private Menu menu;
 
   public void markAsDeleted(String deletedByUser) {
     this.setDeletedAt(LocalDateTime.now());
