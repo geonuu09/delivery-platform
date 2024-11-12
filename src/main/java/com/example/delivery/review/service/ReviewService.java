@@ -36,8 +36,6 @@ public class ReviewService {
   private final ReviewRepository reviewRepository;
   private final StoreRepository storeRepository;
   private final OrderRepository orderRepository;
-  private final CartRepository cartRepository;
-  private final MenuRepository menuRepository;
 
 
   // 리뷰 등록
@@ -134,7 +132,6 @@ public class ReviewService {
       String uploadReviewImage = uploadReviewImage(reviewImage);
 
       review = reviewRepository.save(reviewEditRequestDTO.toEntity(user, uploadReviewImage));
-      Review review1 = reviewRepository.findById(review.getId()).orElseThrow(() -> new RuntimeException());
       return new ReviewEditResponseDTO(review);
 //    } else  {
 //      throw new CustomException(ErrorCode.REVIEW_NOT_MATCH_BY_USER);

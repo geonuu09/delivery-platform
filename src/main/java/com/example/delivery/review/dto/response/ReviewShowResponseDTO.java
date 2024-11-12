@@ -1,6 +1,5 @@
 package com.example.delivery.review.dto.response;
 
-import com.example.delivery.menu.entity.Menu;
 import lombok.*;
 
 import java.time.LocalDateTime;

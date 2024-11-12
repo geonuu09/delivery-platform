@@ -2,7 +2,6 @@ package com.example.delivery.review.dto.request;
 
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.review.entity.Review;
-import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
