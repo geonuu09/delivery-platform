@@ -77,12 +77,10 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/users/signup").permitAll()
-                    // todo: 테스트 이후 권한에 맞게 변경할 것.
-//                .requestMatchers("/api/users/**").permitAll()
-                    .anyRequest().authenticated() // 그 외 모든 요청 인증처리
+            authorizeHttpRequests
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/users/signup").permitAll()
+                .anyRequest().authenticated()
         );
 
         // 추후 프론트 작업을 한다면 사용

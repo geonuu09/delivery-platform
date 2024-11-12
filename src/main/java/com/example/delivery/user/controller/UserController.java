@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,6 +72,24 @@ public class UserController {
 
         UserResponseDto responseDto = userService.updateUser(userId, requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUser(userDetails.getUserId(), userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/admin/{userId}")
+    @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
+    public ResponseEntity<?> deleteUserAdmin(
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUser(userId, userDetails.getUsername());
+        return ResponseEntity.ok().build();
     }
 
 }

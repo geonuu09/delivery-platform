@@ -7,9 +7,11 @@ import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.User.UserStatus;
 import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.repository.UserRepository;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,7 @@ public class UserService {
             .detailAddress(requestDto.getDetailAddress())
             .phoneNum(requestDto.getPhoneNum())
             .role(requestDto.getRole() != null ? requestDto.getRole() : UserRoleEnum.CUSTOMER)
+            .status(requestDto.getStatus())
             .build();
         User savedUser = userRepository.save(user);
 
@@ -97,5 +100,16 @@ public class UserService {
             requestDto.getDetailAddress()
         );
         return new UserResponseDto(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId, String deleteBy) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.setStatus(UserStatus.INACTIVE);
+        // deletedAt 및 deletedBy 필드 설정
+        user.setDeletedAt(LocalDateTime.now());
+        user.setDeletedBy(deleteBy);
     }
 }

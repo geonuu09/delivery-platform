@@ -58,6 +58,10 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String phoneNum;
 
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
@@ -66,6 +70,12 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+
+    public enum UserStatus {
+        ACTIVE,
+        INACTIVE,
+    }
 
     public void updateUserInfo(
         String userName,
@@ -85,6 +95,11 @@ public class User extends Timestamped {
         if (detailAddress != null)
             this.detailAddress = detailAddress;
     }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
 
 }
 
