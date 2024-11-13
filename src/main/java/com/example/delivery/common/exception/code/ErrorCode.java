@@ -20,7 +20,30 @@ public enum ErrorCode {
 
     // 공통 에러
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "유효하지 않은 입력값입니다."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
+
+    // Store 관련 에러
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "가게를 찾을 수 없습니다."),
+    STORE_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 등록된 가게입니다."),
+    STORE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "가게 정보를 업데이트할 수 없습니다."),
+    STORE_DELETE_FAILED(HttpStatus.BAD_REQUEST, "가게 삭제에 실패했습니다."),
+    INVALID_STORE_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 가게 상태입니다."),
+
+    // Category 관련 에러
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
+    CATEGORY_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "가게 정보를 업데이트할 수 없습니다."),
+    CATEGORY_DELETE_FAILED(HttpStatus.BAD_REQUEST, "카테고리 삭제에 실패했습니다."),
+
+
+    // Menu 관련 에러
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴를 찾을 수 없습니다."),
+    MENU_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "메뉴를 업데이트할 수 없습니다."),
+    MENU_DELETE_FAILED(HttpStatus.BAD_REQUEST, "메뉴삭제에 실패했습니다."),
+
+    // Menu Option 관련 에러
+    MENU_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 옵션을 찾을 수 없습니다."),
+    MENU_OPTION_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "메뉴 옵션을 업데이트할 수 없습니다."),
+    MENU_OPTION_DELETE_FAILED(HttpStatus.BAD_REQUEST, "메뉴 옵션 삭제에 실패했습니다.");
 
     private final HttpStatus status;
     private final String message;
