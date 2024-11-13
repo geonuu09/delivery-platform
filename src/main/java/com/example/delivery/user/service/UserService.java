@@ -97,6 +97,12 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        if(user.getRole() == UserRoleEnum.MASTER) {
+            throw new CustomException(ErrorCode.INVALID_PERMISSION, "이 권한은 삭제할 수 없습니다.");
+        }
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new CustomException(ErrorCode.USER_ALREADY_DELETE);
+        }
         user.setStatus(UserStatus.INACTIVE);
         user.setDeletedAt(LocalDateTime.now());
         user.setDeletedBy(deleteBy);
