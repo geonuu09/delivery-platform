@@ -2,7 +2,6 @@ package com.example.delivery.user.dto;
 
 import com.example.delivery.user.entity.UserRoleEnum;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
