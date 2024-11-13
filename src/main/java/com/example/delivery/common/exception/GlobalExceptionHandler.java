@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleCustomException(
         CustomException e, HttpServletRequest request) {
         log.error("CustomException: {}", e.getMessage());
-        ErrorResponse response = ErrorResponse.of(e.getErrorCode(), request.getRequestURI());
+        ErrorResponse response = ErrorResponse.of(e, request.getRequestURI());
         return new ResponseEntity<>(response, e.getErrorCode().getStatus());
     }
 

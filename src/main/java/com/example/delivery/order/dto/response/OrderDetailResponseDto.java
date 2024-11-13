@@ -17,8 +17,8 @@ public class OrderDetailResponseDto {
 //    private List<CartResponseDto> orderMenus;
     private int totalCount;
     private int totalPrice;
-    private String dStreetAddress;
-    private String dDetailAddress;
+    private String deliveryStreetAddress;
+    private String deliveryDetailAddress;
     private String requirements;
 
     public static OrderDetailResponseDto from(Order order) {
@@ -29,8 +29,8 @@ public class OrderDetailResponseDto {
                 //.orderMenus(CartResponseDto.from(order.getCarts()))
                 .totalCount(order.getTotalCount())
                 .totalPrice(order.getTotalPrice())
-                .dStreetAddress(order.getDStreetAddress())
-                .dDetailAddress(order.getDDetailAddress())
+                .deliveryStreetAddress(order.getDeliveryStreetAddress())
+                .deliveryDetailAddress(order.getDeliveryDetailAddress())
                 .requirements(order.getRequirements())
                 .build();
     }

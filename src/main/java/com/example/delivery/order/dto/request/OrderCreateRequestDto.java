@@ -3,8 +3,6 @@ package com.example.delivery.order.dto.request;
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -17,16 +15,12 @@ import java.util.UUID;
 public class OrderCreateRequestDto {
     private UUID storeId;
 
-    @NotNull
     private Boolean isDelivery;
 
-    @NotBlank(message = "배달 주소 입력은 필수입니다.")
-    private String dStreetAddress;
+    private String deliveryStreetAddress;
 
-    @NotBlank(message = "상세 주소는 필수입니다.")
-    private String dDetailAddress;
+    private String deliveryDetailAddress;
 
-    @NotBlank(message = "요청사항 입력은 필수입니다.")
     private String requirements;
 
     private int totalCount;
@@ -38,8 +32,8 @@ public class OrderCreateRequestDto {
                 .user(user)
                 .store(store)
                 .isDelivery(this.isDelivery)
-                .dStreetAddress(this.dStreetAddress)
-                .dDetailAddress(this.dDetailAddress)
+                .deliveryStreetAddress(this.deliveryStreetAddress)
+                .deliveryDetailAddress(this.deliveryDetailAddress)
                 .requirements(this.requirements)
                 .totalCount(this.totalCount)
                 .totalPrice(this.totalPrice)

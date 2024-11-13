@@ -42,7 +42,7 @@ public class CartService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MENU));
 
         // 메뉴 활성화 여부 확인
-        if (menu.getIsDeleted() || menu.getIsHidden()) {
+        if (menu.isDeleted() || menu.isHidden()) {
             throw new CustomException(ErrorCode.UNAVAILABLE_MENU);
         }
 

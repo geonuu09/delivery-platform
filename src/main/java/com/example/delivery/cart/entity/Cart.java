@@ -17,9 +17,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Table(name = "p_cart")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "p_cart")
 public class Cart extends Timestamped {
     @Id
     @UuidGenerator
