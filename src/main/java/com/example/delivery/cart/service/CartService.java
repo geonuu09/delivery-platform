@@ -5,13 +5,13 @@ import com.example.delivery.cart.dto.request.CartUpdateRequestDto;
 import com.example.delivery.cart.dto.response.CartResponseDto;
 import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.cart.repository.CartRepository;
-import com.example.delivery.store.entity.Store;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
 import com.example.delivery.menu.repository.MenuOptionRepository;
 import com.example.delivery.menu.repository.MenuRepository;
+import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.repository.UserRepository;
@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,11 +36,7 @@ public class CartService {
 
     // 장바구니 생성
     @Transactional
-    public CartResponseDto createCart(Long userId, CartCreateRequestDto requestDto) {
-        // 현재 로그인 유저
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+    public CartResponseDto createCart(User user, CartCreateRequestDto requestDto) {
         // 담은 메뉴
         Menu menu = menuRepository.findById(requestDto.getMenuId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MENU));
@@ -61,7 +58,7 @@ public class CartService {
         }
 
         // 현재 장바구니 목록 : 아직 주문이 안된 대기상태
-        List<Cart> cartList = cartRepository.findByUser_UserIdAndCartStatus(userId, Cart.CartStatus.PENDING);
+        List<Cart> cartList = cartRepository.findByUser_UserIdAndCartStatus(user.getUserId(), Cart.CartStatus.PENDING);
 
         // 가게 비교
         if (!cartList.isEmpty()) {
@@ -127,11 +124,17 @@ public class CartService {
         cart.setCount(requestDto.getMenuCount());
 
         // 메뉴 옵션
-        cart.setMenuOptions(requestDto.getMenuOptionList());
+        List<MenuOption> updatedMenuOptions = new ArrayList<>();
+
+        for (UUID menuOptionId : requestDto.getMenuOptionIdList()) {
+            MenuOption menuOption = menuOptionRepository.findById(menuOptionId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MENU_OPTION));
+            updatedMenuOptions.add(menuOption);
+        }
 
         // 가격
         int menuPrice = menu.getMenuPrice();
-        for (MenuOption option : requestDto.getMenuOptionList()) {
+        for (MenuOption option : updatedMenuOptions) {
             menuPrice += option.getOptionPrice();
         }
         cart.setPrice(menuPrice);
@@ -164,11 +167,17 @@ public class CartService {
         cart.setCount(requestDto.getMenuCount());
 
         // 메뉴 옵션
-        cart.setMenuOptions(requestDto.getMenuOptionList());
+        List<MenuOption> updatedMenuOptions = new ArrayList<>();
+
+        for (UUID menuOptionId : requestDto.getMenuOptionIdList()) {
+            MenuOption menuOption = menuOptionRepository.findById(menuOptionId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MENU_OPTION));
+            updatedMenuOptions.add(menuOption);
+        }
 
         // 가격
         int menuPrice = menu.getMenuPrice();
-        for (MenuOption option : requestDto.getMenuOptionList()) {
+        for (MenuOption option : updatedMenuOptions) {
             menuPrice += option.getOptionPrice();
         }
         cart.setPrice(menuPrice);
