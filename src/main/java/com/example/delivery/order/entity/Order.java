@@ -32,10 +32,10 @@ public class Order extends Timestamped {
     private Boolean isDelivery;
 
     @Column(nullable = false)
-    private String dStreetAddress;
+    private String deliveryStreetAddress;
 
     @Column(nullable = false)
-    private String dDetailAddress;
+    private String deliveryDetailAddress;
 
     @Column(nullable = false)
     private String requirements;

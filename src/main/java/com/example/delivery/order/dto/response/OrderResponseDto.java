@@ -14,8 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderResponseDto {
     private UUID orderId;
-    private String dStreetAddress;
-    private String dDetailAddress;
+    private String deliveryStreetAddress;
+    private String deliveryDetailAddress;
     private String requirements;
     private int totalCount;
     private int totalPrice;
@@ -26,8 +26,8 @@ public class OrderResponseDto {
     public static OrderResponseDto from(Order order) {
         return OrderResponseDto.builder()
                 .orderId(order.getOrderId())
-                .dStreetAddress(order.getDStreetAddress())
-                .dDetailAddress(order.getDDetailAddress())
+                .deliveryStreetAddress(order.getDeliveryStreetAddress())
+                .deliveryDetailAddress(order.getDeliveryDetailAddress())
                 .requirements(order.getRequirements())
                 .totalCount(order.getTotalCount())
                 .totalPrice(order.getTotalPrice())

@@ -36,6 +36,7 @@ public class OrderController {
     ){
         User user = userDetails.getUser();
         UserRoleEnum userRole = userDetails.getUser().getRole();
+
         if (userRole == UserRoleEnum.OWNER) {
             OrderResponseDto responseDto = orderService.createOrderByOwner(user, requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
@@ -56,6 +57,8 @@ public class OrderController {
     ){
         Long userId = userDetails.getUser().getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
+
+
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             Page<OrderListResponseDto> orderList = orderService.getOrderListByAdmin(page, size, sortBy, isAsc);
             return ResponseEntity.ok(orderList);
@@ -76,6 +79,8 @@ public class OrderController {
     ){
         Long userId = userDetails.getUser().getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
+
+
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             OrderDetailResponseDto responseDto = orderService.getOrderDetailByAdmin(orderId);
             return ResponseEntity.ok(responseDto);
@@ -93,7 +98,6 @@ public class OrderController {
     ){
         Long userId = userDetails.getUser().getUserId();
         String userEmail = userDetails.getUsername();
-
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
