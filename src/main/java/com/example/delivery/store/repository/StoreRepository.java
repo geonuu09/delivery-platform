@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -14,6 +15,8 @@ public interface StoreRepository extends JpaRepository<Store, UUID>, StoreReposi
     Page<Store> findByCategory_CategoryIdAndDeletedFalse(UUID categoryId, Pageable pageable);
 
     boolean existsByStoreNameAndDeletedFalse(String storeName);
+
+    List<Store> findByUser_UserId(Long userId);
 
 }
 

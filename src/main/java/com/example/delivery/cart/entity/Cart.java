@@ -5,9 +5,7 @@ import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
 import com.example.delivery.order.entity.Order;
-import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,6 +57,6 @@ public class Cart extends Timestamped {
     private Menu menu;
 
     @ManyToOne
-    @JoinColumn(name = "menu_option_id", nullable = false)
+    @JoinColumn(name = "menu_option_id")
     private MenuOption menuOption;
 }

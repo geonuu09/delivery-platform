@@ -11,7 +11,7 @@ import com.example.delivery.bookmark.dto.BookmarkedStoreResponseDto;
 import com.example.delivery.bookmark.entity.Bookmark;
 import com.example.delivery.bookmark.repository.BookmarkRepository;
 import com.example.delivery.store.entity.Store;
-import com.example.delivery.store.respository.StoreRepository;
+import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.repository.UserRepository;
 import java.util.ArrayList;

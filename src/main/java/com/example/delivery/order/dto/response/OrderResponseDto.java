@@ -14,25 +14,25 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderResponseDto {
     private UUID orderId;
-    private String dStreetAddress;
-    private String dDetailAddress;
+    private String deliveryStreetAddress;
+    private String deliveryDetailAddress;
     private String requirements;
     private int totalCount;
     private int totalPrice;
     private String orderStatus;
-//    private Long userId;
+    private Long userId;
     private UUID storeId;
 
     public static OrderResponseDto from(Order order) {
         return OrderResponseDto.builder()
                 .orderId(order.getOrderId())
-                .dStreetAddress(order.getDStreetAddress())
-                .dDetailAddress(order.getDDetailAddress())
+                .deliveryStreetAddress(order.getDeliveryStreetAddress())
+                .deliveryDetailAddress(order.getDeliveryDetailAddress())
                 .requirements(order.getRequirements())
                 .totalCount(order.getTotalCount())
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus().getLabel())
-//                .userId(order.getUser().getUserId())
+                .userId(order.getUser().getUserId())
                 .storeId(order.getStore().getStoreId())
                 .build();
     }
