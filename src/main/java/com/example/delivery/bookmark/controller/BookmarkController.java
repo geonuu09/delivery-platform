@@ -41,7 +41,7 @@ public class BookmarkController {
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") boolean isAsc
     ) {
-        Page<BookmarkedStoreResponseDto> bookmark = bookmarkService.getUserBookmarKed(
+        Page<BookmarkedStoreResponseDto> bookmark = bookmarkService.getUserBookmarked(
             userDetails.getUserId(), page, size, sortBy, isAsc);
         return ResponseEntity.ok(bookmark);
     }

@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class BookmarkService {
-
     private final BookmarkRepository bookmarkRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
@@ -30,7 +29,6 @@ public class BookmarkService {
     public boolean toggleBookmark(UUID storeId, Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
         Store store = storeRepository.findById(storeId)
             .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -40,21 +38,20 @@ public class BookmarkService {
         if (existingBookmark.isPresent()) {
             bookmarkRepository.delete(existingBookmark.get());
             return false;
-        } else {
-            Bookmark bookmark = Bookmark.builder()
-                .user(user)
-                .store(store)
-                .isBookmarked(true)
-                .build();
-            bookmarkRepository.save(bookmark);
-            return true;
         }
+
+        bookmarkRepository.save(Bookmark.create(user, store));
+        return true;
     }
 
     @Transactional(readOnly = true)
-    public Page<BookmarkedStoreResponseDto> getUserBookmarKed(Long userId, int page, int size,
-        String sortBy, boolean isAsc) {
-
+    public Page<BookmarkedStoreResponseDto> getUserBookmarked(
+        Long userId,
+        int page,
+        int size,
+        String sortBy,
+        boolean isAsc
+    ) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -63,6 +60,4 @@ public class BookmarkService {
         return bookmarkRepository.findAllByUser(user, pageable)
             .map(bookmark -> new BookmarkedStoreResponseDto(bookmark.getStore()));
     }
-
-
 }

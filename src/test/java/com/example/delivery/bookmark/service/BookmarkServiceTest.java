@@ -2,6 +2,7 @@ package com.example.delivery.bookmark.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,6 +63,7 @@ class BookmarkServiceTest {
         // 테스트용 가게 생성
         testStore = Store.builder()
             .storeId(UUID.randomUUID())
+            .storeName("테스트 가게")
             .build();
 
         // 테스트용 북마크 생성
@@ -69,7 +71,6 @@ class BookmarkServiceTest {
             .bookmarkId(UUID.randomUUID())
             .user(testUser)
             .store(testStore)
-            .isBookmarked(true)
             .build();
     }
 
@@ -129,7 +130,7 @@ class BookmarkServiceTest {
     @Test
     @DisplayName("사용자의 북마크된 가게 목록 조회 테스트")
     void getUserBookmarkedTest() {
-        // given - 테스트를 위한 기본 데이터 설정
+        // given
         int page = 0;
         int size = 10;
         String sortBy = "createdAt";
@@ -142,26 +143,33 @@ class BookmarkServiceTest {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, sortBy);
         Page<Bookmark> bookmarkPage = new PageImpl<>(bookmarks, pageable, bookmarks.size());
 
-        // when - 실제 테스트 수행
-        when(bookmarkRepository.findAllByUser(testUser.getUserId(), pageable))
+        // Mock 설정 추가
+        when(userRepository.findById(testUser.getUserId()))
+            .thenReturn(Optional.of(testUser));
+        when(bookmarkRepository.findAllByUser(testUser, pageable))
             .thenReturn(bookmarkPage);
+        log.info("Mock 설정 완료");
 
-        log.info("bookmarkPage: {}", bookmarkPage);
+        // when - 실제 테스트 수행
+        Page<BookmarkedStoreResponseDto> result =
+            bookmarkService.getUserBookmarked(testUser.getUserId(), page, size, sortBy, isAsc);
+        log.info("북마크 서비스 호출 완료");
 
         // then - 테스트 결과 검증
-        // 실제 서비스 메소드 호출
-        Page<BookmarkedStoreResponseDto> result =
-            bookmarkService.getUserBookmarKed(testUser.getUserId(), page, size, sortBy, isAsc);
 
-        // 결과 로그 출력
-        log.info("result: {}", result);
 
-        // 검증 1: 결과가 null이 아닌지 확인
         assertThat(result).isNotNull();
-        // 검증 2: 결과 리스트의 크기가 1인지 확인
+        log.info("검증 1 완료: 결과가 null이 아님");
         assertThat(result.getContent()).hasSize(1);
-        // 검증 3: 반환된 가게 이름이 테스트 가게의 이름과 일치하는지 확인
+        log.info("검증 2 완료: 결과 리스트 크기 = {}", result.getContent().size());
         assertThat(result.getContent().get(0).getStoreName())
             .isEqualTo(testStore.getStoreName());
+        log.info("검증 3 완료: 가게 이름 일치 확인 (예상값={}, 실제값={})",
+            testStore.getStoreName(), result.getContent().get(0).getStoreName());
+
+        verify(userRepository, times(1)).findById(testUser.getUserId());
+        log.info("검증 4 완료: Repository 메소드 호출 횟수 확인");
+        verify(bookmarkRepository, times(1)).findAllByUser(eq(testUser), any(Pageable.class));
+        log.info("북마크 목록 조회 테스트 종료 - 모든 검증 통과");
     }
 }
