@@ -7,20 +7,28 @@ import com.example.delivery.order.entity.Order;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.user.entity.User;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "p_stores")
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store extends Timestamped {
