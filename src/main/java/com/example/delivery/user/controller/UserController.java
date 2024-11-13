@@ -61,7 +61,7 @@ public class UserController {
 
     // 자신의 계정 수정
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER','MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid UserUpdateRequestDto requestDto) {
