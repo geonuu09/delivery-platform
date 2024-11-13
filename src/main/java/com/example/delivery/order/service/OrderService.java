@@ -59,7 +59,6 @@ public class OrderService {
 //            cart.setOrder(order);
 //            cartRepository.save(cart);
 //        }
-
         return OrderResponseDto.from(order);
     }
 
@@ -92,7 +91,6 @@ public class OrderService {
 //            cart.setOrder(order);
 //            cartRepository.save(cart);
 //        }
-
         return OrderResponseDto.from(order);
     }
 
@@ -109,7 +107,6 @@ public class OrderService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Order> orderPage = orderRepository.findAll(pageable);
-
         return orderPage.map(OrderListResponseDto::from);
     }
 
@@ -141,7 +138,6 @@ public class OrderService {
 
         // 모든 가게 주문 목록
         Page<Order> orderPage = orderRepository.findByStore_StoreIdIn(storeIdList, pageable);
-
         return orderPage.map(OrderListResponseDto::from);
     }
 
@@ -159,7 +155,54 @@ public class OrderService {
 
         // 고객의 주문 목록
         Page<Order> orderPage = orderRepository.findByUser_UserId(userId, pageable);
+        return orderPage.map(OrderListResponseDto::from);
+    }
 
+    // 관리자용 주문 목록 검색 조회 : 주문자,가게명, 주문메뉴
+    public Page<OrderListResponseDto> searchOrderListForAdmin(int page, int size, String sortBy, boolean isAsc,
+                                                              String storeName, String menuName, String userEmail) {
+        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
+        size = (size == 10 || size == 30 || size == 50) ? size : 10;
+
+        // 최신순
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Order> orderPage = orderRepository.searchOrderListForAdmin(storeName, menuName, userEmail ,pageable);
+        return orderPage.map(OrderListResponseDto::from);
+    }
+
+    // 점주용 주문 목록 검색 조회 : 주문자, 주문메뉴
+    public Page<OrderListResponseDto> searchOrderListForOwner(Long userId, int page, int size, String sortBy, boolean isAsc,
+                                                              String menuName, String userEmail) {
+        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
+        size = (size == 10 || size == 30 || size == 50) ? size : 10;
+
+        // 최신순
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Order> orderPage = orderRepository.searchOrderListForOwner(userId,menuName,userEmail,pageable);
+        return orderPage.map(OrderListResponseDto::from);
+    }
+
+    // 고객용 주문 목록 검색 조회 : 가게명, 주문메뉴
+    public Page<OrderListResponseDto> searchOrderListForCustomer(Long userId, int page, int size, String sortBy, boolean isAsc,
+                                                                 String storeName, String menuName) {
+        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
+        size = (size == 10 || size == 30 || size == 50) ? size : 10;
+
+        // 최신순
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Order> orderPage = orderRepository.searchOrderListForCustomer(userId, storeName, menuName,pageable);
         return orderPage.map(OrderListResponseDto::from);
     }
 
