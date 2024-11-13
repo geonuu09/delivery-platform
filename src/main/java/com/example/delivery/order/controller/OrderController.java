@@ -29,7 +29,6 @@ public class OrderController {
 
     // 주문 접수
     @PostMapping
-    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER', 'MANAGER', 'MASTER')")
     public ResponseEntity<OrderResponseDto> createOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody OrderCreateRequestDto requestDto
@@ -47,7 +46,6 @@ public class OrderController {
 
     // 주문 목록 조회
     @GetMapping
-    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER', 'MANAGER', 'MASTER')")
     public ResponseEntity<Page<OrderListResponseDto>> getOrderList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
@@ -71,7 +69,6 @@ public class OrderController {
 
     // 주문 목록 검색 조회
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'OWNER', 'MANAGER', 'MASTER')")
     public ResponseEntity<Page<OrderListResponseDto>> searchOrderList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
@@ -98,7 +95,7 @@ public class OrderController {
 
     // 주문 상세내역 조회
     @GetMapping("/{orderId}")
-    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER', 'MANAGER', 'MASTER')")
+
     public ResponseEntity<OrderDetailResponseDto> getOrderDetail(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID orderId

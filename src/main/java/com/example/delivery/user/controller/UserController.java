@@ -1,13 +1,10 @@
 package com.example.delivery.user.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.common.exception.CustomException;
-import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
-import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,15 +30,17 @@ public class UserController {
 
     private final UserService userService;
 
+    // User 회원 가입
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(
-        @RequestBody SignupRequestDto requestDto) {
+        @RequestBody @Valid SignupRequestDto requestDto) {
         SignupResponseDto responseDto = userService.signup(requestDto);
         return ResponseEntity.ok(responseDto);
 
     }
 
-    @GetMapping()
+    // Admin -> 회원 전체 조회
+    @GetMapping("/admin/users")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
         @RequestParam(defaultValue = "0") int page,
@@ -51,33 +51,54 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{userId}")
+    // Admin -> 회원 단일 조회
+    @GetMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId) {
         UserResponseDto userResponseDto = userService.getUserById(userId);
         return ResponseEntity.ok(userResponseDto);
     }
 
+    // 자신의 계정 수정
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER','MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Valid @RequestBody UserUpdateRequestDto requestDto) {
+        @RequestBody @Valid UserUpdateRequestDto requestDto) {
 
-        UserRoleEnum userRole = userDetails.getUser().getRole();
-        Long userId = userDetails.getUser().getUserId();
-
-        UserResponseDto responseDto;
-        if(userRole == UserRoleEnum.CUSTOMER) {
-            responseDto = userService.updateCustomer(userId, requestDto);
-        } else if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            responseDto = userService.updateByAdmin(requestDto);
-        } else {
-            throw new CustomException(ErrorCode.UNAUTHORIZED, "해당 권한은 접근할 수 없습니다.");
-        }
+        UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    // Admin -> 유저 수정
+    @PutMapping("/admin/{userId}")
+    @PreAuthorize("hasAnyRole('MASTER')")
+    public ResponseEntity<UserResponseDto> updateUserAdmin(
+        @RequestBody @Valid UserUpdateRequestDto requestDto, @PathVariable Long userId) {
+
+        UserResponseDto responseDto = userService.updateUser(userId, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // 자신의 계정 삭제
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteUser(
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUser(userDetails.getUserId(), userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    // Admin -> 유저 삭제
+    @DeleteMapping("/admin/{userId}")
+    @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
+    public ResponseEntity<?> deleteUserAdmin(
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.deleteUser(userId, userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
 
 }
 

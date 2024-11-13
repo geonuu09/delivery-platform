@@ -26,7 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Page<Order> searchOrderListForAdmin(
             @Param("storeName") String storeName,
             @Param("menuName") String menuName,
-            @Param("customerName") String customerName,
+            @Param("userEmail") String customerName,
             Pageable pageable);
 
     @Query("SELECT o FROM Order o " +
