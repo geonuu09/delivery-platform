@@ -2,14 +2,14 @@ package com.example.delivery.common.exception.dto;
 
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Builder
 public class ErrorResponse {
+
     private final boolean success;
     private final String message;
     private final int status;
