@@ -36,8 +36,8 @@ public class MenuOption extends Timestamped {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
-    @OneToMany(mappedBy = "menuOption", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Cart> carts = new ArrayList<Cart>();
+    @ManyToMany(mappedBy = "menuOptions", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Cart> carts = new ArrayList<>();
 
     public void update(MenuOptionRequestDto menuOptionRequestDto) {
         this.optionName = menuOptionRequestDto.getOptionName();

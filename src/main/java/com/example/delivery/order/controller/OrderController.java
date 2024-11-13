@@ -143,7 +143,7 @@ public class OrderController {
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if(userRole == UserRoleEnum.CUSTOMER) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED, "해당 권한은 접근할 수 없습니다.");
+            throw new CustomException(ErrorCode. INVALID_PERMISSION);
         } else if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             OrderResponseDto responseDto = orderService.updateOrderStatusByAdmin(orderId, orderStatus);
             return ResponseEntity.ok(responseDto);

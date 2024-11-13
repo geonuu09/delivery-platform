@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID> {
+
     Page<Order> findAll(Pageable pageable);
     Page<Order> findByStore_StoreIdIn(List<UUID> storeIds, Pageable pageable);
     Page<Order> findByUser_UserId(Long userId, Pageable pageable);
@@ -55,4 +56,5 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("storeName") String storeName,
             @Param("menuName") String menuName,
             Pageable pageable);
+
 }

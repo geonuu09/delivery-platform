@@ -1,5 +1,6 @@
 package com.example.delivery.order.service;
 
+import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.order.dto.request.OrderCreateRequestDto;
@@ -16,9 +17,7 @@ import com.example.delivery.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -31,10 +30,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
 
+    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final OrderRepository orderRepository;
     //private final CartRepository cartRepository;
+
 
     // 주문 접수
     @Transactional
@@ -97,14 +97,7 @@ public class OrderService {
     // 주문 목록 조회 : 관리자
     @Transactional
     public Page<OrderListResponseDto> getOrderListByAdmin(int page, int size, String sortBy, boolean isAsc) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 최신순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         Page<Order> orderPage = orderRepository.findAll(pageable);
         return orderPage.map(OrderListResponseDto::from);
@@ -113,14 +106,7 @@ public class OrderService {
     // 주문 목록 조회 : 점주
     @Transactional
     public Page<OrderListResponseDto> getOrderListByOwner(Long userId, int page, int size, String sortBy, boolean isAsc) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        //최신순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         // 현재 로그인 유저
         User user = userRepository.findById(userId)
@@ -143,15 +129,15 @@ public class OrderService {
 
     // 주문 목록 조회
     @Transactional
+    public List<OrderListResponseDto> getOrderList(Long userId) {
+        List<Order> orderList = orderRepository.findAll();
+        return orderList.stream()
+                .map(OrderListResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
     public Page<OrderListResponseDto> getOrderList(Long userId, int page, int size, String sortBy, boolean isAsc) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 최신순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         // 고객의 주문 목록
         Page<Order> orderPage = orderRepository.findByUser_UserId(userId, pageable);
@@ -161,14 +147,7 @@ public class OrderService {
     // 관리자용 주문 목록 검색 조회 : 주문자,가게명, 주문메뉴
     public Page<OrderListResponseDto> searchOrderListForAdmin(int page, int size, String sortBy, boolean isAsc,
                                                               String storeName, String menuName, String userEmail) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 최신순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         Page<Order> orderPage = orderRepository.searchOrderListForAdmin(storeName, menuName, userEmail ,pageable);
         return orderPage.map(OrderListResponseDto::from);
@@ -177,14 +156,7 @@ public class OrderService {
     // 점주용 주문 목록 검색 조회 : 주문자, 주문메뉴
     public Page<OrderListResponseDto> searchOrderListForOwner(Long userId, int page, int size, String sortBy, boolean isAsc,
                                                               String menuName, String userEmail) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 최신순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         Page<Order> orderPage = orderRepository.searchOrderListForOwner(userId,menuName,userEmail,pageable);
         return orderPage.map(OrderListResponseDto::from);
@@ -193,14 +165,7 @@ public class OrderService {
     // 고객용 주문 목록 검색 조회 : 가게명, 주문메뉴
     public Page<OrderListResponseDto> searchOrderListForCustomer(Long userId, int page, int size, String sortBy, boolean isAsc,
                                                                  String storeName, String menuName) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
-
-        // 최신순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         Page<Order> orderPage = orderRepository.searchOrderListForCustomer(userId, storeName, menuName,pageable);
         return orderPage.map(OrderListResponseDto::from);
@@ -307,7 +272,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ORDER));
 
-        // 점주인지 확인
+        // OWNER라면 점주인지 확인
         if (!user.getUserId().equals(order.getStore().getUser().getUserId())) {
             throw new CustomException(ErrorCode.ORDER_PERMISSION_DENIED);
         }
