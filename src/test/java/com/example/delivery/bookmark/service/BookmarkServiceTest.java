@@ -90,7 +90,7 @@ class BookmarkServiceTest {
         // thenReturn - Optional.of(user)라는 결과값을 반환하도록 가정(stub)함
         when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
         when(storeRepository.findById(storeId)).thenReturn(Optional.of(testStore));
-        when(bookmarkRepository.findByUserIdAndStoreId(testUser, testStore)).thenReturn(
+        when(bookmarkRepository.findByUserAndStore(testUser, testStore)).thenReturn(
             Optional.empty());
         when(bookmarkRepository.save(any(Bookmark.class))).thenReturn(new Bookmark());
 
@@ -113,7 +113,7 @@ class BookmarkServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
         when(storeRepository.findById(storeId)).thenReturn(Optional.of(testStore));
-        when(bookmarkRepository.findByUserIdAndStoreId(testUser, testStore)).thenReturn(
+        when(bookmarkRepository.findByUserAndStore(testUser, testStore)).thenReturn(
             Optional.of(testBookmark));
 
         // when
@@ -143,7 +143,7 @@ class BookmarkServiceTest {
         Page<Bookmark> bookmarkPage = new PageImpl<>(bookmarks, pageable, bookmarks.size());
 
         // when - 실제 테스트 수행
-        when(bookmarkRepository.findAllByUserId(testUser.getUserId(), pageable))
+        when(bookmarkRepository.findAllByUser(testUser.getUserId(), pageable))
             .thenReturn(bookmarkPage);
 
         log.info("bookmarkPage: {}", bookmarkPage);

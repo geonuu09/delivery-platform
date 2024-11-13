@@ -35,7 +35,7 @@ public class BookmarkService {
             .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         Optional<Bookmark> existingBookmark =
-            bookmarkRepository.findByUserIdAndStoreId(user, store);
+            bookmarkRepository.findByUserAndStore(user, store);
 
         if (existingBookmark.isPresent()) {
             bookmarkRepository.delete(existingBookmark.get());
@@ -54,9 +54,13 @@ public class BookmarkService {
     @Transactional(readOnly = true)
     public Page<BookmarkedStoreResponseDto> getUserBookmarKed(Long userId, int page, int size,
         String sortBy, boolean isAsc) {
+
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
-        return bookmarkRepository.findAllByUserId(userId, pageable)
+        return bookmarkRepository.findAllByUser(user, pageable)
             .map(bookmark -> new BookmarkedStoreResponseDto(bookmark.getStore()));
     }
 

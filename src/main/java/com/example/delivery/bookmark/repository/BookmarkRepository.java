@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, UUID> {
 
-    Optional<Bookmark> findByUserIdAndStoreId(User user, Store store);
-    Page<Bookmark> findAllByUserId(Long userId, Pageable pageable);
+    Optional<Bookmark> findByUserAndStore(User user, Store store);
+    Page<Bookmark> findAllByUser(User user, Pageable pageable);
 }
