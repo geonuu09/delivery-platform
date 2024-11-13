@@ -30,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
 
+    // User 회원 가입
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(
         @RequestBody @Valid SignupRequestDto requestDto) {
@@ -38,7 +39,8 @@ public class UserController {
 
     }
 
-    @GetMapping()
+    // Admin -> 회원 전체 조회
+    @GetMapping("/admin/users")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
         @RequestParam(defaultValue = "0") int page,
@@ -49,13 +51,15 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{userId}")
+    // Admin -> 회원 단일 조회
+    @GetMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId) {
         UserResponseDto userResponseDto = userService.getUserById(userId);
         return ResponseEntity.ok(userResponseDto);
     }
 
+    // 자신의 계정 수정
     @PutMapping("/me")
     @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
@@ -66,6 +70,7 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // Admin -> 유저 수정
     @PutMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER')")
     public ResponseEntity<UserResponseDto> updateUserAdmin(
@@ -75,6 +80,7 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // 자신의 계정 삭제
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -83,6 +89,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // Admin -> 유저 삭제
     @DeleteMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
     public ResponseEntity<?> deleteUserAdmin(
