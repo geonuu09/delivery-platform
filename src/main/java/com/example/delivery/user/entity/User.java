@@ -4,6 +4,7 @@ import com.example.delivery.bookmark.entity.Bookmark;
 import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.order.entity.Order;
+import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,9 @@ public class User extends Timestamped {
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Store> stores = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();

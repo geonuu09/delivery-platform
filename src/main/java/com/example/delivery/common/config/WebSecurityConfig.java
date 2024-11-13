@@ -80,6 +80,8 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/users/signup").permitAll()
+                    // 테스트용
+                    .requestMatchers("/api/carts/**").permitAll()
                 .anyRequest().authenticated()
         );
 
