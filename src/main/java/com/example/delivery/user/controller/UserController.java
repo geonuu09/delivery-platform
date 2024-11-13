@@ -6,6 +6,7 @@ import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
 import com.example.delivery.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(
-        @RequestBody SignupRequestDto requestDto) {
+        @RequestBody @Valid SignupRequestDto requestDto) {
         SignupResponseDto responseDto = userService.signup(requestDto);
         return ResponseEntity.ok(responseDto);
 
@@ -59,7 +60,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestBody UserUpdateRequestDto requestDto) {
+        @RequestBody @Valid UserUpdateRequestDto requestDto) {
 
         UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto);
         return ResponseEntity.ok(responseDto);
@@ -68,7 +69,7 @@ public class UserController {
     @PutMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER')")
     public ResponseEntity<UserResponseDto> updateUserAdmin(
-        @RequestBody UserUpdateRequestDto requestDto, @PathVariable Long userId) {
+        @RequestBody @Valid UserUpdateRequestDto requestDto, @PathVariable Long userId) {
 
         UserResponseDto responseDto = userService.updateUser(userId, requestDto);
         return ResponseEntity.ok(responseDto);
