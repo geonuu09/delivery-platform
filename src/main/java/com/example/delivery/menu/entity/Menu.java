@@ -29,7 +29,7 @@ public class Menu extends Timestamped {
     @Column(length = 50)
     private String menuName;
 
-    @Column(length = 50)
+    @Column
     private int menuPrice;
 
     @Column
