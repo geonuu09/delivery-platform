@@ -2,10 +2,8 @@ package com.example.delivery.review.service;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.cart.entity.Cart;
-import com.example.delivery.cart.repository.CartRepository;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
-import com.example.delivery.menu.repository.MenuRepository;
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.order.repository.OrderRepository;
 import com.example.delivery.review.dto.request.ReviewEditRequestDTO;
@@ -15,8 +13,9 @@ import com.example.delivery.review.dto.request.ReviewRegisterRequestDTO;
 import com.example.delivery.review.dto.response.ReviewShowResponseDTO;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.review.repository.ReviewRepository;
-import com.example.delivery.store.respository.StoreRepository;
+import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,7 +41,7 @@ public class ReviewService {
   public boolean reviewRegister(ReviewRegisterRequestDTO reviewRegisterRequestDTO, UserDetailsImpl userDetails, MultipartFile reviewImage) {
     UUID orderId = reviewRegisterRequestDTO.getOrderId();
     Order order = orderRepository.findById(orderId)
-        .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ORDER));
     // 주문이 배달 완료 상태일때 리뷰 등록 가능
     if (order.getOrderStatus().equals(Order.OrderStatus.DELIVERED)) {
       // 파일명 변경
@@ -118,8 +117,7 @@ public class ReviewService {
   }
 
   // 내 리뷰 수정
-  public ReviewEditResponseDTO reviewEdit(ReviewEditRequestDTO reviewEditRequestDTO, MultipartFile reviewImage, UserDetailsImpl userDetails) {
-    UUID reviewId = reviewEditRequestDTO.getReviewId();
+  public ReviewEditResponseDTO reviewEdit(ReviewEditRequestDTO reviewEditRequestDTO, MultipartFile reviewImage, UserDetailsImpl userDetails, UUID reviewId) {
     Review review = reviewRepository.findById(reviewId)
         .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
@@ -127,16 +125,14 @@ public class ReviewService {
       throw new CustomException(ErrorCode.REVIEW_DELETE_ALREADY);
     }
 
-//    if (review.getCreatedBy().equals(userDetails.getUsername())) {
+    if (review.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
       User user = userDetails.getUser();
       String uploadReviewImage = uploadReviewImage(reviewImage);
 
-      review = reviewRepository.save(reviewEditRequestDTO.toEntity(user, uploadReviewImage));
+      review = reviewRepository.save(reviewEditRequestDTO.toEntity(user, uploadReviewImage, review));
       return new ReviewEditResponseDTO(review);
-//    } else  {
-//      throw new CustomException(ErrorCode.REVIEW_NOT_MATCH_BY_USER);
-//    }
-
+    }
+    throw new CustomException(ErrorCode.REVIEW_NOT_MATCH_USER);
   }
 
   // 파일명 변경 (사진 이름 중복 방지)
@@ -154,12 +150,18 @@ public class ReviewService {
     if (review.getDeletedAt() != null) {
       throw new CustomException(ErrorCode.REVIEW_DELETE_ALREADY);
     }
-//    if (userDetails.getUsername().equals(review.getCreatedBy())) {
+    if (userDetails.getUser().getRole().equals(UserRoleEnum.CUSTOMER) || userDetails.getUser().getRole().equals(UserRoleEnum.OWNER)) {
+      if (review.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
+        review.markAsDeleted(userDetails.getUsername());
+        reviewRepository.save(review);
+        return true;
+      }
+    } else {  // 관리자 삭제
       review.markAsDeleted(userDetails.getUsername());
       reviewRepository.save(review);
-    return true;
-//    }else {
-//      throw new CustomException(ErrorCode.REVIEW_NOT_MATCH_BY_USER);
-//    }
+      return true;
+    }
+
+    throw new CustomException(ErrorCode.REVIEW_NOT_MATCH_USER);
   }
 }
