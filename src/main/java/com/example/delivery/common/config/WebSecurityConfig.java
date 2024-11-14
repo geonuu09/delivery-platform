@@ -23,8 +23,8 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
@@ -80,7 +80,14 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/users/signup").permitAll()
+
+                // Swagger UI 관련 경로 추가
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/swagger-resources/**").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
                 .anyRequest().authenticated()
+
         );
 
         // 추후 프론트 작업을 한다면 사용

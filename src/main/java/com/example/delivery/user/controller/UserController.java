@@ -6,6 +6,7 @@ import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
 import com.example.delivery.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -24,20 +25,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-
-public class UserController {
+public class UserController implements UserControllerSwagger {
 
     private final UserService userService;
 
+    // User 회원 가입
+    @Override
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(
-        @RequestBody SignupRequestDto requestDto) {
+        @RequestBody @Valid SignupRequestDto requestDto) {
         SignupResponseDto responseDto = userService.signup(requestDto);
         return ResponseEntity.ok(responseDto);
 
     }
 
-    @GetMapping()
+    // Admin -> 회원 전체 조회
+    @Override
+    @GetMapping("/admin/users")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
         @RequestParam(defaultValue = "0") int page,
@@ -48,32 +52,40 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{userId}")
+    // Admin -> 회원 단일 조회
+    @Override
+    @GetMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId) {
         UserResponseDto userResponseDto = userService.getUserById(userId);
         return ResponseEntity.ok(userResponseDto);
     }
 
+    // 자신의 계정 수정
+    @Override
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER','MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestBody UserUpdateRequestDto requestDto) {
+        @RequestBody @Valid UserUpdateRequestDto requestDto) {
 
         UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    // Admin -> 유저 수정
+    @Override
     @PutMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER')")
     public ResponseEntity<UserResponseDto> updateUserAdmin(
-        @RequestBody UserUpdateRequestDto requestDto, @PathVariable Long userId) {
+        @RequestBody @Valid UserUpdateRequestDto requestDto, @PathVariable Long userId) {
 
         UserResponseDto responseDto = userService.updateUser(userId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    // 자신의 계정 삭제
+    @Override
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -82,6 +94,8 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // Admin -> 유저 삭제
+    @Override
     @DeleteMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
     public ResponseEntity<?> deleteUserAdmin(

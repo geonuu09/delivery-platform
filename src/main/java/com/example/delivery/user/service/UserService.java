@@ -1,5 +1,6 @@
 package com.example.delivery.user.service;
 
+import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.user.dto.SignupRequestDto;
@@ -16,9 +17,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,16 +58,8 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserResponseDto> getAllUsers(int page, int size, String sortBy, boolean isAsc) {
-        // 페이지 사이즈 설정 (10, 30, 50 중 하나로 제한)
-        size = (size == 10 || size == 30 || size == 50) ? size : 10;
+        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
-        // 정렬 방향 설정
-        // isAsc = true -> 오름차순
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy.equals("updatedAt") ? "updatedAt" : "createdAt");
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        // 모든 유저 조회
         return userRepository.findAll(pageable).map(UserResponseDto::new);
     }
 
@@ -85,7 +76,6 @@ public class UserService {
         return updateUserInfo(userId, requestDto);
     }
 
-    // 공통 로직을 private 메소드로 분리
     private UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto requestDto) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -107,8 +97,13 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        if (user.getRole() == UserRoleEnum.MASTER) {
+            throw new CustomException(ErrorCode.INVALID_PERMISSION, "이 권한은 삭제할 수 없습니다.");
+        }
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new CustomException(ErrorCode.USER_ALREADY_DELETE);
+        }
         user.setStatus(UserStatus.INACTIVE);
-        // deletedAt 및 deletedBy 필드 설정
         user.setDeletedAt(LocalDateTime.now());
         user.setDeletedBy(deleteBy);
     }

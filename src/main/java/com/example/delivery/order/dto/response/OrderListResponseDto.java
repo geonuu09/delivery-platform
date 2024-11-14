@@ -16,8 +16,8 @@ import java.util.UUID;
 public class OrderListResponseDto {
     private UUID orderId;
     private String storeName;
-    private String dStreetAddress;
-    private String dDetailAddress;
+    private String deliveryStreetAddress;
+    private String deliveryDetailAddress;
     private int totalCount;
     private int totalPrice;
     private String orderStatus;
@@ -27,8 +27,8 @@ public class OrderListResponseDto {
         return OrderListResponseDto.builder()
                 .orderId(order.getOrderId())
                 .storeName(order.getStore().getStoreName())
-                .dStreetAddress(order.getDStreetAddress())
-                .dDetailAddress(order.getDDetailAddress())
+                .deliveryStreetAddress(order.getDeliveryStreetAddress())
+                .deliveryDetailAddress(order.getDeliveryDetailAddress())
                 .totalCount(order.getTotalCount())
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus().getLabel())

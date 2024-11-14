@@ -33,10 +33,10 @@ public class Order extends Timestamped {
     private Boolean isDelivery;
 
     @Column(nullable = false)
-    private String dStreetAddress;
+    private String deliveryStreetAddress;
 
     @Column(nullable = false)
-    private String dDetailAddress;
+    private String deliveryDetailAddress;
 
     @Column(nullable = false)
     private String requirements;
@@ -74,7 +74,8 @@ public class Order extends Timestamped {
         PREPARING("준비중"),
         READY("준비완료"),
         IN_DELIVERY("배달중"),
-        DELIVERED("배달완료");
+        DELIVERED("배달완료"),
+        CANCELED("주문취소");
 
         private final String label;
         OrderStatus(String label) {
