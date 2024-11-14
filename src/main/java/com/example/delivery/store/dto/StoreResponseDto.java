@@ -2,7 +2,7 @@ package com.example.delivery.store.dto;
 
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.review.entity.Review;
-import com.example.delivery.store.entity.Category;
+import com.example.delivery.category.entity.Category;
 import com.example.delivery.store.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

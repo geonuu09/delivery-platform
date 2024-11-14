@@ -5,12 +5,12 @@ import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.repository.MenuRepository;
-import com.example.delivery.store.dto.CategoryRequestDto;
+import com.example.delivery.category.dto.CategoryRequestDto;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.store.dto.StoreResponseDto;
-import com.example.delivery.store.entity.Category;
+import com.example.delivery.category.entity.Category;
 import com.example.delivery.store.entity.Store;
-import com.example.delivery.store.repository.CategoryRepository;
+import com.example.delivery.category.repository.CategoryRepository;
 import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.repository.UserRepository;
@@ -115,56 +115,20 @@ public class StoreService {
         Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        try {
             store.update(storeRequestDto, category);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.STORE_UPDATE_FAILED);
-        }
+
     }
 
     // 가게 삭제
     @Transactional
-    public void deleteStore(UUID storeId, String username) {
-
+    public void deleteStore(StoreRequestDto storeRequestDto, String username) {
+        UUID storeId = storeRequestDto.getStoreId();
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-        try {
+
             store.delete(username);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.STORE_DELETE_FAILED);
-        }
+
     }
 
-    // 가게 카테고리 등록
-    @Transactional
-    public void createCategory(CategoryRequestDto categoryRequestDto) {
-        Category category = categoryRequestDto.toEntity();
-        categoryRepository.save(category);
-    }
-
-    // 가게 카테고리 수정
-    @Transactional
-    public void updateCategory(CategoryRequestDto categoryRequestDto) {
-        UUID categoryId = categoryRequestDto.getCategoryId();
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
-        try {
-            category.update(categoryRequestDto);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.CATEGORY_UPDATE_FAILED);
-        }
-    }
-
-    // 가게 카테고리 삭제
-    @Transactional
-    public void deleteCategory(UUID categoryId, String username) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
-        try {
-            category.delete(username);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.CATEGORY_DELETE_FAILED);
-        }
-    }
 
 }

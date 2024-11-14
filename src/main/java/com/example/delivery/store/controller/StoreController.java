@@ -1,7 +1,7 @@
 package com.example.delivery.store.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.store.dto.CategoryRequestDto;
+import com.example.delivery.category.dto.CategoryRequestDto;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.store.dto.StoreResponseDto;
 import com.example.delivery.store.service.StoreService;
@@ -73,33 +73,10 @@ public class StoreController {
     // 가게 삭제
     @DeleteMapping("/{storeId}/delete")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
-    public ResponseEntity<String> deleteStore(@PathVariable UUID storeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        storeService.deleteStore(storeId, userDetails.getUsername());
+    public ResponseEntity<String> deleteStore(@PathVariable UUID storeId, @RequestBody StoreRequestDto storeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        storeRequestDto.setStoreId(storeId);
+        storeService.deleteStore(storeRequestDto, userDetails.getUsername());
         return ResponseEntity.ok("가게가 성공적으로 삭제되었습니다.");
-    }
-
-    // 가게 카테고리 등록
-    @PostMapping("/category/create")
-    @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
-    public ResponseEntity<String> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto) {
-        storeService.createCategory(categoryRequestDto);
-        return ResponseEntity.ok("카테고리가 성공적으로 등록되었습니다.");
-    }
-
-    // 가게 카테고리 수정
-    @PutMapping("/category/update")
-    @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto) {
-        storeService.updateCategory(categoryRequestDto);
-        return ResponseEntity.ok("카테고리가 성공적으로 수정되었습니다.");
-    }
-
-    // 가게 카테고리 삭제
-    @DeleteMapping("/category/delete")
-    @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
-    public ResponseEntity<String> deleteCategory(@RequestBody UUID categoryId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        storeService.deleteCategory(categoryId, userDetails.getUsername());
-        return ResponseEntity.ok("카테고리가 성공적으로 삭제되었습니다.");
     }
 
 }
