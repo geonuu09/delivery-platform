@@ -2,6 +2,7 @@ package com.example.delivery.review.entity;
 
 import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.order.entity.Order;
+import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class Review extends Timestamped {
 
   @Id
   @UuidGenerator
-  @Column(name = "review_id", columnDefinition = "BINARY(16)")
+  @Column(name = "review_id")
   private UUID id;
 
   private String content;
@@ -42,6 +43,9 @@ public class Review extends Timestamped {
   @JoinColumn(name = "order_id")
   private Order order;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "store_id")
+  private Store store;
 
   public void markAsDeleted(String deletedByUser) {
     this.setDeletedAt(LocalDateTime.now());
