@@ -47,7 +47,6 @@ public class MenuRequestDto {
         }
 
         return Menu.builder()
-                .menuId(this.menuId != null ? this.menuId : UUID.randomUUID())
                 .menuName(this.menuName)
                 .menuPrice(this.menuPrice)
                 .menuImage(this.menuImage)

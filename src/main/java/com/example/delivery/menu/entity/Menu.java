@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,28 +21,25 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "p_menus")
+@Table(name = "p_menu")
 public class Menu extends Timestamped {
 
     @Id
+    @UuidGenerator
     private UUID menuId;
 
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String menuName;
 
-    @Column(length = 50)
+    @Column(nullable = false)
     private int menuPrice;
 
-    @Column
     private boolean deleted;
 
-    @Column
     private boolean hidden;
 
-    @Column(length = 255)
     private String menuDescription;
 
-    @Column(length = 255)
     private String menuImage;
 
     @ManyToOne
@@ -55,10 +53,11 @@ public class Menu extends Timestamped {
     private List<MenuOption> menuOptions = new ArrayList<>();
 
     public void update(MenuRequestDto menuRequestDto) {
-        this.menuName = menuRequestDto.getMenuName();
-        this.menuDescription = menuRequestDto.getMenuDescription();
-        this.menuImage = menuRequestDto.getMenuImage();
-        this.menuPrice = menuRequestDto.getMenuPrice();
+        this.menuName = menuRequestDto.getMenuName() != null ? menuRequestDto.getMenuName() : this.menuName;
+        this.menuDescription = menuRequestDto.getMenuDescription() != null ? menuRequestDto.getMenuDescription() : this.menuDescription;
+        this.menuImage = menuRequestDto.getMenuImage() != null ? menuRequestDto.getMenuImage() : this.menuImage;
+        this.menuPrice = menuRequestDto.getMenuPrice() != 0 ? menuRequestDto.getMenuPrice() : this.getMenuPrice();
+        this.hidden = menuRequestDto.isHidden();
     }
 
     public void delete(String username) {

@@ -31,7 +31,6 @@ public class MenuOptionRequestDto {
 
     public MenuOption toEntity(Menu menu) {
         return MenuOption.builder()
-                .menuOptionId(this.menuOptionId != null ? this.menuOptionId : UUID.randomUUID())
                 .optionName(this.optionName)
                 .optionPrice(this.optionPrice)
                 .deleted(this.deleted)
