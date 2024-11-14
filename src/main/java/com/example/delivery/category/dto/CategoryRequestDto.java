@@ -1,14 +1,14 @@
-package com.example.delivery.store.dto;
+package com.example.delivery.category.dto;
 
-import com.example.delivery.store.entity.Category;
+import com.example.delivery.category.entity.Category;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
-@Builder
+@Setter
 public class CategoryRequestDto {
 
     private UUID categoryId;
@@ -20,7 +20,6 @@ public class CategoryRequestDto {
 
     public Category toEntity() {
         return Category.builder()
-                .categoryId(this.categoryId != null ? this.categoryId : UUID.randomUUID())
                 .categoryName(this.categoryName)
                 .build();
     }

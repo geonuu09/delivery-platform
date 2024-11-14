@@ -1,9 +1,11 @@
-package com.example.delivery.store.entity;
+package com.example.delivery.category.entity;
 
 import com.example.delivery.common.entity.Timestamped;
-import com.example.delivery.store.dto.CategoryRequestDto;
+import com.example.delivery.category.dto.CategoryRequestDto;
+import com.example.delivery.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,16 +18,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name = "p_categorys")
+@Table(name = "p_category")
 public class Category extends Timestamped {
 
     @Id
+    @UuidGenerator
     private UUID categoryId;
 
     @Column(nullable = false, unique = true)
     private String categoryName;
 
-    @Column
     private boolean deleted;
 
     @OneToMany(mappedBy = "category")
@@ -33,8 +35,7 @@ public class Category extends Timestamped {
 
 
     public void update(CategoryRequestDto categoryRequestDto) {
-        this.categoryName = categoryRequestDto.getCategoryName();
-        this.deleted = categoryRequestDto.isDeleted();
+        this.categoryName = categoryRequestDto.getCategoryName() != null ? categoryRequestDto.getCategoryName() : this.categoryName;
     }
 
     public void delete(String username) {
