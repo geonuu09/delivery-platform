@@ -1,5 +1,7 @@
 package com.example.delivery.order.service;
 
+import com.example.delivery.cart.entity.Cart;
+import com.example.delivery.cart.repository.CartRepository;
 import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
@@ -33,7 +35,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    //private final CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
 
     // 주문 접수
@@ -48,17 +50,17 @@ public class OrderService {
         orderRepository.save(order);
 
         // 장바구니
-//        List<Cart> cartList = cartRepository.findByCartStatus(Cart.CartStatus.PENDING);
-//
-//        if (cartList.isEmpty()) {
-//            throw new CustomException(ErrorCode.NOT_FOUND_CART);
-//        }
-//
-//        for (Cart cart : cartList) {
-//            cart.setCartStatus(Cart.CartStatus.COMPLETED);
-//            cart.setOrder(order);
-//            cartRepository.save(cart);
-//        }
+        List<Cart> cartList = cartRepository.findByCartStatus(Cart.CartStatus.PENDING);
+
+        if (cartList.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_CART);
+        }
+
+        for (Cart cart : cartList) {
+            cart.setCartStatus(Cart.CartStatus.COMPLETED);
+            cart.setOrder(order);
+            cartRepository.save(cart);
+        }
         return OrderResponseDto.from(order);
     }
 
@@ -80,17 +82,17 @@ public class OrderService {
         orderRepository.save(order);
 
         // 장바구니
-//        List<Cart> cartList = cartRepository.findByCartStatus(Cart.CartStatus.PENDING);
-//
-//        if (cartList.isEmpty()) {
-//            throw new CustomException(ErrorCode.NOT_FOUND_CART);
-//        }
-//
-//        for (Cart cart : cartList) {
-//            cart.setCartStatus(Cart.CartStatus.COMPLETED);
-//            cart.setOrder(order);
-//            cartRepository.save(cart);
-//        }
+        List<Cart> cartList = cartRepository.findByCartStatus(Cart.CartStatus.PENDING);
+
+        if (cartList.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_CART);
+        }
+
+        for (Cart cart : cartList) {
+            cart.setCartStatus(Cart.CartStatus.COMPLETED);
+            cart.setOrder(order);
+            cartRepository.save(cart);
+        }
         return OrderResponseDto.from(order);
     }
 
@@ -122,7 +124,7 @@ public class OrderService {
                 .map(Store::getStoreId)
                 .collect(Collectors.toList());
 
-        // 모든 가게 주문 목록
+        // 점주 가게들의 주문 목록
         Page<Order> orderPage = orderRepository.findByStore_StoreIdIn(storeIdList, pageable);
         return orderPage.map(OrderListResponseDto::from);
     }

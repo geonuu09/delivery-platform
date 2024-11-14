@@ -25,12 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-
-public class UserController {
+public class UserController implements UserControllerSwagger {
 
     private final UserService userService;
 
     // User 회원 가입
+    @Override
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(
         @RequestBody @Valid SignupRequestDto requestDto) {
@@ -40,6 +40,7 @@ public class UserController {
     }
 
     // Admin -> 회원 전체 조회
+    @Override
     @GetMapping("/admin/users")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
@@ -52,6 +53,7 @@ public class UserController {
     }
 
     // Admin -> 회원 단일 조회
+    @Override
     @GetMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId) {
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     // 자신의 계정 수정
+    @Override
     @PutMapping("/me")
     @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER','MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
@@ -71,6 +74,7 @@ public class UserController {
     }
 
     // Admin -> 유저 수정
+    @Override
     @PutMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER')")
     public ResponseEntity<UserResponseDto> updateUserAdmin(
@@ -81,6 +85,7 @@ public class UserController {
     }
 
     // 자신의 계정 삭제
+    @Override
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -90,6 +95,7 @@ public class UserController {
     }
 
     // Admin -> 유저 삭제
+    @Override
     @DeleteMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
     public ResponseEntity<?> deleteUserAdmin(
