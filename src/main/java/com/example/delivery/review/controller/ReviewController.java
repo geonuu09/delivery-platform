@@ -7,7 +7,6 @@ import com.example.delivery.review.dto.response.ReviewEditResponseDTO;
 import com.example.delivery.review.dto.response.ReviewListResponseDTO;
 import com.example.delivery.review.dto.response.ReviewShowResponseDTO;
 import com.example.delivery.review.service.ReviewService;
-import com.example.delivery.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -65,13 +64,14 @@ public class ReviewController {
   }
 
   // 내 리뷰 수정
-  @PutMapping()
+  @PutMapping("/{reviewId}")
   @PreAuthorize("hasAnyRole('OWNER', 'CUSTOMER')")
   public ResponseEntity<?> myReview(
+      @PathVariable UUID reviewId,
       @RequestPart("review") @Validated ReviewEditRequestDTO reviewEditRequestDTO,
       @RequestPart(value = "reviewImage", required = false) MultipartFile reviewImage,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    ReviewEditResponseDTO reviewEditResponseDTO = reviewService.reviewEdit(reviewEditRequestDTO, reviewImage, userDetails);
+    ReviewEditResponseDTO reviewEditResponseDTO = reviewService.reviewEdit(reviewEditRequestDTO, reviewImage, userDetails, reviewId);
     return ResponseEntity.ok().body(reviewEditResponseDTO);
   }
 

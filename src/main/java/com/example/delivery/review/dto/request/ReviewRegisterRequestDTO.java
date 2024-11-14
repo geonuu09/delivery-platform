@@ -35,6 +35,7 @@ public class ReviewRegisterRequestDTO {
         .user(user)
         .order(order)
         .reviewImage(reviewImagePath)
+        .store(order.getStore())
         .build();
   }
 

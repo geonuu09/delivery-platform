@@ -7,8 +7,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.UUID;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,8 +14,6 @@ import java.util.UUID;
 @Builder
 public class ReviewEditRequestDTO {
 
-  @NotNull
-  private UUID reviewId;
 
   private String content;
 
@@ -26,13 +22,14 @@ public class ReviewEditRequestDTO {
   @Max(5)
   private int starRating;
 
-  public Review toEntity(User user, String uploadReviewImage) {
+  public Review toEntity(User user, String uploadReviewImage, Review review) {
     return Review.builder()
-        .id(this.getReviewId())
+        .id(review.getId())
         .content(this.getContent())
         .starRating(this.getStarRating())
         .reviewImage(uploadReviewImage)
         .user(user)
+        .order(review.getOrder())
         .build();
   }
 
