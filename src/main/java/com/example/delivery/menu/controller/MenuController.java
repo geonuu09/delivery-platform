@@ -11,12 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/api/stores/{storeId}/menus")
 @RequiredArgsConstructor
 public class MenuController {
@@ -60,7 +59,7 @@ public class MenuController {
     @PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
     public ResponseEntity<String> createMenuOption(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody MenuOptionRequestDto menuOptionRequestDto) {
         menuService.createMenuOption(storeId, menuId, menuOptionRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("메뉴가 성공적으로 등록되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("메뉴 옵션이 성공적으로 등록되었습니다.");
     }
 
     // 메뉴 옵션 수정
@@ -74,7 +73,8 @@ public class MenuController {
     // 메뉴 옵션 삭제
     @DeleteMapping("/{menuId}/options/delete")
     @PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
-    public ResponseEntity<String> deleteMenuOption(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody UUID menuOptionId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<String> deleteMenuOption(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody MenuOptionRequestDto menuOptionRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UUID menuOptionId = menuOptionRequestDto.getMenuOptionId();
         menuService.deleteMenuOption(storeId, menuId, menuOptionId ,userDetails.getUsername());
         return ResponseEntity.ok("메뉴 옵션이 성공적으로 삭제되었습니다.");
     }

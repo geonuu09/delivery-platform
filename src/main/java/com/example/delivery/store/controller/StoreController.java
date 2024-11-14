@@ -1,7 +1,8 @@
 package com.example.delivery.store.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.category.dto.CategoryRequestDto;
+import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
+import com.example.delivery.store.dto.GetStoresResponseDto;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.store.dto.StoreResponseDto;
 import com.example.delivery.store.service.StoreService;
@@ -12,12 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/api/stores")
 @RequiredArgsConstructor
 public class StoreController {
@@ -35,30 +35,32 @@ public class StoreController {
     //가게 전체 페이지(키워드 및 카테고리 검색)
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Page<StoreResponseDto.GetStoresResponseDto>> getStores(
-            @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<GetStoresResponseDto>> getStores(
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "category", required = false) String categoryName) {
+            @RequestParam(value = "categoryName", required = false) String categoryName) {
 
-        Page<StoreResponseDto.GetStoresResponseDto> result = storeService.getStores(page - 1, size, sortBy, isAsc, keyword, categoryName);
+        page = (page < 1) ? 0 : page - 1;
+        Page<GetStoresResponseDto> result = storeService.getStores(page, size, sortBy, isAsc, keyword, categoryName);
         return ResponseEntity.ok(result);
     }
 
     //가게 상세 페이지 조회(가게정보 및 메뉴(메뉴이름, 메뉴사진, 가격)리스트)
     @GetMapping("/{storeId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<StoreResponseDto.GetStoreDetailsResponseDto> getStoreDetails(
+    public ResponseEntity<GetStoreDetailsResponseDto> getStoreDetails(
             @PathVariable UUID storeId,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword) {
 
-        StoreResponseDto.GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page, size, sortBy, isAsc, keyword);
+        page = (page < 1) ? 0 : page - 1;
+        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page, size, sortBy, isAsc, keyword);
         return ResponseEntity.ok(storeResponseDto);
     }
 

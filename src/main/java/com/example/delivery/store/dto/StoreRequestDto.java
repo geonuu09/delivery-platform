@@ -15,7 +15,6 @@ public class StoreRequestDto {
 
     private UUID storeId;
 
-    @NotNull(message = "사용자 정보는 필수입니다.")
     private Long userId;
 
     @NotBlank(message = "가게 이름은 필수입니다.")
@@ -42,7 +41,6 @@ public class StoreRequestDto {
                 .storeOwnerName(this.storeOwnerName)
                 .storeLocation(this.storeLocation)
                 .opened(this.opened)
-                .deleted(this.deleted)
                 .user(user)
                 .category(category)
                 .build();

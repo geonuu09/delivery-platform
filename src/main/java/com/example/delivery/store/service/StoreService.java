@@ -6,6 +6,8 @@ import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.repository.MenuRepository;
 import com.example.delivery.category.dto.CategoryRequestDto;
+import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
+import com.example.delivery.store.dto.GetStoresResponseDto;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.store.dto.StoreResponseDto;
 import com.example.delivery.category.entity.Category;
@@ -52,10 +54,9 @@ public class StoreService {
 
     //가게 전체 페이지(키워드 및 카테고리 검색)
     @Transactional(readOnly = true)
-    public Page<StoreResponseDto.GetStoresResponseDto> getStores(int page, int size, String sortBy, boolean isAsc, String keyword, String categoryName) {
+    public Page<GetStoresResponseDto> getStores(int page, int size, String sortBy, boolean isAsc, String keyword, String categoryName) {
 
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
-
         Page<Store> stores;
 
         // 카테고리 이름으로 검색
@@ -77,12 +78,12 @@ public class StoreService {
         }
 
         // storesList 반환
-        return stores.map(StoreResponseDto.GetStoresResponseDto::new);
+        return stores.map(GetStoresResponseDto::new);
     }
 
     // 가게 상세 조회
     @Transactional(readOnly = true)
-    public StoreResponseDto.GetStoreDetailsResponseDto getStoreDetails(UUID storeId, int page, int size, String sortBy, boolean isAsc, String keyword) {
+    public GetStoreDetailsResponseDto getStoreDetails(UUID storeId, int page, int size, String sortBy, boolean isAsc, String keyword) {
 
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
@@ -103,7 +104,7 @@ public class StoreService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-        return new StoreResponseDto.GetStoreDetailsResponseDto(store, filteredMenus);
+        return new GetStoreDetailsResponseDto(store, filteredMenus);
     }
 
     // 가게 수정

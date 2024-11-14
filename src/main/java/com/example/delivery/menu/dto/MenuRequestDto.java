@@ -1,21 +1,16 @@
 package com.example.delivery.menu.dto;
 
 import com.example.delivery.menu.entity.Menu;
-import com.example.delivery.menu.entity.MenuOption;
 import com.example.delivery.store.entity.Store;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-@Builder
-@AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class MenuRequestDto {
 
     private UUID storeId;
@@ -36,24 +31,13 @@ public class MenuRequestDto {
 
     private String menuImage;
 
-    private List<MenuOption> menuOptions;
-
-
-
     public Menu toEntity(Store store) {
-
-        if (this.menuOptions == null) {
-            this.menuOptions = new ArrayList<>();
-        }
 
         return Menu.builder()
                 .menuName(this.menuName)
                 .menuPrice(this.menuPrice)
                 .menuImage(this.menuImage)
                 .menuDescription(this.menuDescription)
-                .menuOptions(this.menuOptions)
-                .deleted(this.deleted)
-                .hidden(this.hidden)
                 .store(store)
                 .build();
     }

@@ -38,9 +38,4 @@ public class Review extends Timestamped {
   @JoinColumn(name = "store_id")
   private Store store;
 
-
-
-
-
-
 }

@@ -28,7 +28,7 @@ public class MenuOption extends Timestamped {
     @Column(length = 100, unique = true, nullable = false)
     private String optionName;
 
-    @Column(length = 100, unique = true, nullable = false)
+    @Column(nullable = false)
     private int optionPrice;
 
     private boolean deleted;

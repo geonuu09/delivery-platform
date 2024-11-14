@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class MenuOptionRequestDto {
 
     private UUID menuOptionId;
