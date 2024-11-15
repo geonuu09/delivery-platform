@@ -2,6 +2,7 @@ package com.example.delivery.review.service;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.cart.entity.Cart;
+import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.order.entity.Order;
@@ -59,9 +60,7 @@ public class ReviewService {
   // 리뷰 전체 조회
   @Transactional
   public Page<ReviewShowResponseDTO> reviewShow(UUID storeId, int page, int size, String sortBy, boolean isAsc, UserDetailsImpl userDetails) {
-    Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-    Sort sort = Sort.by(direction, sortBy);
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
     // 삭제된 리뷰 제외
 
     Page<Review> reviewList = reviewRepository.findByOrder_Store_storeIdAndDeletedAtIsNull(storeId, pageable);
@@ -90,9 +89,7 @@ public class ReviewService {
   // 내 리뷰 정보 보기
   @Transactional
   public Page<ReviewListResponseDTO> myReview(int page, int size, String sortBy, boolean isAsc, UserDetailsImpl userDetails) {
-    Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-    Sort sort = Sort.by(direction, sortBy);
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
     // 삭제된 리뷰 제외
     Page<Review> reviewList = reviewRepository.findByUserAndDeletedAtIsNull(userDetails.getUser(), pageable);
     User user = userDetails.getUser();
