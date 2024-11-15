@@ -52,6 +52,11 @@ public class CartDeleteService {
             throw new CustomException(ErrorCode.CART_PERMISSION_DENIED);
         }
 
+        // 장바구니 상태 체크 : 대기상태만 삭제 가능
+        if (cart.getCartStatus() != Cart.CartStatus.PENDING) {
+            throw new CustomException(ErrorCode.CART_DELETION_NOT_ALLOWED);
+        }
+
         cart.setCartStatus(Cart.CartStatus.DELETED);
 
         // 로그

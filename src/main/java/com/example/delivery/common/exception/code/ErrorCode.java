@@ -27,6 +27,7 @@ public enum ErrorCode {
     UNAVAILABLE_MENU(HttpStatus.BAD_REQUEST, "해당 메뉴는 주문하실 수 없습니다."),
     CART_PERMISSION_DENIED(HttpStatus.FORBIDDEN, "해당 장바구니에 대한 접근 권한이 없습니다."),
     CART_MODIFICATION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "해당 장바구니는 수정할 수 없습니다."),
+    CART_DELETION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "해당 장바구니는 삭제할 수 없습니다."),
     CANNOT_ADD_DIFFERENT_STORE_MENU(HttpStatus.BAD_REQUEST, "같은 가게 메뉴만 담으실 수 있습니다."),
     CANNOT_ADD_MENU_FROM_UNOWNED_STORE(HttpStatus.BAD_REQUEST, "자신 가게 메뉴만 담으실 수 있습니다."),
     NOT_FOUND_MENU_OPTION(HttpStatus.NOT_FOUND, "해당 옵션를 찾을 수 없습니다."),

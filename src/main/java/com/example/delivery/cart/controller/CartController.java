@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/carts")
-public class CartController {
+public class CartController implements CartControllerSwagger {
 
     private final CartCreateService cartCreateService;
     private final CartGetListService cartGetListService;
@@ -29,6 +29,7 @@ public class CartController {
     private final CartDeleteService cartDeleteService;
 
     // 장바구니 생성
+    @Override
     @PostMapping
     public ResponseEntity<CartResponseDto> createCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -41,6 +42,7 @@ public class CartController {
     }
 
     // 장바구니 조회
+    @Override
     @GetMapping
     public ResponseEntity<List<CartResponseDto>> getCartList(
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -57,6 +59,7 @@ public class CartController {
     }
 
     // 장바구니 수정
+    @Override
     @PutMapping()
     public ResponseEntity<CartResponseDto> updateCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -70,6 +73,7 @@ public class CartController {
     }
 
     // 장바구니 삭제
+    @Override
     @DeleteMapping("/{cartId}/delete")
     public ResponseEntity<CartResponseDto> deleteCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
