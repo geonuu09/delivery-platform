@@ -16,9 +16,7 @@ import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -32,7 +30,6 @@ public class PaymentService {
 
   // 결제 등록
   public boolean registerPayment(UserDetailsImpl userDetails, PaymentRegisterRequestDTO paymentRegisterRequestDTO) {
-    User user = userDetails.getUser();
     UUID orderId = paymentRegisterRequestDTO.getOrderId();
     Order order = orderRepository.findById(orderId)
         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ORDER));
@@ -74,7 +71,6 @@ public class PaymentService {
 
   // 결제 상세 내역
   public PaymentHistoryDetailGetResponseDTO getPaymentHistoryDetail(UserDetailsImpl userDetails, UUID paymentId) {
-    User user = userDetails.getUser();
     Payment payment = paymentRepository.findById(paymentId)
         .orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
     return new PaymentHistoryDetailGetResponseDTO(payment, payment.getOrder().getStore());

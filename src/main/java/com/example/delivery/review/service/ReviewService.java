@@ -20,9 +20,7 @@ import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +32,6 @@ import java.util.*;
 @Slf4j
 public class ReviewService {
   private final ReviewRepository reviewRepository;
-  private final StoreRepository storeRepository;
   private final OrderRepository orderRepository;
 
 
