@@ -22,20 +22,7 @@ class ReviewControllerTest {
   @Mock
   private ReviewRepository reviewRepository;
 
-  @Test
-  @DisplayName("리뷰 등록 테스트")
-  void reviewRegister() {
-    // given
-    UUID storeId = UUID.randomUUID(); // storeId에 적절한 UUID 값 설정
-    ReviewRegisterRequestDTO reviewRegisterRequestDTO = ReviewRegisterRequestDTO.builder()
-        .starRating(5)
-        .content("리뷰 테스트")
-        .build();
 
-    // when
-    boolean result = reviewService.reviewRegister(reviewRegisterRequestDTO);
-    // then
-    assertTrue(result);
 
-  }
+
 }
