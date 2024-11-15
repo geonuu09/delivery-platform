@@ -53,6 +53,7 @@ public class SignupRequestDto {
 
     @Schema(description = "사용자 상태", example = "ACTIVE")
     private UserStatus status = UserStatus.ACTIVE;
-    @Schema(description = "사용자 프로필 이미지 URL")
-    private String userProfileImageUrl;
+
+    private String profileImage;
+
 }

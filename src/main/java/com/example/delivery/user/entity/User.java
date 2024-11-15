@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "p_users")
+@Table(name = "p_user")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,7 +51,7 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String phoneNum;
 
-    private String userProfileImageUrl;
+    private String profileImagePath;
 
 
     @Enumerated(EnumType.STRING)
@@ -81,7 +81,7 @@ public class User extends Timestamped {
         String phoneNum,
         String streetAddress,
         String detailAddress,
-        String userProfileImageUrl
+        String profileImagePath
     ) {
         if (userName != null) {
             this.userName = userName;
@@ -98,8 +98,8 @@ public class User extends Timestamped {
         if (detailAddress != null) {
             this.detailAddress = detailAddress;
         }
-        if (userProfileImageUrl != null) {
-            this.userProfileImageUrl = userProfileImageUrl;
+        if (profileImagePath != null) {
+            this.profileImagePath = profileImagePath;
         }
     }
 

@@ -33,7 +33,6 @@ public class UserUpdateRequestDto {
     private String detailAddress;
     private String phoneNum;
     private UserRoleEnum role;
-    private String userProfileImageUrl;
-
+    private String profileImage;
 }
 
