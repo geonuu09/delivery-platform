@@ -107,6 +107,9 @@ public class User extends Timestamped {
         this.status = status;
     }
 
-
+    // 테스트코드 사용
+    public void setRole(UserRoleEnum role) {
+        this.role = role;
+    }
 }
 

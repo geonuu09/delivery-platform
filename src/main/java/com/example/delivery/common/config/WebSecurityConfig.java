@@ -1,5 +1,7 @@
 package com.example.delivery.common.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import com.example.delivery.auth.jwt.JwtUtil;
 import com.example.delivery.auth.security.JwtAuthenticationFilter;
 import com.example.delivery.auth.security.JwtAuthorizationFilter;
@@ -70,6 +72,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf((csrf) -> csrf.disable());
+        http.cors(withDefaults());
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement((sessionManagement) ->
@@ -89,12 +92,6 @@ public class WebSecurityConfig {
                 .anyRequest().authenticated()
 
         );
-
-        // 추후 프론트 작업을 한다면 사용
-//        http.formLogin((formLogin) ->
-//            formLogin
-//                .loginPage("/api/user/login-page").permitAll()
-//        );
 
         // 커스텀 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
