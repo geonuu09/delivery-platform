@@ -52,7 +52,7 @@ public class PaymentService {
     User user = userDetails.getUser();
 
     // 점주, 회원
-    if (!userDetails.getUser().getRole().equals(UserRoleEnum.MASTER) || userDetails.getUser().getRole().equals(UserRoleEnum.MANAGER)) {
+    if (!userDetails.getUser().getRole().equals(UserRoleEnum.MASTER) || !userDetails.getUser().getRole().equals(UserRoleEnum.MANAGER)) {
       Page<Payment> payments = paymentRepository.findByOrder_User(user, pageable);
       return payments.map(payment ->
           PaymentHistoryGetResponseDTO.builder()
