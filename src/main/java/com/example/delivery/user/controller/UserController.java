@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController implements UserControllerSwagger{
+public class UserController implements UserControllerSwagger {
 
     private final UserService userService;
     private final UserRepository userRepository;
@@ -45,7 +45,7 @@ public class UserController implements UserControllerSwagger{
     }
 
     // 이메일 중복 체크
-    @GetMapping("/users/email/check")
+    @GetMapping("/email/check")
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean isEmailTaken = userRepository.existsByEmail(email);
 
