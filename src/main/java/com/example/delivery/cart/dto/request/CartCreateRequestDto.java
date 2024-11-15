@@ -17,7 +17,7 @@ import java.util.UUID;
 public class CartCreateRequestDto {
     private UUID storeId;
     private UUID menuId;
-    private List<UUID> menuOptionIds;
+    private List<UUID> menuOptionIdList;
     private int count;
     private Cart.CartStatus cartStatus;
 

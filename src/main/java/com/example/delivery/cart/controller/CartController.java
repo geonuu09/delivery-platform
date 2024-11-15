@@ -87,7 +87,7 @@ public class CartController implements CartControllerSwagger {
             CartResponseDto responseDto = cartDeleteService.deleteCartByAdmin(userEmail, cartId);
             return ResponseEntity.ok(responseDto);
         }
-        CartResponseDto responseDto = cartDeleteService.deleteOrder(userId, cartId);
+        CartResponseDto responseDto = cartDeleteService.deleteCart(userId, cartId);
         return ResponseEntity.ok(responseDto);
     }
 }

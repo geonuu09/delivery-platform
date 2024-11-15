@@ -71,7 +71,7 @@ public class CartCreateService {
         }
 
         // 선택 메뉴 옵션
-        List<MenuOption> menuOptions = menuOptionRepository.findAllById(requestDto.getMenuOptionIds());
+        List<MenuOption> menuOptions = menuOptionRepository.findAllById(requestDto.getMenuOptionIdList());
 
         // 메뉴 가격 산출
         int menuPrice = menu.getMenuPrice();

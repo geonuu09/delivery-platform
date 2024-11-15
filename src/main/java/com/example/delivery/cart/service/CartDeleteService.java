@@ -38,7 +38,7 @@ public class CartDeleteService {
 
     // 장바구니 삭제
     @Transactional
-    public CartResponseDto deleteOrder(Long userId, UUID cartId) {
+    public CartResponseDto deleteCart(Long userId, UUID cartId) {
         // 현재 로그인 유저
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
