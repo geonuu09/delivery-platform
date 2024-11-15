@@ -56,11 +56,7 @@ public class MenuService {
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
-        try {
             menu.update(menuRequestDto);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.MENU_UPDATE_FAILED);
-        }
 
     }
 
@@ -70,11 +66,7 @@ public class MenuService {
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
-        try {
-            menu.delete(username);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.MENU_DELETE_FAILED);
-        }
+        menu.delete(username);
 
     }
 
@@ -108,11 +100,7 @@ public class MenuService {
         MenuOption menuOption = menuOptionRepository.findByMenuOptionIdAndDeletedFalse(menuOptionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
-        try {
             menuOption.update(menuOptionRequestDto);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.MENU_OPTION_UPDATE_FAILED);
-        }
     }
 
     // 메뉴 옵션 삭제
@@ -125,11 +113,8 @@ public class MenuService {
         MenuOption menuOption = menuOptionRepository.findByMenuOptionIdAndDeletedFalse(menuOptionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
-        try {
-            menuOption.delete(username);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.MENU_OPTION_DELETE_FAILED);
-        }
+        menuOption.delete(username);
+
     }
 
 }

@@ -1,6 +1,6 @@
-package com.example.delivery.store.repository;
+package com.example.delivery.category.repository;
 
-import com.example.delivery.store.entity.Category;
+import com.example.delivery.category.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -10,7 +10,4 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     Optional<Category> findByCategoryNameAndDeletedFalse(String categoryName);
 
-    //테스트용
-    Optional<Category> findByCategoryIdAndDeletedTrue(UUID categoryId);
-    Optional<Category> findByCategoryIdAndDeletedFalse(UUID CategoryName);
 }

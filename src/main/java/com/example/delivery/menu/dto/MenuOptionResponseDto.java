@@ -10,8 +10,6 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class MenuOptionResponseDto {
     private UUID optionId;
     private String optionName;

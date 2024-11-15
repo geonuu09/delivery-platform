@@ -5,6 +5,7 @@ import com.example.delivery.common.entity.Timestamped;
 import com.example.delivery.menu.dto.MenuOptionRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,19 +18,19 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "p_menuOptions")
+@Table(name = "p_menuOption")
 public class MenuOption extends Timestamped {
 
     @Id
+    @UuidGenerator
     private UUID menuOptionId;
 
-    @Column(length = 100)
+    @Column(length = 100, unique = true, nullable = false)
     private String optionName;
 
-    @Column
+    @Column(nullable = false)
     private int optionPrice;
 
-    @Column
     private boolean deleted;
 
     @ManyToOne
@@ -40,9 +41,8 @@ public class MenuOption extends Timestamped {
     private List<Cart> carts = new ArrayList<>();
 
     public void update(MenuOptionRequestDto menuOptionRequestDto) {
-        this.optionName = menuOptionRequestDto.getOptionName();
-        this.optionPrice = menuOptionRequestDto.getOptionPrice();
-        this.deleted = menuOptionRequestDto.isDeleted();
+        this.optionName = menuOptionRequestDto.getOptionName() != null ? menuOptionRequestDto.getOptionName() : this.optionName;
+        this.optionPrice = menuOptionRequestDto.getOptionPrice() != 0 ? menuOptionRequestDto.getOptionPrice() : this.optionPrice;
     }
 
     public void delete(String username) {
