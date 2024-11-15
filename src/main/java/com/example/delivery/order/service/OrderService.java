@@ -40,13 +40,17 @@ public class OrderService {
 
     // 주문 접수
     @Transactional
-    public OrderResponseDto createOrder(User user, OrderCreateRequestDto requestDto){
+    public OrderResponseDto createOrder(Long userId, OrderCreateRequestDto requestDto){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         UUID storeId = requestDto.getStoreId();
 
         Store store = storeRepository.findById(storeId)
                  .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_STORE));
 
         Order order = requestDto.toEntity(user, store);
+
         orderRepository.save(order);
 
         // 장바구니
@@ -67,6 +71,9 @@ public class OrderService {
     // 주문 접수
     @Transactional
     public OrderResponseDto createOrderByOwner(User user, OrderCreateRequestDto requestDto) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         UUID storeId = requestDto.getStoreId();
 
         // 해당 가게

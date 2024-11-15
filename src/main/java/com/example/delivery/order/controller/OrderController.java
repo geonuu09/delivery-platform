@@ -34,13 +34,16 @@ public class OrderController {
             @RequestBody OrderCreateRequestDto requestDto
     ){
         User user = userDetails.getUser();
-        UserRoleEnum userRole = userDetails.getUser().getRole();
+//        UserRoleEnum userRole = userDetails.getUser().getRole();
+
+        Long userId = 1L;
+        UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
 
         if (userRole == UserRoleEnum.OWNER) {
             OrderResponseDto responseDto = orderService.createOrderByOwner(user, requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
         }
-        OrderResponseDto responseDto = orderService.createOrder(user, requestDto);
+        OrderResponseDto responseDto = orderService.createOrder(userId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -53,8 +56,11 @@ public class OrderController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean isAsc
     ){
-        Long userId = userDetails.getUser().getUserId();
-        UserRoleEnum userRole = userDetails.getUser().getRole();
+//        Long userId = userDetails.getUser().getUserId();
+//        UserRoleEnum userRole = userDetails.getUser().getRole();
+
+        Long userId = 1L;
+        UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
         Page<OrderListResponseDto> orderList;
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
@@ -79,9 +85,12 @@ public class OrderController {
             @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String userEmail
     ) {
-        Long userId = userDetails.getUser().getUserId();
-        UserRoleEnum userRole = userDetails.getUser().getRole();
+//        Long userId = userDetails.getUser().getUserId();
+//        UserRoleEnum userRole = userDetails.getUser().getRole();
         Page<OrderListResponseDto> orderList;
+
+        Long userId = 1L;
+        UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             orderList = orderService.searchOrderListForAdmin(page, size, sortBy, isAsc, storeName, menuName, userEmail);
@@ -95,14 +104,12 @@ public class OrderController {
 
     // 주문 상세내역 조회
     @GetMapping("/{orderId}")
-
     public ResponseEntity<OrderDetailResponseDto> getOrderDetail(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID orderId
     ){
         Long userId = userDetails.getUser().getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
-
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             OrderDetailResponseDto responseDto = orderService.getOrderDetailByAdmin(orderId);
@@ -114,7 +121,6 @@ public class OrderController {
 
     // 주문 취소
     @DeleteMapping("/{orderId}/delete")
-    @PreAuthorize("hasAnyRole('CUSTOMER','OWNER', 'MANAGER', 'MASTER')")
     public ResponseEntity<OrderResponseDto> deleteOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID orderId
