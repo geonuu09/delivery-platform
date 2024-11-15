@@ -72,6 +72,7 @@ public class PaymentService {
     }
   }
 
+  // 결제 상세 내역
   public PaymentHistoryDetailGetResponseDTO getPaymentHistoryDetail(UserDetailsImpl userDetails, UUID paymentId) {
     User user = userDetails.getUser();
     Payment payment = paymentRepository.findById(paymentId)
