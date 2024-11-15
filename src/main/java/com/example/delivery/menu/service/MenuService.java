@@ -2,21 +2,24 @@ package com.example.delivery.menu.service;
 
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
-import com.example.delivery.menu.dto.MenuOptionRequestDto;
-import com.example.delivery.menu.dto.MenuOptionResponseDto;
-import com.example.delivery.menu.dto.MenuRequestDto;
-import com.example.delivery.menu.dto.MenuResponseDto;
+import com.example.delivery.menu.dto.*;
+import com.example.delivery.menu.entity.AiDescription;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
+import com.example.delivery.menu.repository.AiDescriptionRepository;
 import com.example.delivery.menu.repository.MenuOptionRepository;
 import com.example.delivery.menu.repository.MenuRepository;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.net.URI;
 import java.util.UUID;
 
 @Service
@@ -26,6 +29,12 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
     private final StoreRepository storeRepository;
+    private final RestTemplate restTemplate;
+    private final AiDescriptionRepository aiDescriptionRepository;
+    @Value("${google.ai.key}")
+    private String googleApiKey;
+    @Value("${google.ai.url}")
+    private String googleApiUrl;
 
     // 메뉴 등록
     @Transactional
@@ -115,6 +124,47 @@ public class MenuService {
 
         menuOption.delete(username);
 
+    }
+
+    public AiDescriptionClientResponseDto createAiDescription(UUID storeId, UUID menuId, AiDescriptionRequestDto aiDescriptionRequestDto) {
+        Menu menu = menuRepository.findById(menuId).orElseThrow(
+                () -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(googleApiUrl)
+                .queryParam("key", googleApiKey)
+                .encode()
+                .build()
+                .toUri();
+
+        String answerMessage = "답변을 최대한 간결하게 50자 이하로";
+        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", aiDescriptionRequestDto.getAiQuestion() + answerMessage);
+
+        System.out.println(requestBody);
+
+        RequestEntity<String> requestEntity = RequestEntity
+                .post(uri)
+                .header("Content-Type", "application/json")
+                .body(requestBody);
+
+        ResponseEntity<AiDescriptionResponseDto> responseEntity = restTemplate.exchange(requestEntity, AiDescriptionResponseDto.class);
+
+        System.out.println("Response status: " + responseEntity.getStatusCode());
+        System.out.println("Response body: " + responseEntity.getBody());
+
+        AiDescriptionResponseDto aiDescriptionResponseDto = responseEntity.getBody();
+        String aiAnswer = aiDescriptionResponseDto.getCandidates().get(0).getContent().getParts().get(0).getText();
+
+        // 데이터 저장
+        aiDescriptionRepository.save(
+                AiDescription.builder()
+                        .aiQuestion(aiDescriptionRequestDto.getAiQuestion())
+                        .aiAnswer(aiAnswer)
+                        .menu(menu)
+                        .build()
+        );
+
+        return new AiDescriptionClientResponseDto(aiDescriptionRequestDto, aiAnswer);
     }
 
 }

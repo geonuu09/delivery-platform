@@ -1,9 +1,7 @@
 package com.example.delivery.menu.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.menu.dto.MenuOptionRequestDto;
-import com.example.delivery.menu.dto.MenuRequestDto;
-import com.example.delivery.menu.dto.MenuResponseDto;
+import com.example.delivery.menu.dto.*;
 import com.example.delivery.menu.service.MenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -79,10 +77,11 @@ public class MenuController {
         return ResponseEntity.ok("메뉴 옵션이 성공적으로 삭제되었습니다.");
     }
 
-//    //메뉴 설명 AI 요청
-//    @PostMapping("/{menuId}/aiQuestion")
-//    @PreAuthorize("hasAnyRole('OWNER','MANAGER', 'MASTER')")
-//    public ResponseEntity<AiResponseDto> AiDescription getAiDescription(@RequestBody AiDescriptionRequestDto aiRequestDto) {
-//
-//    }
+    //메뉴 설명 AI 요청
+    @PostMapping("/{menuId}/aiQuestion")
+    @PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
+    public ResponseEntity<AiDescriptionClientResponseDto> getAiDescription(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody AiDescriptionRequestDto aiDescriptionRequestDto) {
+        AiDescriptionClientResponseDto aiDescriptionResponseDto = menuService.createAiDescription(storeId, menuId, aiDescriptionRequestDto);
+        return ResponseEntity.ok(aiDescriptionResponseDto);
+    }
 }

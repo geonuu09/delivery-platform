@@ -52,6 +52,9 @@ public class Menu extends Timestamped {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<MenuOption> menuOptions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<AiDescription> aiDescriptions = new ArrayList<>();
+
     public void update(MenuRequestDto menuRequestDto) {
         this.menuName = menuRequestDto.getMenuName() != null ? menuRequestDto.getMenuName() : this.menuName;
         this.menuDescription = menuRequestDto.getMenuDescription() != null ? menuRequestDto.getMenuDescription() : this.menuDescription;
