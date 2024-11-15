@@ -36,14 +36,13 @@ public class StoreController {
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<GetStoresResponseDto>> getStores(
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryName", required = false) String categoryName) {
 
-        page = (page < 1) ? 0 : page - 1;
         Page<GetStoresResponseDto> result = storeService.getStores(page, size, sortBy, isAsc, keyword, categoryName);
         return ResponseEntity.ok(result);
     }
@@ -53,13 +52,12 @@ public class StoreController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetStoreDetailsResponseDto> getStoreDetails(
             @PathVariable UUID storeId,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword) {
 
-        page = (page < 1) ? 0 : page - 1;
         GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page, size, sortBy, isAsc, keyword);
         return ResponseEntity.ok(storeResponseDto);
     }
