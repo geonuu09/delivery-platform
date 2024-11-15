@@ -1,10 +1,10 @@
 package com.example.delivery.user.dto;
 
-import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.Getter;
 
 @Getter
 public class SignupResponseDto {
+
     private Long userId;
     private String email;
     private String role;
