@@ -33,13 +33,17 @@ public class PaymentService {
     UUID orderId = paymentRegisterRequestDTO.getOrderId();
     Order order = orderRepository.findById(orderId)
         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ORDER));
-    Payment payment = Payment.builder()
-        .uniquePaymentNum(paymentRegisterRequestDTO.getUniquePaymentNum())
-        .amount(order.getTotalPrice())
-        .order(order)
-        .build();
-    paymentRepository.save(payment);
-    return true;
+    if (order.getOrderStatus().equals(Order.OrderStatus.RECEIVED)) {
+      Payment payment = Payment.builder()
+          .uniquePaymentNum(paymentRegisterRequestDTO.getUniquePaymentNum())
+          .amount(order.getTotalPrice())
+          .order(order)
+          .build();
+      paymentRepository.save(payment);
+      return true;
+    }
+    return false;
+
   }
 
   // 결제 내역
