@@ -19,7 +19,7 @@ public class CartResponseDto {
     private List<CartMenuOptionResponseDto> menuOptions;
     private int menuCount;
     private int menuPrice;
-    private String cartStatus;
+    //private String cartStatus;
 
     public static CartResponseDto from(Cart cart) {
         List<CartMenuOptionResponseDto> menuOptions = cart.getMenuOptions().stream()
@@ -32,7 +32,7 @@ public class CartResponseDto {
                 .menuOptions(menuOptions)
                 .menuCount(cart.getCount())
                 .menuPrice(cart.getPrice())
-                .cartStatus(cart.getCartStatus().getLabel())
+                //.cartStatus(cart.getCartStatus().getLabel())
                 .build();
     }
 }

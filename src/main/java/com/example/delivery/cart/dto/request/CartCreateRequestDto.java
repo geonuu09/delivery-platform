@@ -25,9 +25,9 @@ public class CartCreateRequestDto {
         Cart cart = Cart.builder()
                 .user(user)
                 .menu(menu)
-                .count(this.count)
+                .count(this.count == 0 ? 1 : this.count)
                 .price(menuPrice)
-                .cartStatus(this.cartStatus)
+                .cartStatus(Cart.CartStatus.PENDING)
                 .build();
 
         cart.setMenuOptions(menuOptions);

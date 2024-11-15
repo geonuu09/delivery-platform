@@ -8,6 +8,7 @@ import com.example.delivery.order.entity.Order;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "p_cart")
@@ -27,14 +29,14 @@ public class Cart extends Timestamped {
     private UUID cartId;
 
     @Column(nullable = false)
-    private int count = 1;
+    private int count;
 
     @Column(nullable = false)
     private int price;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private CartStatus cartStatus =  CartStatus.PENDING;
+    private CartStatus cartStatus;
 
     @Getter
     public enum CartStatus {
@@ -48,6 +50,7 @@ public class Cart extends Timestamped {
             this.label = label;
         }
     }
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
