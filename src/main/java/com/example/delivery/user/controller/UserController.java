@@ -5,6 +5,7 @@ import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
 import com.example.delivery.user.dto.UserUpdateRequestDto;
+import com.example.delivery.user.repository.UserRepository;
 import com.example.delivery.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,27 +21,38 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController implements UserControllerSwagger {
+public class UserController implements UserControllerSwagger{
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     // User 회원 가입
-    @Override
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup(
-        @RequestBody @Valid SignupRequestDto requestDto) {
-        SignupResponseDto responseDto = userService.signup(requestDto);
-        return ResponseEntity.ok(responseDto);
 
+    public ResponseEntity<SignupResponseDto> signup(
+        @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+        @RequestBody @Valid SignupRequestDto requestDto) {
+        SignupResponseDto responseDto = userService.signup(requestDto, profileImage);
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // 이메일 중복 체크
+    @GetMapping("/users/email/check")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        boolean isEmailTaken = userRepository.existsByEmail(email);
+
+        return ResponseEntity.ok(isEmailTaken);
     }
 
     // Admin -> 회원 전체 조회
-    @Override
     @GetMapping("/admin/users")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
@@ -49,43 +61,45 @@ public class UserController implements UserControllerSwagger {
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") boolean isAsc) {
         Page<UserResponseDto> users = userService.getAllUsers(page, size, sortBy, isAsc);
+
         return ResponseEntity.ok(users);
     }
 
     // Admin -> 회원 단일 조회
-    @Override
     @GetMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId) {
         UserResponseDto userResponseDto = userService.getUserById(userId);
+
         return ResponseEntity.ok(userResponseDto);
     }
 
     // 자신의 계정 수정
-    @Override
     @PutMapping("/me")
     @PreAuthorize("hasAnyRole('CUSTOMER','OWNER','MANAGER','MASTER')")
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
         @RequestBody @Valid UserUpdateRequestDto requestDto) {
 
-        UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto);
+        UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto,
+            profileImage);
         return ResponseEntity.ok(responseDto);
     }
 
     // Admin -> 유저 수정
-    @Override
     @PutMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER')")
     public ResponseEntity<UserResponseDto> updateUserAdmin(
-        @RequestBody @Valid UserUpdateRequestDto requestDto, @PathVariable Long userId) {
+        @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+        @RequestBody @Valid UserUpdateRequestDto requestDto,
+        @PathVariable Long userId) {
 
-        UserResponseDto responseDto = userService.updateUser(userId, requestDto);
+        UserResponseDto responseDto = userService.updateUser(userId, requestDto, profileImage);
         return ResponseEntity.ok(responseDto);
     }
 
     // 자신의 계정 삭제
-    @Override
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -95,7 +109,6 @@ public class UserController implements UserControllerSwagger {
     }
 
     // Admin -> 유저 삭제
-    @Override
     @DeleteMapping("/admin/{userId}")
     @PreAuthorize("hasAnyRole('MASTER','MANAGER')")
     public ResponseEntity<?> deleteUserAdmin(
@@ -105,6 +118,5 @@ public class UserController implements UserControllerSwagger {
         userService.deleteUser(userId, userDetails.getUsername());
         return ResponseEntity.ok().build();
     }
-
 }
 

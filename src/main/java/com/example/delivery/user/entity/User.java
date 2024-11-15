@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "p_users")
+@Table(name = "p_user")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,6 +51,8 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String phoneNum;
 
+    private String profileImagePath;
+
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
@@ -78,24 +80,36 @@ public class User extends Timestamped {
         String password,
         String phoneNum,
         String streetAddress,
-        String detailAddress
+        String detailAddress,
+        String profileImagePath
     ) {
-        if (userName != null)
+        if (userName != null) {
             this.userName = userName;
-        if (password != null)
+        }
+        if (password != null) {
             this.password = password;
-        if (phoneNum != null)
+        }
+        if (phoneNum != null) {
             this.phoneNum = phoneNum;
-        if (streetAddress != null)
+        }
+        if (streetAddress != null) {
             this.streetAddress = streetAddress;
-        if (detailAddress != null)
+        }
+        if (detailAddress != null) {
             this.detailAddress = detailAddress;
+        }
+        if (profileImagePath != null) {
+            this.profileImagePath = profileImagePath;
+        }
     }
 
     public void setStatus(UserStatus status) {
         this.status = status;
     }
 
-
+    // 테스트코드 사용
+    public void setRole(UserRoleEnum role) {
+        this.role = role;
+    }
 }
 

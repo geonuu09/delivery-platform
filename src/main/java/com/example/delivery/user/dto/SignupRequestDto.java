@@ -53,4 +53,7 @@ public class SignupRequestDto {
 
     @Schema(description = "사용자 상태", example = "ACTIVE")
     private UserStatus status = UserStatus.ACTIVE;
+
+    private String profileImage;
+
 }
