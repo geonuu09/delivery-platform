@@ -1,18 +1,17 @@
 package com.example.delivery.store.service;
 
+import com.example.delivery.category.entity.Category;
+import com.example.delivery.category.repository.CategoryRepository;
 import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.repository.MenuRepository;
-import com.example.delivery.category.dto.CategoryRequestDto;
 import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
 import com.example.delivery.store.dto.GetStoresResponseDto;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.store.dto.StoreResponseDto;
-import com.example.delivery.category.entity.Category;
 import com.example.delivery.store.entity.Store;
-import com.example.delivery.category.repository.CategoryRepository;
 import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.repository.UserRepository;
@@ -46,7 +45,7 @@ public class StoreService {
         Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        Store store = storeRequestDto.toEntity(user ,category);
+        Store store = storeRequestDto.toEntity(user, category);
         store = storeRepository.save(store);
 
         return new StoreResponseDto(store);
@@ -59,18 +58,22 @@ public class StoreService {
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
         Page<Store> stores;
 
-        // 카테고리 이름으로 검색
-        if (categoryName != null) {
+
+        // 카테고리 이름과 키워드 모두 있는 경우
+        if (categoryName != null && keyword != null) {
             Category category = categoryRepository.findByCategoryNameAndDeletedFalse(categoryName)
                     .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+            stores = storeRepository.findStoresByCategoryAndKeyword(category.getCategoryId(), keyword, pageable);
 
+            // 카테고리 이름만 있는 경우
+        } else if (categoryName != null) {
+            Category category = categoryRepository.findByCategoryNameAndDeletedFalse(categoryName)
+                    .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
             stores = storeRepository.findByCategory_CategoryIdAndDeletedFalse(category.getCategoryId(), pageable);
-            // 키워드로 검색
-//        } else if (keyword != null) {
-//
-//            //query dsl 적용해야함
-//            //stores = storeRepository.findStoresByKeyword(keyword, pageable);
-//
+
+            // 키워드만 있는 경우
+        } else if (keyword != null) {
+            stores = storeRepository.findStoresByKeyword(keyword, pageable);
 
             // 검색 조건이 없는 경우
         } else {
@@ -85,6 +88,9 @@ public class StoreService {
     @Transactional(readOnly = true)
     public GetStoreDetailsResponseDto getStoreDetails(UUID storeId, int page, int size, String sortBy, boolean isAsc, String keyword) {
 
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
         Page<Menu> filteredMenus;
@@ -94,15 +100,10 @@ public class StoreService {
             filteredMenus = menuRepository.findByStore_StoreIdAndDeletedFalseAndHiddenFalse(storeId, pageable);
         } else {
             // 키워드가 있을 때
-            // querydsl 적용예정
-            // filteredMenus = menuRepository.findMenusByStore_StoreIdAndKeyword(storeId, keyword, pageable);
+            filteredMenus = menuRepository.findMenusByStore_StoreIdAndKeyword(storeId, keyword, pageable);
 
-            //임시
-            filteredMenus = menuRepository.findByStore_StoreIdAndDeletedFalseAndHiddenFalse(storeId, pageable);
         }
 
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         return new GetStoreDetailsResponseDto(store, filteredMenus);
     }
@@ -116,7 +117,7 @@ public class StoreService {
         Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
-            store.update(storeRequestDto, category);
+        store.update(storeRequestDto, category);
 
     }
 
@@ -127,7 +128,7 @@ public class StoreService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-            store.delete(username);
+        store.delete(username);
 
     }
 

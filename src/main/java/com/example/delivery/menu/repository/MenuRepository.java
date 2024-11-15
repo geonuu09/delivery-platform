@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, UUID>, MenuRepositoryCustom {
+
     Optional<Menu> findByMenuIdAndStore_StoreIdAndDeletedFalse(UUID menuId, UUID storeId);
 
     Page<Menu> findByStore_StoreIdAndDeletedFalseAndHiddenFalse(UUID storeId, Pageable pageable);
