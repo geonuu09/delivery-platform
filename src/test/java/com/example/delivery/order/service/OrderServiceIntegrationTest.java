@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class OrderServiceIntegrationTest {
 
     @Autowired
-    OrderService orderService;
+    OrderGetService orderService;
     @Autowired
     UserRepository userRepository;
 

@@ -7,7 +7,10 @@ import com.example.delivery.order.dto.request.OrderCreateRequestDto;
 import com.example.delivery.order.dto.response.OrderDetailResponseDto;
 import com.example.delivery.order.dto.response.OrderListResponseDto;
 import com.example.delivery.order.dto.response.OrderResponseDto;
-import com.example.delivery.order.service.OrderService;
+import com.example.delivery.order.service.OrderCreateService;
+import com.example.delivery.order.service.OrderDeleteService;
+import com.example.delivery.order.service.OrderGetService;
+import com.example.delivery.order.service.OrderUpdateService;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,10 @@ import java.util.UUID;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderCreateService orderCreateService;
+    private final OrderGetService orderGetService;
+    private final OrderUpdateService orderUpdateService;
+    private final OrderDeleteService orderDeleteService;
 
     // 주문 접수
     @PostMapping
@@ -40,10 +46,10 @@ public class OrderController {
         UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
 
         if (userRole == UserRoleEnum.OWNER) {
-            OrderResponseDto responseDto = orderService.createOrderByOwner(user, requestDto);
+            OrderResponseDto responseDto = orderCreateService.createOrderByOwner(user, requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
         }
-        OrderResponseDto responseDto = orderService.createOrder(userId, requestDto);
+        OrderResponseDto responseDto = orderCreateService.createOrder(userId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -64,11 +70,11 @@ public class OrderController {
         Page<OrderListResponseDto> orderList;
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            orderList = orderService.getOrderListByAdmin(page, size, sortBy, isAsc);
+            orderList = orderGetService.getOrderListByAdmin(page, size, sortBy, isAsc);
         } else if (userRole == UserRoleEnum.OWNER){
-            orderList = orderService.getOrderListByOwner(userId, page, size, sortBy, isAsc);
+            orderList = orderGetService.getOrderListByOwner(userId, page, size, sortBy, isAsc);
         } else {
-        orderList = orderService.getOrderList(userId, page, size, sortBy, isAsc);
+        orderList = orderGetService.getOrderList(userId, page, size, sortBy, isAsc);
         }
         return ResponseEntity.ok(orderList);
     }
@@ -93,11 +99,11 @@ public class OrderController {
         UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            orderList = orderService.searchOrderListForAdmin(page, size, sortBy, isAsc, storeName, menuName, userEmail);
+            orderList = orderGetService.searchOrderListForAdmin(page, size, sortBy, isAsc, storeName, menuName, userEmail);
         } else if (userRole == UserRoleEnum.OWNER) {
-            orderList = orderService.searchOrderListForOwner(userId, page, size, sortBy, isAsc, menuName, userEmail);
+            orderList = orderGetService.searchOrderListForOwner(userId, page, size, sortBy, isAsc, menuName, userEmail);
         } else {
-            orderList = orderService.searchOrderListForCustomer(userId, page, size, sortBy, isAsc, storeName, menuName);
+            orderList = orderGetService.searchOrderListForCustomer(userId, page, size, sortBy, isAsc, storeName, menuName);
         }
         return ResponseEntity.ok(orderList);
     }
@@ -112,10 +118,10 @@ public class OrderController {
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            OrderDetailResponseDto responseDto = orderService.getOrderDetailByAdmin(orderId);
+            OrderDetailResponseDto responseDto = orderGetService.getOrderDetailByAdmin(orderId);
             return ResponseEntity.ok(responseDto);
         }
-        OrderDetailResponseDto responseDto = orderService.getOrderDetail(userId, orderId);
+        OrderDetailResponseDto responseDto = orderGetService.getOrderDetail(userId, orderId);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -130,10 +136,10 @@ public class OrderController {
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            OrderResponseDto responseDto = orderService.deleteOrderByAdmin(userEmail, orderId);
+            OrderResponseDto responseDto = orderDeleteService.deleteOrderByAdmin(userEmail, orderId);
             return ResponseEntity.ok(responseDto);
         }
-        OrderResponseDto responseDto = orderService.deleteOrder(userId, orderId);
+        OrderResponseDto responseDto = orderDeleteService.deleteOrder(userId, orderId);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -151,10 +157,10 @@ public class OrderController {
         if(userRole == UserRoleEnum.CUSTOMER) {
             throw new CustomException(ErrorCode. INVALID_PERMISSION);
         } else if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            OrderResponseDto responseDto = orderService.updateOrderStatusByAdmin(orderId, orderStatus);
+            OrderResponseDto responseDto = orderUpdateService.updateOrderStatusByAdmin(orderId, orderStatus);
             return ResponseEntity.ok(responseDto);
         }
-        OrderResponseDto responseDto = orderService.updateOrderStatus(userId, orderId, orderStatus);
+        OrderResponseDto responseDto = orderUpdateService.updateOrderStatus(userId, orderId, orderStatus);
         return ResponseEntity.ok(responseDto);
     }
 
