@@ -2,6 +2,7 @@ package com.example.delivery.review.service;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.cart.entity.Cart;
+import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.order.entity.Order;
@@ -19,9 +20,7 @@ import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +32,6 @@ import java.util.*;
 @Slf4j
 public class ReviewService {
   private final ReviewRepository reviewRepository;
-  private final StoreRepository storeRepository;
   private final OrderRepository orderRepository;
 
 
@@ -59,9 +57,7 @@ public class ReviewService {
   // 리뷰 전체 조회
   @Transactional
   public Page<ReviewShowResponseDTO> reviewShow(UUID storeId, int page, int size, String sortBy, boolean isAsc, UserDetailsImpl userDetails) {
-    Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-    Sort sort = Sort.by(direction, sortBy);
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
     // 삭제된 리뷰 제외
 
     Page<Review> reviewList = reviewRepository.findByOrder_Store_storeIdAndDeletedAtIsNull(storeId, pageable);
@@ -90,9 +86,7 @@ public class ReviewService {
   // 내 리뷰 정보 보기
   @Transactional
   public Page<ReviewListResponseDTO> myReview(int page, int size, String sortBy, boolean isAsc, UserDetailsImpl userDetails) {
-    Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-    Sort sort = Sort.by(direction, sortBy);
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
     // 삭제된 리뷰 제외
     Page<Review> reviewList = reviewRepository.findByUserAndDeletedAtIsNull(userDetails.getUser(), pageable);
     User user = userDetails.getUser();
