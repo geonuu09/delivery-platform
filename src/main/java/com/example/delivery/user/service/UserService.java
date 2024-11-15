@@ -45,6 +45,7 @@ public class UserService {
             .detailAddress(requestDto.getDetailAddress())
             .phoneNum(requestDto.getPhoneNum())
             .role(requestDto.getRole() != null ? requestDto.getRole() : UserRoleEnum.CUSTOMER)
+            .userProfileImageUrl(requestDto.getUserProfileImageUrl())
             .status(requestDto.getStatus())
             .build();
         User savedUser = userRepository.save(user);
@@ -87,7 +88,8 @@ public class UserService {
             encodePassword,
             requestDto.getPhoneNum(),
             requestDto.getStreetAddress(),
-            requestDto.getDetailAddress()
+            requestDto.getDetailAddress(),
+            requestDto.getUserProfileImageUrl()
         );
         return new UserResponseDto(user);
     }

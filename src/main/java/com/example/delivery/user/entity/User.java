@@ -51,6 +51,8 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String phoneNum;
 
+    private String userProfileImageUrl;
+
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
@@ -78,18 +80,27 @@ public class User extends Timestamped {
         String password,
         String phoneNum,
         String streetAddress,
-        String detailAddress
+        String detailAddress,
+        String userProfileImageUrl
     ) {
-        if (userName != null)
+        if (userName != null) {
             this.userName = userName;
-        if (password != null)
+        }
+        if (password != null) {
             this.password = password;
-        if (phoneNum != null)
+        }
+        if (phoneNum != null) {
             this.phoneNum = phoneNum;
-        if (streetAddress != null)
+        }
+        if (streetAddress != null) {
             this.streetAddress = streetAddress;
-        if (detailAddress != null)
+        }
+        if (detailAddress != null) {
             this.detailAddress = detailAddress;
+        }
+        if (userProfileImageUrl != null) {
+            this.userProfileImageUrl = userProfileImageUrl;
+        }
     }
 
     public void setStatus(UserStatus status) {
