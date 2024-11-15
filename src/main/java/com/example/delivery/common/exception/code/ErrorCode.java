@@ -49,6 +49,14 @@ public enum ErrorCode {
     CATEGORY_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "가게 정보를 업데이트할 수 없습니다."),
     CATEGORY_DELETE_FAILED(HttpStatus.BAD_REQUEST, "카테고리 삭제에 실패했습니다."),
 
+    // 리뷰 에러
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 리뷰를 찾을 수 없습니다."),
+    REVIEW_NOT_MATCH_BY_USER(HttpStatus.FORBIDDEN,"리뷰의 작성자와 요청자가 일치하지 않습니다."),
+    REVIEW_DELETE_ALREADY(HttpStatus.BAD_REQUEST,"이 리뷰는 이미 삭제되었습니다."),
+    REVIEW_NOT_MATCH_USER(HttpStatus.BAD_REQUEST,"회원이 쓴 리뷰가 아닙니다."),
+
+    // 결제 에러
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제를 찾을 수 없습니다."),
 
     // Menu 관련 에러
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴를 찾을 수 없습니다."),

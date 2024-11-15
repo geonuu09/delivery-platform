@@ -6,7 +6,6 @@ import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,12 +14,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager; // 인증을 위한 매니저
-    private final JwtUtil jwtUtil; // JWT 토큰 생성기
-//    private final UserDetailsServiceImpl userDetailsService; // 사용자 정보 로딩을 위한 서비스
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     public SigninResponseDto signin(String email, String password) {
         try {

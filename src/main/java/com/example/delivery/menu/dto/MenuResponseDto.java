@@ -1,15 +1,16 @@
 package com.example.delivery.menu.dto;
 
 import com.example.delivery.menu.entity.Menu;
+import com.example.delivery.menu.entity.MenuOption;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class MenuResponseDto {
 
     private UUID menuId;
@@ -17,6 +18,7 @@ public class MenuResponseDto {
     private int menuPrice;
     private String menuDescription;
     private String menuImage;
+    private List<MenuOption> menuOptions;
 
     public MenuResponseDto(Menu menu) {
         this.menuId = menu.getMenuId();
@@ -24,5 +26,6 @@ public class MenuResponseDto {
         this.menuPrice = menu.getMenuPrice();
         this.menuDescription = menu.getMenuDescription();
         this.menuImage = menu.getMenuImage();
+        this.menuOptions = menu.getMenuOptions();
     }
 }

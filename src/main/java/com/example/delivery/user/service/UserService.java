@@ -14,29 +14,41 @@ import com.example.delivery.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public SignupResponseDto signup(@Valid SignupRequestDto requestDto) {
+    private String processProfileImage(MultipartFile profileImage) {
+        String profileImagePath = null;
+        if (profileImage != null && !profileImage.isEmpty()) {
+            profileImagePath = UUID.randomUUID() + "_" + profileImage.getOriginalFilename();
+        }
+        return profileImagePath;
+    }
+
+    public SignupResponseDto signup(@Valid SignupRequestDto requestDto,
+        MultipartFile profileImage) {
         String encodePassword = passwordEncoder.encode(requestDto.getPassword());
 
         Optional<User> checkEmail = userRepository.findByEmail(requestDto.getEmail());
         if (checkEmail.isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
+
+        String profileImagePath = processProfileImage(profileImage);
+
         User user = User.builder()
             .userName(requestDto.getUserName())
             .email(requestDto.getEmail())
@@ -44,7 +56,8 @@ public class UserService {
             .streetAddress(requestDto.getStreetAddress())
             .detailAddress(requestDto.getDetailAddress())
             .phoneNum(requestDto.getPhoneNum())
-            .role(requestDto.getRole() != null ? requestDto.getRole() : UserRoleEnum.CUSTOMER)
+            .role(requestDto.getRole())
+            .profileImagePath(profileImagePath)
             .status(requestDto.getStatus())
             .build();
         User savedUser = userRepository.save(user);
@@ -72,22 +85,30 @@ public class UserService {
 
     // 유저 전용 수정
     @Transactional
-    public UserResponseDto updateUser(Long userId, UserUpdateRequestDto requestDto) {
-        return updateUserInfo(userId, requestDto);
+    public UserResponseDto updateUser(Long userId, UserUpdateRequestDto requestDto,
+        MultipartFile profileImage) {
+        return updateUserInfo(userId, requestDto, profileImage);
     }
 
-    private UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto requestDto) {
+    private UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto requestDto,
+        MultipartFile profileImage) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String encodePassword = passwordEncoder.encode(requestDto.getPassword());
+        String encodePassword = null;
+        if (requestDto.getPassword() != null) {
+            encodePassword = passwordEncoder.encode(requestDto.getPassword());
+        }
+
+        String profileImagePath = processProfileImage(profileImage);
 
         user.updateUserInfo(
             requestDto.getUserName(),
             encodePassword,
             requestDto.getPhoneNum(),
             requestDto.getStreetAddress(),
-            requestDto.getDetailAddress()
+            requestDto.getDetailAddress(),
+            profileImagePath
         );
         return new UserResponseDto(user);
     }

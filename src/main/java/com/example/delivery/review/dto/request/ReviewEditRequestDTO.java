@@ -1,6 +1,5 @@
 package com.example.delivery.review.dto.request;
 
-import com.example.delivery.order.entity.Order;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.user.entity.User;
 import jakarta.validation.constraints.Max;
@@ -8,14 +7,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.UUID;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
-public class ReviewRegisterRequestDTO {
+public class ReviewEditRequestDTO {
 
 
   private String content;
@@ -25,17 +22,14 @@ public class ReviewRegisterRequestDTO {
   @Max(5)
   private int starRating;
 
-  @NotNull
-  private UUID orderId;
-
-  public Review toEntity(User user, Order order, String reviewImagePath) {
+  public Review toEntity(User user, String uploadReviewImage, Review review) {
     return Review.builder()
+        .id(review.getId())
         .content(this.getContent())
         .starRating(this.getStarRating())
+        .reviewImage(uploadReviewImage)
         .user(user)
-        .order(order)
-        .reviewImage(reviewImagePath)
-        .store(order.getStore())
+        .order(review.getOrder())
         .build();
   }
 

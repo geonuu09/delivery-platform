@@ -1,6 +1,6 @@
 package com.example.delivery.store.dto;
 
-import com.example.delivery.store.entity.Category;
+import com.example.delivery.category.entity.Category;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
@@ -11,14 +11,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class StoreRequestDto {
 
     private UUID storeId;
 
-    @NotNull(message = "사용자 정보는 필수입니다.")
     private Long userId;
 
     @NotBlank(message = "가게 이름은 필수입니다.")
@@ -41,12 +37,10 @@ public class StoreRequestDto {
 
     public Store toEntity(User user,Category category) {
         return Store.builder()
-                .storeId(this.storeId != null ? this.storeId : UUID.randomUUID())
                 .storeName(this.storeName)
                 .storeOwnerName(this.storeOwnerName)
                 .storeLocation(this.storeLocation)
                 .opened(this.opened)
-                .deleted(this.deleted)
                 .user(user)
                 .category(category)
                 .build();
