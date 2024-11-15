@@ -10,5 +10,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PaymentRepository extends JpaRepository<Payment, UUID> {
-  Page<Payment> findByUser(User user, Pageable pageable);
+  Page<Payment> findByOrder_User(User user, Pageable pageable);
 }
