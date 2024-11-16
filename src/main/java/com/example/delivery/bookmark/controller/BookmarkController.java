@@ -42,7 +42,7 @@ public class BookmarkController {
         @RequestParam(defaultValue = "true") boolean isAsc
     ) {
         Page<BookmarkedStoreResponseDto> bookmark = bookmarkService.getUserBookmarked(
-            userDetails.getUserId(), page, size, sortBy, isAsc);
+            userDetails.getUserId(), page - 1, size, sortBy, isAsc);
         return ResponseEntity.ok(bookmark);
     }
 }
