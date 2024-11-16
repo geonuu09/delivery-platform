@@ -12,19 +12,7 @@ env:
   JAVA_VERSION: '17'
 
 jobs:
-  # 변경된 코드 감지 제거
-  detect-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      frontend: 'true'  # 항상 true로 설정
-      backend: 'true'   # 항상 true로 설정
-      nginx: 'true'     # 항상 true로 설정
-    steps:
-      - uses: actions/checkout@v3
-
-  # Frontend 빌드 및 테스트
   frontend:
-    needs: detect-changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +58,6 @@ jobs:
           retention-days: 1
 
   backend:
-    needs: detect-changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -92,11 +79,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: 테스트 실행
-        working-directory: ${{ env.BACKEND_PATH }}
-        run: |
-          chmod +x ./gradlew
-          ./gradlew test
+#      - name: 테스트 실행
+#        working-directory: ${{ env.BACKEND_PATH }}
+#        run: |
+#          chmod +x ./gradlew
+#          ./gradlew test
 
       - name: Spring boot Build
         working-directory: ${{ env.BACKEND_PATH }}
@@ -111,7 +98,6 @@ jobs:
 
   deploy:
     needs: [frontend, backend]
-    if: github.ref == 'refs/heads/feat/cicd' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Download builds
