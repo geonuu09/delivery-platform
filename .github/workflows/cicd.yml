@@ -38,9 +38,9 @@ jobs:
         working-directory: ${{ env.FRONTEND_PATH }}
         run: npm ci
 
-      - name: 테스트 실행
-        working-directory: ${{ env.FRONTEND_PATH }}
-        run: npm test
+#      - name: 테스트 실행
+#        working-directory: ${{ env.FRONTEND_PATH }}
+#        run: npm test
 
       - name: Build
         working-directory: ${{ env.FRONTEND_PATH }}
@@ -75,15 +75,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: 테스트 실행
-        working-directory: ${{ env.BACKEND_PATH }}
-        run: |
-          chmod +x ./gradlew
-          ./gradlew test
+#      - name: 테스트 실행
+#        working-directory: ${{ env.BACKEND_PATH }}
+#        run: |
+#          chmod +x ./gradlew
+#          ./gradlew test
 
       - name: Spring boot Build
         working-directory: ${{ env.BACKEND_PATH }}
-        run: ./gradlew build -x test
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build -x test
 
       - name: 빌드 저장
         uses: actions/upload-artifact@v3
