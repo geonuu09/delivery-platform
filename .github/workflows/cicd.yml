@@ -39,11 +39,11 @@ jobs:
         run: |
           npm ci
           npm install --save-dev @babel/plugin-proposal-private-property-in-object  # babel 관련 오류 해결
-        
+      
 
-#      - name: 테스트 실행
-#        working-directory: ${{ env.FRONTEND_PATH }}
-#        run: npm test
+      #      - name: 테스트 실행
+      #        working-directory: ${{ env.FRONTEND_PATH }}
+      #        run: npm test
 
       - name: Build
         working-directory: ${{ env.FRONTEND_PATH }}
@@ -80,12 +80,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-#      - name: 테스트 실행
-#        working-directory: ${{ env.BACKEND_PATH }}
-#        run: |
-#          chmod +x ./gradlew
-#          ./gradlew test
-
       - name: Spring boot Build
         working-directory: ${{ env.BACKEND_PATH }}
         run: |
@@ -100,7 +94,7 @@ jobs:
           retention-days: 1
 
   deploy:
-    needs: [frontend, backend]
+    needs: [ frontend, backend ]
     runs-on: ubuntu-latest
     steps:
       - name: Download builds
@@ -128,9 +122,10 @@ jobs:
             cd /home/ubuntu/deploy
             # 기존 프로세스 종료
             pkill -f '.jar' || true
-            
-            # 새 버전 실행
-            nohup java -jar backend-build/*.jar > app.log 2>&1 &
-            
+
+            # 새 버전 실행 (prod 프로파일 활성화)
+            nohup java -jar backend-build/*.jar --spring.profiles.active=prod > app.log 2>&1 &
+
             # 배포 로그 기록
             echo "Deployment completed at $(date)" >> deploy.log
+  
