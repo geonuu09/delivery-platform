@@ -114,8 +114,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./config/nginx/nginx.conf"
-          target: "/home/ubuntu/deploy/"
+          source: config/nginx/nginx.conf
+          target: /home/ubuntu/deploy/
           strip_components: 2
 
       - name: Nginx 설정 복사 및 재시작
