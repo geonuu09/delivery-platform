@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: prod
   datasource:
     url: jdbc:postgresql://database-1.cr6cg0ciiz5s.ap-northeast-2.rds.amazonaws.com:5432/dp_DB
     username: postgres
