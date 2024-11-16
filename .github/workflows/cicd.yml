@@ -36,7 +36,10 @@ jobs:
 
       - name: 의존성 설치
         working-directory: ${{ env.FRONTEND_PATH }}
-        run: npm ci
+        run: |
+          npm ci
+          npm install --save-dev @babel/plugin-proposal-private-property-in-object  # babel 관련 오류 해결
+        
 
 #      - name: 테스트 실행
 #        working-directory: ${{ env.FRONTEND_PATH }}
