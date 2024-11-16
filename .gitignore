@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application.properties
 .idea
 *.iws
 *.iml
@@ -37,4 +38,10 @@ out/
 .vscode/
 
 # YAML files
-*.yml
+application.yml
+
+
+/build
+
+/node_modules
+
