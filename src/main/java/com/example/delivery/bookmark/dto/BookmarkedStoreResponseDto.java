@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class  BookmarkedStoreResponseDto{
-    private final UUID storeId;
-    private final String storeName;
+    private UUID storeId;
+    private String storeName;
 
     public BookmarkedStoreResponseDto(Store store) {
         this.storeId = store.getStoreId();

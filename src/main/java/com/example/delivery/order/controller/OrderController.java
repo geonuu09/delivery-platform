@@ -58,11 +58,11 @@ public class OrderController {
         Page<OrderListResponseDto> orderList;
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            orderList = orderService.getOrderListByAdmin(page, size, sortBy, isAsc);
+            orderList = orderService.getOrderListByAdmin(page-1, size, sortBy, isAsc);
         } else if (userRole == UserRoleEnum.OWNER){
-            orderList = orderService.getOrderListByOwner(userId, page, size, sortBy, isAsc);
+            orderList = orderService.getOrderListByOwner(userId, page-1, size, sortBy, isAsc);
         } else {
-        orderList = orderService.getOrderList(userId, page, size, sortBy, isAsc);
+        orderList = orderService.getOrderList(userId, page-1, size, sortBy, isAsc);
         }
         return ResponseEntity.ok(orderList);
     }
