@@ -43,7 +43,7 @@ public class StoreController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryName", required = false) String categoryName) {
 
-        Page<GetStoresResponseDto> result = storeService.getStores(page, size, sortBy, isAsc, keyword, categoryName);
+        Page<GetStoresResponseDto> result = storeService.getStores(page-1, size, sortBy, isAsc, keyword, categoryName);
         return ResponseEntity.ok(result);
     }
 
@@ -58,7 +58,7 @@ public class StoreController {
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword) {
 
-        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page, size, sortBy, isAsc, keyword);
+        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page-1, size, sortBy, isAsc, keyword);
         return ResponseEntity.ok(storeResponseDto);
     }
 
