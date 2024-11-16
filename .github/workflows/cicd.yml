@@ -2,7 +2,8 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: feat/cicd
+    branches:
+      - feat/cicd
 
 env:
   FRONTEND_PATH: './frontend'
@@ -110,7 +111,7 @@ jobs:
 
   deploy:
     needs: [frontend, backend]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/feat/cicd' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Download builds
