@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: main
+    branches: feat/cicd
 
 env:
   FRONTEND_PATH: './frontend'
@@ -11,32 +11,19 @@ env:
   JAVA_VERSION: '17'
 
 jobs:
-  # 변경된 코드 감지
+  # 변경된 코드 감지 제거
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      frontend: ${{ steps.filter.outputs.frontend }}
-      backend: ${{ steps.filter.outputs.backend }}
-      nginx: ${{ steps.filter.outputs.nginx }}
+      frontend: 'true'  # 항상 true로 설정
+      backend: 'true'   # 항상 true로 설정
+      nginx: 'true'     # 항상 true로 설정
     steps:
       - uses: actions/checkout@v3
-
-      - name: 변경 코드 체크
-        uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            frontend:
-              - 'frontend/**'
-            backend:
-              - 'backend/**'
-            nginx:
-              - 'config/nginx/**'
 
   # Frontend 빌드 및 테스트
   frontend:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -83,7 +70,6 @@ jobs:
 
   backend:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -122,12 +108,9 @@ jobs:
           path: ${{ env.BACKEND_PATH }}/build/libs
           retention-days: 1
 
-
   deploy:
     needs: [frontend, backend]
-    if: |
-      github.ref == 'refs/heads/main' &&
-      github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Download builds
@@ -136,7 +119,6 @@ jobs:
           path: builds
 
       - name: nginx config 변경 배포
-        if: ${{ needs.detect-changes.outputs.nginx == 'true' }}
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -146,7 +128,6 @@ jobs:
           target: "/home/ubuntu/deploy/nginx.conf"
 
       - name: Nginx 설정 복사 및 재시작
-        if: ${{ needs.detect-changes.outputs.nginx == 'true' }}
         run: |
           ssh -i ${{ secrets.EC2_SSH_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
           sleep 5  # 5초 대기
