@@ -8,7 +8,7 @@ on:
 env:
   FRONTEND_PATH: './frontend'
   BACKEND_PATH: './backend'
-  NODE_VERSION: '18'
+  NODE_VERSION: '22'
   JAVA_VERSION: '17'
 
 jobs:
