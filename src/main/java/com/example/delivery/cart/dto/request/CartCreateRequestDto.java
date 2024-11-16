@@ -17,7 +17,7 @@ import java.util.UUID;
 public class CartCreateRequestDto {
     private UUID storeId;
     private UUID menuId;
-    private List<UUID> menuOptionIds;
+    private List<UUID> menuOptionIdList;
     private int count;
     private Cart.CartStatus cartStatus;
 
@@ -25,9 +25,9 @@ public class CartCreateRequestDto {
         Cart cart = Cart.builder()
                 .user(user)
                 .menu(menu)
-                .count(this.count)
+                .count(this.count == 0 ? 1 : this.count)
                 .price(menuPrice)
-                .cartStatus(this.cartStatus)
+                .cartStatus(Cart.CartStatus.PENDING)
                 .build();
 
         cart.setMenuOptions(menuOptions);

@@ -4,8 +4,10 @@ import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.cart.dto.request.CartCreateRequestDto;
 import com.example.delivery.cart.dto.request.CartUpdateRequestDto;
 import com.example.delivery.cart.dto.response.CartResponseDto;
-import com.example.delivery.cart.service.CartService;
-import com.example.delivery.user.entity.User;
+import com.example.delivery.cart.service.CartCreateService;
+import com.example.delivery.cart.service.CartDeleteService;
+import com.example.delivery.cart.service.CartGetListService;
+import com.example.delivery.cart.service.CartUpdateService;
 import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,23 +21,28 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/carts")
-public class CartController {
+public class CartController implements CartControllerSwagger {
 
-    private final CartService cartService;
+    private final CartCreateService cartCreateService;
+    private final CartGetListService cartGetListService;
+    private final CartUpdateService cartUpdateService;
+    private final CartDeleteService cartDeleteService;
 
     // 장바구니 생성
+    @Override
     @PostMapping
     public ResponseEntity<CartResponseDto> createCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CartCreateRequestDto requestDto
     ){
-        User user = userDetails.getUser();
+        Long userId = userDetails.getUser().getUserId();
 
-        CartResponseDto responseDto = cartService.createCart(user, requestDto);
+        CartResponseDto responseDto = cartCreateService.createCart(userId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     // 장바구니 조회
+    @Override
     @GetMapping
     public ResponseEntity<List<CartResponseDto>> getCartList(
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -44,32 +51,29 @@ public class CartController {
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            List<CartResponseDto> orderList = cartService.getCartListByAdmin();
+            List<CartResponseDto> orderList = cartGetListService.getCartListByAdmin();
             return ResponseEntity.ok(orderList);
         }
-        List<CartResponseDto> orderList = cartService.getCartList(userId);
+        List<CartResponseDto> orderList = cartGetListService.getCartList(userId);
         return ResponseEntity.ok(orderList);
     }
 
     // 장바구니 수정
+    @Override
     @PutMapping()
     public ResponseEntity<CartResponseDto> updateCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CartUpdateRequestDto requestDto
-
     ){
         Long userId = userDetails.getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
-        if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            CartResponseDto ResponseDto = cartService.updateCartByAdmin(requestDto);
-            return ResponseEntity.ok(ResponseDto);
-        }
-        CartResponseDto responseDto = cartService.updateCart(userId,requestDto);
+        CartResponseDto responseDto = cartUpdateService.updateCart(userId, userRole, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     // 장바구니 삭제
+    @Override
     @DeleteMapping("/{cartId}/delete")
     public ResponseEntity<CartResponseDto> deleteCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -80,10 +84,10 @@ public class CartController {
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            CartResponseDto responseDto = cartService.deleteCartByAdmin(userEmail, cartId);
+            CartResponseDto responseDto = cartDeleteService.deleteCartByAdmin(userEmail, cartId);
             return ResponseEntity.ok(responseDto);
         }
-        CartResponseDto responseDto = cartService.deleteOrder(userId, cartId);
+        CartResponseDto responseDto = cartDeleteService.deleteCart(userId, cartId);
         return ResponseEntity.ok(responseDto);
     }
 }

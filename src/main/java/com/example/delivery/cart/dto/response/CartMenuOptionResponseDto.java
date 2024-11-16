@@ -13,13 +13,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartMenuOptionResponseDto {
-    private UUID optionID;
+    private UUID optionId;
     private String optionName;
     private int optionPrice;
 
     public static CartMenuOptionResponseDto from(MenuOption MenuOption) {
         return CartMenuOptionResponseDto.builder()
-                .optionID(MenuOption.getMenuOptionId())
+                .optionId(MenuOption.getMenuOptionId())
                 .optionName(MenuOption.getOptionName())
                 .optionPrice(MenuOption.getOptionPrice())
                 .build();
