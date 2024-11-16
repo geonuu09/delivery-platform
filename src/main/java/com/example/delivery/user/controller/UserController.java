@@ -38,7 +38,7 @@ public class UserController implements UserControllerSwagger {
 
     public ResponseEntity<SignupResponseDto> signup(
         @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-        @RequestBody @Valid SignupRequestDto requestDto) {
+        @RequestPart(value = "user", required = true) @Valid SignupRequestDto requestDto) {
         SignupResponseDto responseDto = userService.signup(requestDto, profileImage);
 
         return ResponseEntity.ok(responseDto);
@@ -80,7 +80,7 @@ public class UserController implements UserControllerSwagger {
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-        @RequestBody @Valid UserUpdateRequestDto requestDto) {
+        @RequestPart(value = "user", required = true) @Valid UserUpdateRequestDto requestDto) {
 
         UserResponseDto responseDto = userService.updateUser(userDetails.getUserId(), requestDto,
             profileImage);
