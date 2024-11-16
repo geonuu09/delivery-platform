@@ -47,6 +47,8 @@ jobs:
 
       - name: Build
         working-directory: ${{ env.FRONTEND_PATH }}
+        env:
+          CI: false
         run: npm run build
 
       - name: Node 빌드 저장
