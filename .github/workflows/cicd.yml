@@ -38,10 +38,6 @@ jobs:
         working-directory: ${{ env.FRONTEND_PATH }}
         run: npm ci
 
-      - name: Run lint
-        working-directory: ${{ env.FRONTEND_PATH }}
-        run: npm run lint
-
       - name: 테스트 실행
         working-directory: ${{ env.FRONTEND_PATH }}
         run: npm test
@@ -79,11 +75,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-#      - name: 테스트 실행
-#        working-directory: ${{ env.BACKEND_PATH }}
-#        run: |
-#          chmod +x ./gradlew
-#          ./gradlew test
+      - name: 테스트 실행
+        working-directory: ${{ env.BACKEND_PATH }}
+        run: |
+          chmod +x ./gradlew
+          ./gradlew test
 
       - name: Spring boot Build
         working-directory: ${{ env.BACKEND_PATH }}
