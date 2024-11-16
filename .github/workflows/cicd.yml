@@ -121,10 +121,10 @@ jobs:
           script: |
             cd /home/ubuntu/deploy
             # 기존 프로세스 종료
-            pkill -f '.jar' || true
+            # pkill -f '.jar' || true
 
             # 새 버전 실행 (prod 프로파일 활성화)
-            nohup java -jar backend-build/*.jar --spring.profiles.active=prod > app.log 2>&1 &
+            nohup java -jar backend-build/*.jar > app.log 2>&1 &
 
             # 배포 로그 기록
             echo "Deployment completed at $(date)" >> deploy.log
