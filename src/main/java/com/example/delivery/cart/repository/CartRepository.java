@@ -10,4 +10,6 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
     List<Cart> findByUser_UserIdAndCartStatus(Long userId, Cart.CartStatus cartStatus);
 
     List<Cart> findByCartStatus(Cart.CartStatus cartStatus);
+
+    List<Cart> findByOrder_OrderId(UUID orderId);
 }
