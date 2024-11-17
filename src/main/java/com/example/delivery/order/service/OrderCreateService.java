@@ -61,9 +61,9 @@ public class OrderCreateService {
 
     // 주문 접수 : 점주
     @Transactional
-    public OrderResponseDto createOrderByOwner(User user, OrderCreateRequestDto requestDto) {
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public OrderResponseDto createOrderByOwner(Long userId , OrderCreateRequestDto requestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         UUID storeId = requestDto.getStoreId();
 

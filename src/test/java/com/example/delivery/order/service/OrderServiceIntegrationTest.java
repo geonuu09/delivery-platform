@@ -22,7 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class OrderServiceIntegrationTest {
 
     @Autowired
-    OrderGetService orderService;
+    OrderCreateService orderCreateService;
+    @Autowired
+    OrderGetService orderGetService;
+    @Autowired
+    OrderUpdateService orderUpdateService;
     @Autowired
     UserRepository userRepository;
 
@@ -59,7 +63,7 @@ public class OrderServiceIntegrationTest {
         user = userRepository.findById(2L).orElse(null);
 
         // when
-        OrderResponseDto order = orderService.createOrderByOwner(user, requestDto);
+        OrderResponseDto order = orderCreateService.createOrderByOwner(user, requestDto);
 
         // then
         assertNotNull(order.getOrderId());
@@ -82,7 +86,7 @@ public class OrderServiceIntegrationTest {
         String orderStatus = "PREPARING";
 
         // when
-        OrderResponseDto order = orderService.updateOrderStatus(userId, orderId, orderStatus);
+        OrderResponseDto order = orderUpdateService.updateOrderStatus(userId, orderId, orderStatus);
 
         // then
         assertEquals(this.createdOrder.getOrderId(), order.getOrderId());
@@ -104,7 +108,7 @@ public class OrderServiceIntegrationTest {
         Long userId = user.getUserId();
 
         // when
-        Page<OrderListResponseDto> ordertList = orderService.getOrderListByOwner(userId, 0, 10, "orderId", false);
+        Page<OrderListResponseDto> ordertList = orderGetService.getOrderListByOwner(userId, 0, 10, "orderId", false);
 
         // then
         // 1. 전체 주문에서 테스트에 의해 생성된 주문 찾기

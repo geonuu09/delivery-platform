@@ -6,9 +6,8 @@ import com.example.delivery.payment.entity.Payment;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@DynamicUpdate
 @Table(name = "p_order")
 @NoArgsConstructor
 @AllArgsConstructor

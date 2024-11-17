@@ -72,30 +72,42 @@ public class OrderGetService {
         return orderPage.map(OrderListResponseDto::from);
     }
 
-    // 관리자용 주문 목록 검색 조회 : 주문자,가게명, 주문메뉴
-    public Page<OrderListResponseDto> searchOrderListForAdmin(int page, int size, String sortBy, boolean isAsc,
-                                                              String storeName, String menuName, String userEmail) {
+
+
+//    // 관리자용 주문 목록 검색 조회 : 주문자,가게명, 주문메뉴
+//    public Page<OrderListResponseDto> searchOrderListForAdmin(int page, int size, String sortBy, boolean isAsc,
+//                                                              String storeName, String menuName, String userEmail) {
+//        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
+//
+//        Page<Order> orderPage = orderRepository.searchOrderListForAdmin(storeName, menuName, userEmail ,pageable);
+//        return orderPage.map(OrderListResponseDto::from);
+//    }
+//
+//    // 점주용 주문 목록 검색 조회 : 주문자, 주문메뉴
+//    public Page<OrderListResponseDto> searchOrderListForOwner(Long userId, int page, int size, String sortBy, boolean isAsc,
+//                                                              String menuName, String userEmail) {
+//        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
+//
+//        Page<Order> orderPage = orderRepository.searchOrderListForOwner(userId,menuName,userEmail,pageable);
+//        return orderPage.map(OrderListResponseDto::from);
+//    }
+//
+//    // 고객용 주문 목록 검색 조회 : 가게명, 주문메뉴
+//    public Page<OrderListResponseDto> searchOrderListForCustomer(Long userId, int page, int size, String sortBy, boolean isAsc,
+//                                                                 String storeName, String menuName) {
+//        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
+//
+//        Page<Order> orderPage = orderRepository.searchOrderListForCustomer(userId, storeName, menuName,pageable);
+//        return orderPage.map(OrderListResponseDto::from);
+//    }
+
+    public Page<OrderListResponseDto> searchOrderListByKeyword(int page, int size, String sortBy, boolean isAsc,
+                                                               Long userId, UserRoleEnum userRole, String keyword) {
+
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
 
-        Page<Order> orderPage = orderRepository.searchOrderListForAdmin(storeName, menuName, userEmail ,pageable);
-        return orderPage.map(OrderListResponseDto::from);
-    }
+        Page<Order> orderPage = orderRepository.searchOrderListByKeyword(userId, userRole, keyword, pageable);
 
-    // 점주용 주문 목록 검색 조회 : 주문자, 주문메뉴
-    public Page<OrderListResponseDto> searchOrderListForOwner(Long userId, int page, int size, String sortBy, boolean isAsc,
-                                                              String menuName, String userEmail) {
-        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
-
-        Page<Order> orderPage = orderRepository.searchOrderListForOwner(userId,menuName,userEmail,pageable);
-        return orderPage.map(OrderListResponseDto::from);
-    }
-
-    // 고객용 주문 목록 검색 조회 : 가게명, 주문메뉴
-    public Page<OrderListResponseDto> searchOrderListForCustomer(Long userId, int page, int size, String sortBy, boolean isAsc,
-                                                                 String storeName, String menuName) {
-        Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
-
-        Page<Order> orderPage = orderRepository.searchOrderListForCustomer(userId, storeName, menuName,pageable);
         return orderPage.map(OrderListResponseDto::from);
     }
 

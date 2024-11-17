@@ -46,7 +46,7 @@ public class OrderController {
         UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
 
         if (userRole == UserRoleEnum.OWNER) {
-            OrderResponseDto responseDto = orderCreateService.createOrderByOwner(user, requestDto);
+            OrderResponseDto responseDto = orderCreateService.createOrderByOwner(userId, requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
         }
         OrderResponseDto responseDto = orderCreateService.createOrder(userId, requestDto);
@@ -79,7 +79,40 @@ public class OrderController {
         return ResponseEntity.ok(orderList);
     }
 
+<<<<<<< Updated upstream
     // 주문 목록 검색 조회
+=======
+//    // 주문 목록 검색 조회
+//    @Override
+//    @GetMapping("/search")
+//    public ResponseEntity<Page<OrderListResponseDto>> searchOrderList(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(defaultValue = "createdAt") String sortBy,
+//            @RequestParam(defaultValue = "false") boolean isAsc,
+//            @RequestParam(required = false) String storeName,
+//            @RequestParam(required = false) String menuName,
+//            @RequestParam(required = false) String userEmail
+//    ) {
+////        Long userId = userDetails.getUser().getUserId();
+////        UserRoleEnum userRole = userDetails.getUser().getRole();
+//        Page<OrderListResponseDto> orderList;
+//
+//        Long userId = 1L;
+//        UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
+//
+//        if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
+//            orderList = orderGetService.searchOrderListForAdmin(page, size, sortBy, isAsc, storeName, menuName, userEmail);
+//        } else if (userRole == UserRoleEnum.OWNER) {
+//            orderList = orderGetService.searchOrderListForOwner(userId, page, size, sortBy, isAsc, menuName, userEmail);
+//        } else {
+//            orderList = orderGetService.searchOrderListForCustomer(userId, page, size, sortBy, isAsc, storeName, menuName);
+//        }
+//        return ResponseEntity.ok(orderList);
+//    }
+
+>>>>>>> Stashed changes
     @GetMapping("/search")
     public ResponseEntity<Page<OrderListResponseDto>> searchOrderList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -87,24 +120,14 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "false") boolean isAsc,
-            @RequestParam(required = false) String storeName,
-            @RequestParam(required = false) String menuName,
-            @RequestParam(required = false) String userEmail
+            @RequestParam String keyword
     ) {
 //        Long userId = userDetails.getUser().getUserId();
 //        UserRoleEnum userRole = userDetails.getUser().getRole();
-        Page<OrderListResponseDto> orderList;
-
         Long userId = 1L;
         UserRoleEnum userRole = UserRoleEnum.CUSTOMER;
 
-        if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-            orderList = orderGetService.searchOrderListForAdmin(page, size, sortBy, isAsc, storeName, menuName, userEmail);
-        } else if (userRole == UserRoleEnum.OWNER) {
-            orderList = orderGetService.searchOrderListForOwner(userId, page, size, sortBy, isAsc, menuName, userEmail);
-        } else {
-            orderList = orderGetService.searchOrderListForCustomer(userId, page, size, sortBy, isAsc, storeName, menuName);
-        }
+        Page<OrderListResponseDto> orderList = orderGetService.searchOrderListByKeyword(page, size, sortBy, isAsc, userId, userRole, keyword);
         return ResponseEntity.ok(orderList);
     }
 
