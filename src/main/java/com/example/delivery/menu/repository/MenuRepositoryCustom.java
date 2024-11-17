@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface MenuRepositoryCustom {
 
-    Page<Menu> findMenusByStore_StoreIdAndKeyword(UUID storeId, String keyword, Pageable pageable);
+    Page<Menu> findMenusByKeyword(UUID storeId, String keyword, Pageable pageable, boolean isOwnerOrAdmin);
 
 }

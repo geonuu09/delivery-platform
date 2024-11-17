@@ -18,6 +18,7 @@ public interface StoreRepository extends JpaRepository<Store, UUID>, StoreReposi
 
     List<Store> findByUser_UserId(Long userId);
 
+    boolean existsByUser_UserIdAndStoreId(Long userId, UUID storeId);
 }
 
 

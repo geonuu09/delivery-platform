@@ -19,7 +19,7 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Menu> findMenusByStore_StoreIdAndKeyword(UUID storeId, String keyword, Pageable pageable) {
+    public Page<Menu> findMenusByKeyword(UUID storeId, String keyword, Pageable pageable, boolean isOwnerOrAdmin) {
         QMenu menu = QMenu.menu;
 
         List<Menu> menus = jpaQueryFactory
@@ -27,16 +27,12 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
                 .leftJoin(menu.menuOptions).fetchJoin()
                 .where(
                         menu.store.storeId.eq(storeId)
+                                .and(isOwnerOrAdmin ? menu.hidden.eq(true) : menu.hidden.eq(false))
+                                .and(menu.deleted.eq(false))
                                 .and(
-                                        menu.hidden.eq(false)
-                                                .and(menu.deleted.eq(false))
-                                                .and(
-                                                        menu.menuName.contains(keyword)
-                                                        .or(menu.menuDescription.contains(keyword))
-                                                        .or(menu.menuOptions.any().optionName.contains(keyword))
-
-                                                )
-
+                                        menu.menuName.contains(keyword)
+                                                .or(menu.menuDescription.contains(keyword))
+                                                .or(menu.menuOptions.any().optionName.contains(keyword))
                                 )
 
                 )

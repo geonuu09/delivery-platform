@@ -15,6 +15,7 @@ public class StoreRequestDto {
 
     private UUID storeId;
 
+    @NotNull
     private Long userId;
 
     @NotBlank(message = "가게 이름은 필수입니다.")

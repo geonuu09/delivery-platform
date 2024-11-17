@@ -11,6 +11,8 @@ import com.example.delivery.menu.repository.MenuOptionRepository;
 import com.example.delivery.menu.repository.MenuRepository;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
+import com.example.delivery.user.entity.UserRoleEnum;
+import com.example.delivery.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -50,12 +52,19 @@ public class MenuService {
 
     // 메뉴 상세 조회
     @Transactional(readOnly = true)
-    public MenuResponseDto getMenuDetails(UUID storeId, UUID menuId) {
+    public MenuResponseDto getMenuDetails(UUID storeId, UUID menuId, User user) {
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
-        return new MenuResponseDto(menu);
+        boolean isOwnerOrAdmin = store.getUser().getUserId().equals(user.getUserId()) ||
+                user.getRole() == UserRoleEnum.MANAGER ||
+                user.getRole() == UserRoleEnum.MASTER;
+
+        return new MenuResponseDto(menu, isOwnerOrAdmin);
     }
 
     // 메뉴 수정
@@ -72,6 +81,7 @@ public class MenuService {
     // 메뉴 삭제
     @Transactional
     public void deleteMenu(UUID storeId, UUID menuId, String username) {
+
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
@@ -88,10 +98,7 @@ public class MenuService {
 
         MenuOption menuOption = menuOptionRequestDto.toEntity(menu);
 
-        menu.getMenuOptions().add(menuOption);
-
         menuOptionRepository.save(menuOption);
-        menuRepository.save(menu);
 
         return new MenuOptionResponseDto(menuOption);
 
@@ -126,9 +133,10 @@ public class MenuService {
 
     }
 
+    @Transactional
     public AiDescriptionClientResponseDto createAiDescription(UUID storeId, UUID menuId, AiDescriptionRequestDto aiDescriptionRequestDto) {
-        Menu menu = menuRepository.findById(menuId).orElseThrow(
-                () -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         URI uri = UriComponentsBuilder
                 .fromUriString(googleApiUrl)
@@ -166,5 +174,6 @@ public class MenuService {
 
         return new AiDescriptionClientResponseDto(aiDescriptionRequestDto, aiAnswer);
     }
+
 
 }

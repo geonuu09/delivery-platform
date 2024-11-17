@@ -16,4 +16,5 @@ public interface MenuRepository extends JpaRepository<Menu, UUID>, MenuRepositor
 
     Page<Menu> findByStore_StoreIdAndDeletedFalseAndHiddenFalse(UUID storeId, Pageable pageable);
 
+    Page<Menu> findByStore_StoreIdAndDeletedFalse(UUID storeId, Pageable pageable);
 }

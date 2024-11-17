@@ -6,6 +6,7 @@ import com.example.delivery.store.dto.GetStoresResponseDto;
 import com.example.delivery.store.dto.StoreRequestDto;
 import com.example.delivery.store.dto.StoreResponseDto;
 import com.example.delivery.store.service.StoreService;
+import com.example.delivery.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,19 +53,21 @@ public class StoreController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetStoreDetailsResponseDto> getStoreDetails(
             @PathVariable UUID storeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword) {
 
-        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page, size, sortBy, isAsc, keyword);
+        User user = userDetails.getUser();
+        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, user, page, size, sortBy, isAsc, keyword);
         return ResponseEntity.ok(storeResponseDto);
     }
 
     // 가게 수정
     @PutMapping("/{storeId}/update")
-    @PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
+    @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> updateStore(@PathVariable UUID storeId, @Valid @RequestBody StoreRequestDto storeRequestDto) {
         storeService.updateStore(storeRequestDto, storeId);
         return ResponseEntity.ok("가게 정보가 성공적으로 수정되었습니다.");

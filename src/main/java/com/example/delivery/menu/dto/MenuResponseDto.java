@@ -29,12 +29,22 @@ public class MenuResponseDto {
         this.menuPrice = menu.getMenuPrice();
         this.menuDescription = menu.getMenuDescription();
         this.menuImage = menu.getMenuImage();
+    }
+
+    public MenuResponseDto(Menu menu, boolean isOwnerOrAdmin) {
+        this.menuId = menu.getMenuId();
+        this.menuName = menu.getMenuName();
+        this.menuPrice = menu.getMenuPrice();
+        this.menuDescription = menu.getMenuDescription();
+        this.menuImage = menu.getMenuImage();
         this.menuOptions = menu.getMenuOptions().stream()
                 .map(MenuOptionDto::new)
                 .collect(Collectors.toList());
-        this.aiDescriptions = menu.getAiDescriptions().stream()
-                .map(AiDto::new)
-                .collect(Collectors.toList());
+        if(isOwnerOrAdmin) {
+            this.aiDescriptions = menu.getAiDescriptions().stream()
+                    .map(AiDto::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Getter

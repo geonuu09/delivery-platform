@@ -14,6 +14,7 @@ import com.example.delivery.store.dto.StoreResponseDto;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -86,7 +87,7 @@ public class StoreService {
 
     // 가게 상세 조회
     @Transactional(readOnly = true)
-    public GetStoreDetailsResponseDto getStoreDetails(UUID storeId, int page, int size, String sortBy, boolean isAsc, String keyword) {
+    public GetStoreDetailsResponseDto getStoreDetails(UUID storeId, User user, int page, int size, String sortBy, boolean isAsc, String keyword) {
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
@@ -95,17 +96,22 @@ public class StoreService {
 
         Page<Menu> filteredMenus;
 
-        if (keyword == null || keyword.isEmpty()) {
-            // 키워드가 없을 때
-            filteredMenus = menuRepository.findByStore_StoreIdAndDeletedFalseAndHiddenFalse(storeId, pageable);
-        } else {
-            // 키워드가 있을 때
-            filteredMenus = menuRepository.findMenusByStore_StoreIdAndKeyword(storeId, keyword, pageable);
+        boolean isOwnerOrAdmin = store.getUser().getUserId().equals(user.getUserId()) ||
+                user.getRole() == UserRoleEnum.MANAGER ||
+                user.getRole() == UserRoleEnum.MASTER;
 
+        //키워드가 없을 때
+        if (keyword == null || keyword.isEmpty()) {
+            filteredMenus = isOwnerOrAdmin
+                    ? menuRepository.findByStore_StoreIdAndDeletedFalse(storeId, pageable)
+                    : menuRepository.findByStore_StoreIdAndDeletedFalseAndHiddenFalse(storeId, pageable);
+        } else {
+            // 키워드 있을 때
+            filteredMenus = menuRepository.findMenusByKeyword(storeId, keyword, pageable, isOwnerOrAdmin);
         }
 
-
         return new GetStoreDetailsResponseDto(store, filteredMenus);
+
     }
 
     // 가게 수정
@@ -113,6 +119,10 @@ public class StoreService {
     public void updateStore(StoreRequestDto storeRequestDto, UUID storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+        User user = userRepository.findById(storeRequestDto.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
 
         Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -131,6 +141,4 @@ public class StoreService {
         store.delete(username);
 
     }
-
-
 }

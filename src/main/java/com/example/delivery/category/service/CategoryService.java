@@ -18,7 +18,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     // 카테고리 등록
-    @Transactional
     public void createCategory(CategoryRequestDto categoryRequestDto) {
         Category category = categoryRequestDto.toEntity();
         categoryRepository.save(category);
