@@ -3,7 +3,6 @@ package com.example.delivery.menu.dto;
 import com.example.delivery.menu.entity.AiDescription;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

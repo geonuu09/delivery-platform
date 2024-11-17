@@ -43,7 +43,7 @@ public class StoreService {
             throw new CustomException(ErrorCode.STORE_ALREADY_EXISTS);
         }
 
-        Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
+        Category category = categoryRepository.findByCategoryIdAndDeletedFalse(storeRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Store store = storeRequestDto.toEntity(user, category);
@@ -89,7 +89,7 @@ public class StoreService {
     @Transactional(readOnly = true)
     public GetStoreDetailsResponseDto getStoreDetails(UUID storeId, User user, int page, int size, String sortBy, boolean isAsc, String keyword) {
 
-        Store store = storeRepository.findById(storeId)
+        Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         Pageable pageable = PagingUtil.createPageable(page, size, isAsc, sortBy);
@@ -117,12 +117,9 @@ public class StoreService {
     // 가게 수정
     @Transactional
     public void updateStore(StoreRequestDto storeRequestDto, UUID storeId) {
-        Store store = storeRepository.findById(storeId)
+
+        Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-        User user = userRepository.findById(storeRequestDto.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
 
         Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -134,7 +131,9 @@ public class StoreService {
     // 가게 삭제
     @Transactional
     public void deleteStore(StoreRequestDto storeRequestDto, String username) {
+
         UUID storeId = storeRequestDto.getStoreId();
+
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 

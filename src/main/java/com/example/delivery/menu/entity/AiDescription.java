@@ -1,7 +1,6 @@
 package com.example.delivery.menu.entity;
 
 import com.example.delivery.common.entity.Timestamped;
-import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

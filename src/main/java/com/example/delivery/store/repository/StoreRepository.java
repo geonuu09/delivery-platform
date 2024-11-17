@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -18,7 +19,10 @@ public interface StoreRepository extends JpaRepository<Store, UUID>, StoreReposi
 
     List<Store> findByUser_UserId(Long userId);
 
-    boolean existsByUser_UserIdAndStoreId(Long userId, UUID storeId);
+    boolean existsByUser_UserIdAndStoreIdAndDeletedFalse(Long userId, UUID storeId);
+
+    Optional<Store> findByStoreIdAndDeletedFalse(UUID storeId);
+
 }
 
 

@@ -1,7 +1,6 @@
 package com.example.delivery.menu.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.auth.service.AuthService;
 import com.example.delivery.menu.dto.*;
 import com.example.delivery.menu.service.MenuService;
 import com.example.delivery.user.entity.User;
@@ -13,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -85,7 +83,7 @@ public class MenuController {
     @PostMapping("/{menuId}/aiQuestion")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<AiDescriptionClientResponseDto> getAiDescription(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody AiDescriptionRequestDto aiDescriptionRequestDto) {
-        AiDescriptionClientResponseDto aiDescriptionResponseDto = menuService.createAiDescription(storeId, menuId, aiDescriptionRequestDto);
+        AiDescriptionClientResponseDto aiDescriptionResponseDto = menuService.createAiDescription(menuId, aiDescriptionRequestDto);
         return ResponseEntity.ok(aiDescriptionResponseDto);
     }
 }

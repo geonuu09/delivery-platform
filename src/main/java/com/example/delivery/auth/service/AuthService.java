@@ -52,6 +52,6 @@ public class AuthService {
 
     public boolean isStoreOwner(UserDetailsImpl userDetails, UUID storeId) {
         Long userId = userDetails.getUser().getUserId();
-        return storeRepository.existsByUser_UserIdAndStoreId(userId, storeId);
+        return storeRepository.existsByUser_UserIdAndStoreIdAndDeletedFalse(userId, storeId);
     }
 }

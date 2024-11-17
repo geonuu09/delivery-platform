@@ -36,7 +36,7 @@ public class Store extends Timestamped {
     @UuidGenerator
     private UUID storeId; // 가게 ID
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50, nullable = false, unique = true)
     private String storeName; // 상호명
 
     @Column(length = 50, nullable = false)

@@ -11,11 +11,12 @@ import com.example.delivery.menu.repository.MenuOptionRepository;
 import com.example.delivery.menu.repository.MenuRepository;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
-import com.example.delivery.user.entity.UserRoleEnum;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -41,7 +42,8 @@ public class MenuService {
     // 메뉴 등록
     @Transactional
     public MenuResponseDto createMenu(UUID storeId, MenuRequestDto menuRequestDto) {
-        Store store = storeRepository.findById(storeId)
+
+        Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         Menu menu = menuRequestDto.toEntity(store);
@@ -54,7 +56,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public MenuResponseDto getMenuDetails(UUID storeId, UUID menuId, User user) {
 
-        Store store = storeRepository.findById(storeId)
+        Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
@@ -74,7 +76,7 @@ public class MenuService {
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
-            menu.update(menuRequestDto);
+        menu.update(menuRequestDto);
 
     }
 
@@ -116,7 +118,7 @@ public class MenuService {
         MenuOption menuOption = menuOptionRepository.findByMenuOptionIdAndDeletedFalse(menuOptionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
-            menuOption.update(menuOptionRequestDto);
+        menuOption.update(menuOptionRequestDto);
     }
 
     // 메뉴 옵션 삭제
@@ -134,8 +136,8 @@ public class MenuService {
     }
 
     @Transactional
-    public AiDescriptionClientResponseDto createAiDescription(UUID storeId, UUID menuId, AiDescriptionRequestDto aiDescriptionRequestDto) {
-        Menu menu = menuRepository.findById(menuId)
+    public AiDescriptionClientResponseDto createAiDescription(UUID menuId, AiDescriptionRequestDto aiDescriptionRequestDto) {
+        Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         URI uri = UriComponentsBuilder
@@ -174,6 +176,4 @@ public class MenuService {
 
         return new AiDescriptionClientResponseDto(aiDescriptionRequestDto, aiAnswer);
     }
-
-
 }
