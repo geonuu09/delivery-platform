@@ -21,11 +21,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/stores")
 @RequiredArgsConstructor
-public class StoreController {
+public class StoreController implements StoreControllerSwagger{
 
     private final StoreService storeService;
 
     // 가게 등록
+    @Override
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> createStore(@Valid @RequestBody StoreRequestDto storeRequestDto) {
@@ -34,6 +35,7 @@ public class StoreController {
     }
 
     //가게 전체 페이지(키워드 및 카테고리 검색)
+    @Override
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<GetStoresResponseDto>> getStores(
@@ -49,6 +51,7 @@ public class StoreController {
     }
 
     //가게 상세 페이지 조회(가게정보 및 메뉴(메뉴이름, 메뉴사진, 가격)리스트)
+    @Override
     @GetMapping("/{storeId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetStoreDetailsResponseDto> getStoreDetails(
@@ -66,6 +69,7 @@ public class StoreController {
     }
 
     // 가게 수정
+    @Override
     @PutMapping("/{storeId}/update")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> updateStore(@PathVariable UUID storeId, @Valid @RequestBody StoreRequestDto storeRequestDto) {
@@ -74,6 +78,7 @@ public class StoreController {
     }
 
     // 가게 삭제
+    @Override
     @DeleteMapping("/{storeId}/delete")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> deleteStore(@PathVariable UUID storeId, @RequestBody StoreRequestDto storeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {

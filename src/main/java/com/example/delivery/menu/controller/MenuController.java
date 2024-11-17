@@ -17,11 +17,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/stores/{storeId}/menus")
 @RequiredArgsConstructor
-public class MenuController {
+public class MenuController implements MenuControllerSwagger{
 
     private final MenuService menuService;
 
     // 메뉴 등록
+    @Override
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> createMenu(@PathVariable UUID storeId, @Valid @RequestBody MenuRequestDto menuRequestDto) {
@@ -30,6 +31,7 @@ public class MenuController {
     }
 
     // 메뉴 상세 페이지 조회
+    @Override
     @GetMapping("/{menuId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MenuResponseDto> getMenuDetails(@PathVariable UUID storeId, @PathVariable UUID menuId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -39,6 +41,7 @@ public class MenuController {
     }
 
     // 메뉴 수정
+    @Override
     @PutMapping("/{menuId}/update")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> updateMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody MenuRequestDto menuRequestDto) {
@@ -47,6 +50,7 @@ public class MenuController {
     }
 
     // 메뉴 삭제
+    @Override
     @DeleteMapping("/{menuId}/delete")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> deleteMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -55,6 +59,7 @@ public class MenuController {
     }
 
     // 메뉴 옵션 추가
+    @Override
     @PostMapping("/{menuId}/options/create")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> createMenuOption(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody MenuOptionRequestDto menuOptionRequestDto) {
@@ -63,6 +68,7 @@ public class MenuController {
     }
 
     // 메뉴 옵션 수정
+    @Override
     @PutMapping("/{menuId}/options/update")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> updateMenuOption(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody MenuOptionRequestDto menuOptionRequestDto) {
@@ -71,6 +77,7 @@ public class MenuController {
     }
 
     // 메뉴 옵션 삭제
+    @Override
     @DeleteMapping("/{menuId}/options/delete")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<String> deleteMenuOption(@PathVariable UUID storeId, @PathVariable UUID menuId, @RequestBody MenuOptionRequestDto menuOptionRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -80,6 +87,7 @@ public class MenuController {
     }
 
     //메뉴 설명 AI 요청
+    @Override
     @PostMapping("/{menuId}/aiQuestion")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     public ResponseEntity<AiDescriptionClientResponseDto> getAiDescription(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody AiDescriptionRequestDto aiDescriptionRequestDto) {
