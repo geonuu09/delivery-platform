@@ -5,10 +5,12 @@ import com.example.delivery.menu.entity.MenuOption;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
+@Setter
 public class MenuOptionRequestDto {
 
     private UUID menuOptionId;

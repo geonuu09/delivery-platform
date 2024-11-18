@@ -26,9 +26,8 @@ public class CategoryService {
     // 카테고리 수정
     @Transactional
     public void updateCategory(CategoryRequestDto categoryRequestDto) {
-        UUID categoryId = categoryRequestDto.getCategoryId();
 
-        Category category = categoryRepository.findById(categoryId)
+        Category category = categoryRepository.findByCategoryIdAndDeletedFalse(categoryRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         category.update(categoryRequestDto);
@@ -38,9 +37,8 @@ public class CategoryService {
     // 카테고리 삭제
     @Transactional
     public void deleteCategory(CategoryRequestDto categoryRequestDto, String username) {
-        UUID categoryId = categoryRequestDto.getCategoryId();
 
-        Category category = categoryRepository.findById(categoryId)
+        Category category = categoryRepository.findByCategoryIdAndDeletedFalse(categoryRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         category.delete(username);

@@ -4,6 +4,7 @@ import com.example.delivery.auth.security.UserDetailsImpl;
 import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
 import com.example.delivery.store.dto.GetStoresResponseDto;
 import com.example.delivery.store.dto.StoreRequestDto;
+import com.example.delivery.store.dto.StoreUpdateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -68,7 +69,7 @@ public interface StoreControllerSwagger {
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     ResponseEntity<String> updateStore(
             @Parameter(description = "가게 ID") @PathVariable UUID storeId,
-            @Valid @RequestBody StoreRequestDto storeRequestDto
+            @Valid @RequestBody StoreUpdateDto storeUpdateDto
     );
 
     @Operation(
