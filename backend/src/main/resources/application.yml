@@ -36,3 +36,11 @@ google:
   ai:
     url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
     key: ${GOOGLE_KEY}
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui/
