@@ -20,7 +20,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 
   servlet:
@@ -35,4 +35,4 @@ jwt:
 google:
   ai:
     url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
-    key: ${GOOGLE_KEY} 
+    key: ${GOOGLE_KEY}
