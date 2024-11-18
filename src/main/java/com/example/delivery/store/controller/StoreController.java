@@ -1,10 +1,7 @@
 package com.example.delivery.store.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
-import com.example.delivery.store.dto.GetStoresResponseDto;
-import com.example.delivery.store.dto.StoreRequestDto;
-import com.example.delivery.store.dto.StoreResponseDto;
+import com.example.delivery.store.dto.*;
 import com.example.delivery.store.service.StoreService;
 import com.example.delivery.user.entity.User;
 import jakarta.validation.Valid;
@@ -72,8 +69,8 @@ public class StoreController implements StoreControllerSwagger{
     @Override
     @PutMapping("/{storeId}/update")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
-    public ResponseEntity<String> updateStore(@PathVariable UUID storeId, @Valid @RequestBody StoreRequestDto storeRequestDto) {
-        storeService.updateStore(storeRequestDto, storeId);
+    public ResponseEntity<String> updateStore(@PathVariable UUID storeId, @Valid @RequestBody StoreUpdateDto storeUpdateDto) {
+        storeService.updateStore(storeUpdateDto, storeId);
         return ResponseEntity.ok("가게 정보가 성공적으로 수정되었습니다.");
     }
 

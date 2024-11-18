@@ -7,6 +7,7 @@ import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.review.entity.Review;
 import com.example.delivery.store.dto.StoreRequestDto;
+import com.example.delivery.store.dto.StoreUpdateDto;
 import com.example.delivery.user.entity.User;
 
 import jakarta.persistence.*;
@@ -69,11 +70,11 @@ public class Store extends Timestamped {
     @OneToMany(mappedBy = "store", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Order> orders = new ArrayList<Order>();
 
-    public void update(StoreRequestDto storeRequestDto, Category category) {
-        this.storeName = storeRequestDto.getStoreName() != null ? storeRequestDto.getStoreName() : this.storeName;
-        this.storeOwnerName = storeRequestDto.getStoreOwnerName() != null ? storeRequestDto.getStoreOwnerName() : this.storeOwnerName;
-        this.storeLocation = storeRequestDto.getStoreLocation() !=null ? storeRequestDto.getStoreLocation() : this.storeLocation;
-        this.opened = storeRequestDto.isOpened();
+    public void update(StoreUpdateDto storeUpdateDto, Category category) {
+        this.storeName = storeUpdateDto.getStoreName() != null ? storeUpdateDto.getStoreName() : this.storeName;
+        this.storeOwnerName = storeUpdateDto.getStoreOwnerName() != null ? storeUpdateDto.getStoreOwnerName() : this.storeOwnerName;
+        this.storeLocation = storeUpdateDto.getStoreLocation() !=null ? storeUpdateDto.getStoreLocation() : this.storeLocation;
+        this.opened = storeUpdateDto.isOpened();
         this.category = category != null ? category : this.category;
     }
 

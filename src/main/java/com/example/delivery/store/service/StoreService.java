@@ -7,10 +7,7 @@ import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.repository.MenuRepository;
-import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
-import com.example.delivery.store.dto.GetStoresResponseDto;
-import com.example.delivery.store.dto.StoreRequestDto;
-import com.example.delivery.store.dto.StoreResponseDto;
+import com.example.delivery.store.dto.*;
 import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
@@ -21,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -36,8 +34,13 @@ public class StoreService {
     // 가게 등록
     @Transactional
     public StoreResponseDto createStore(StoreRequestDto storeRequestDto) {
+
         User user = userRepository.findById(storeRequestDto.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (user.getRole()!=UserRoleEnum.OWNER) {
+            throw new CustomException(ErrorCode.STORE_CREATE_DENIED);
+        }
 
         if (storeRepository.existsByStoreNameAndDeletedFalse(storeRequestDto.getStoreName())) {
             throw new CustomException(ErrorCode.STORE_ALREADY_EXISTS);
@@ -116,16 +119,18 @@ public class StoreService {
 
     // 가게 수정
     @Transactional
-    public void updateStore(StoreRequestDto storeRequestDto, UUID storeId) {
+    public void updateStore(StoreUpdateDto storeUpdateDto, UUID storeId) {
 
         Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-        Category category = categoryRepository.findById(storeRequestDto.getCategoryId())
+        Category category = StringUtils.hasText(storeUpdateDto.getCategoryName())
+                ? categoryRepository.findByCategoryNameAndDeletedFalse(storeUpdateDto.getCategoryName())
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND))
+                : categoryRepository.findByCategoryNameAndDeletedFalse(store.getCategory().getCategoryName())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        store.update(storeRequestDto, category);
-
+        store.update(storeUpdateDto, category);
     }
 
     // 가게 삭제

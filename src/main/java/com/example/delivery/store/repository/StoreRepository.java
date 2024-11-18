@@ -23,6 +23,9 @@ public interface StoreRepository extends JpaRepository<Store, UUID>, StoreReposi
 
     Optional<Store> findByStoreIdAndDeletedFalse(UUID storeId);
 
+    // test용
+    Optional<Store> findByStoreNameAndDeletedFalse(String storeName);
+
 }
 
 
