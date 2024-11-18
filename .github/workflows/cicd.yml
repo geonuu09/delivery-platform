@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, test/cicd, test/s3]
+    branches: [main, dev]
 
 env:
   FRONTEND_PATH: './frontend'
