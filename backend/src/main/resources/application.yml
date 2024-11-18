@@ -1,3 +1,15 @@
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2  # 버킷의 리전
+    s3:
+      bucket: dp-image-save-bucket
+    stack:
+      auto: false
+
 spring:
   profiles:
     active: prod
@@ -10,7 +22,17 @@ spring:
     hibernate:
       ddl-auto: validate
 
+
+  servlet:
+    multipart:
+      max-file-size: # 업로드할 수 있는 개별 파일의 최대 크기. 기본 1MB
+      max-request-size: # multipart/form-data 요청의 최대 허용 크기. 기본 10MB
+
+
+
 jwt:
   secret:
     key: ZGVsaXZlcnktcGxhdGZvcm0tcHJvamVjdC1UZWFtIOu5vOu5vOuhnOyhsOyeheuLiOuLpC4=
+
+
 

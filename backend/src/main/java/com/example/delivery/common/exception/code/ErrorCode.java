@@ -66,7 +66,11 @@ public enum ErrorCode {
     // Menu Option 관련 에러
     MENU_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "메뉴 옵션을 찾을 수 없습니다."),
     MENU_OPTION_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "메뉴 옵션을 업데이트할 수 없습니다."),
-    MENU_OPTION_DELETE_FAILED(HttpStatus.BAD_REQUEST, "메뉴 옵션 삭제에 실패했습니다.");
+    MENU_OPTION_DELETE_FAILED(HttpStatus.BAD_REQUEST, "메뉴 옵션 삭제에 실패했습니다."),
+
+    // S3 Error
+    FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다."),
+    FILE_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제 중 오류가 발생했습니다.");
 
     private final HttpStatus status;
     private final String message;
