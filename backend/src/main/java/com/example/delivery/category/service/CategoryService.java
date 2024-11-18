@@ -41,6 +41,10 @@ public class CategoryService {
         Category category = categoryRepository.findByCategoryIdAndDeletedFalse(categoryRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
+        if (category.getStores() != null && !category.getStores().isEmpty()) {
+            throw new CustomException(ErrorCode.CATEGORY_DELETE_FAILED);
+        }
+
         category.delete(username);
 
     }
