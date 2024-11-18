@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://database-1.cr6cg0ciiz5s.ap-northeast-2.rds.amazonaws.com:5432/dp_DB
     username: postgres
-    password: Pass1234!
+    password: test1234
     driver-class-name: org.postgresql.Driver
 
   jpa:
