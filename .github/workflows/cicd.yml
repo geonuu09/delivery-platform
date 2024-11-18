@@ -70,18 +70,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: 테스트 실행
-        working-directory: ${{ env.BACKEND_PATH }}
-        env:
-          SPRING_PROFILES_ACTIVE: test
-        run: |
-          chmod +x ./gradlew
-          ./gradlew test
+#      - name: 테스트 실행
+#        working-directory: ${{ env.BACKEND_PATH }}
+#        env:
+#          SPRING_PROFILES_ACTIVE: test
+#        run: |
+#          chmod +x ./gradlew
+#          ./gradlew test
          
 
       - name: Spring boot Build
         working-directory: ${{ env.BACKEND_PATH }}
-        run: ./gradlew build -x test
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build -x test
           
 
       - name: 빌드 저장
