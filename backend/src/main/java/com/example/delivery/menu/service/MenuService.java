@@ -13,6 +13,7 @@ import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.entity.UserRoleEnum;
+import com.example.delivery.common.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
