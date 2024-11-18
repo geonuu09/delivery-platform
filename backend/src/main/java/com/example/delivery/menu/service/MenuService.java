@@ -3,7 +3,13 @@ package com.example.delivery.menu.service;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
 import com.example.delivery.common.service.S3Service;
-import com.example.delivery.menu.dto.*;
+import com.example.delivery.menu.dto.AiDescriptionClientResponseDto;
+import com.example.delivery.menu.dto.AiDescriptionRequestDto;
+import com.example.delivery.menu.dto.AiDescriptionResponseDto;
+import com.example.delivery.menu.dto.MenuOptionRequestDto;
+import com.example.delivery.menu.dto.MenuOptionResponseDto;
+import com.example.delivery.menu.dto.MenuRequestDto;
+import com.example.delivery.menu.dto.MenuResponseDto;
 import com.example.delivery.menu.entity.AiDescription;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
@@ -14,7 +20,8 @@ import com.example.delivery.store.entity.Store;
 import com.example.delivery.store.repository.StoreRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.entity.UserRoleEnum;
-import com.example.delivery.common.service.S3Service;
+import java.net.URI;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
@@ -24,9 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,18 +47,17 @@ public class MenuService {
     private String googleApiUrl;
     private final S3Service s3Service;
 
-    private final S3Service s3Service;
-
     private String processProfileImage(MultipartFile menuImage) {
         return s3Service.uploadFile(menuImage);
     }
 
     // 메뉴 등록
     @Transactional
-    public MenuResponseDto createMenu(UUID storeId, MenuRequestDto menuRequestDto, MultipartFile menuImage) {
+    public MenuResponseDto createMenu(UUID storeId, MenuRequestDto menuRequestDto,
+        MultipartFile menuImage) {
 
         Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         String menuImagePath = processProfileImage(menuImage);
 
@@ -70,24 +73,25 @@ public class MenuService {
     public MenuResponseDto getMenuDetails(UUID storeId, UUID menuId, User user) {
 
         Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         boolean isOwnerOrAdmin = store.getUser().getUserId().equals(user.getUserId()) ||
-                user.getRole() == UserRoleEnum.MANAGER ||
-                user.getRole() == UserRoleEnum.MASTER;
+            user.getRole() == UserRoleEnum.MANAGER ||
+            user.getRole() == UserRoleEnum.MASTER;
 
         return new MenuResponseDto(menu, isOwnerOrAdmin);
     }
 
     // 메뉴 수정
     @Transactional
-    public void updateMenu(UUID storeId, UUID menuId, MenuRequestDto menuRequestDto, MultipartFile menuImage) {
+    public void updateMenu(UUID storeId, UUID menuId, MenuRequestDto menuRequestDto,
+        MultipartFile menuImage) {
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         if (menuImage != null && !menuImage.isEmpty()) {
             String menuImagePath = processProfileImage(menuImage);
@@ -103,7 +107,7 @@ public class MenuService {
     public void deleteMenu(UUID storeId, UUID menuId, String username) {
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         menu.delete(username);
 
@@ -111,10 +115,11 @@ public class MenuService {
 
     // 메뉴 옵션 등록
     @Transactional
-    public MenuOptionResponseDto createMenuOption(UUID storeId, UUID menuId, MenuOptionRequestDto menuOptionRequestDto) {
+    public MenuOptionResponseDto createMenuOption(UUID storeId, UUID menuId,
+        MenuOptionRequestDto menuOptionRequestDto) {
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         MenuOption menuOption = menuOptionRequestDto.toEntity(menu);
 
@@ -126,15 +131,16 @@ public class MenuService {
 
     // 메뉴 옵션 수정
     @Transactional
-    public void updateMenuOption(UUID storeId, UUID menuId, MenuOptionRequestDto menuOptionRequestDto) {
+    public void updateMenuOption(UUID storeId, UUID menuId,
+        MenuOptionRequestDto menuOptionRequestDto) {
 
         menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         UUID menuOptionId = menuOptionRequestDto.getMenuOptionId();
 
         MenuOption menuOption = menuOptionRepository.findByMenuOptionIdAndDeletedFalse(menuOptionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
         menuOption.update(menuOptionRequestDto);
     }
@@ -144,52 +150,56 @@ public class MenuService {
     public void deleteMenuOption(UUID storeId, UUID menuId, UUID menuOptionId, String username) {
 
         menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         MenuOption menuOption = menuOptionRepository.findByMenuOptionIdAndDeletedFalse(menuOptionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
         menuOption.delete(username);
 
     }
 
     @Transactional
-    public AiDescriptionClientResponseDto createAiDescription(UUID menuId, AiDescriptionRequestDto aiDescriptionRequestDto) {
+    public AiDescriptionClientResponseDto createAiDescription(UUID menuId,
+        AiDescriptionRequestDto aiDescriptionRequestDto) {
         Menu menu = menuRepository.findByMenuIdAndDeletedFalse(menuId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         URI uri = UriComponentsBuilder
-                .fromUriString(googleApiUrl)
-                .queryParam("key", googleApiKey)
-                .encode()
-                .build()
-                .toUri();
+            .fromUriString(googleApiUrl)
+            .queryParam("key", googleApiKey)
+            .encode()
+            .build()
+            .toUri();
 
         String answerMessage = "답변을 최대한 간결하게 50자 이하로";
-        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", aiDescriptionRequestDto.getAiQuestion() + answerMessage);
+        String requestBody = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}",
+            aiDescriptionRequestDto.getAiQuestion() + answerMessage);
 
         System.out.println(requestBody);
 
         RequestEntity<String> requestEntity = RequestEntity
-                .post(uri)
-                .header("Content-Type", "application/json")
-                .body(requestBody);
+            .post(uri)
+            .header("Content-Type", "application/json")
+            .body(requestBody);
 
-        ResponseEntity<AiDescriptionResponseDto> responseEntity = restTemplate.exchange(requestEntity, AiDescriptionResponseDto.class);
+        ResponseEntity<AiDescriptionResponseDto> responseEntity = restTemplate.exchange(
+            requestEntity, AiDescriptionResponseDto.class);
 
         System.out.println("Response status: " + responseEntity.getStatusCode());
         System.out.println("Response body: " + responseEntity.getBody());
 
         AiDescriptionResponseDto aiDescriptionResponseDto = responseEntity.getBody();
-        String aiAnswer = aiDescriptionResponseDto.getCandidates().get(0).getContent().getParts().get(0).getText();
+        String aiAnswer = aiDescriptionResponseDto.getCandidates().get(0).getContent().getParts()
+            .get(0).getText();
 
         // 데이터 저장
         aiDescriptionRepository.save(
-                AiDescription.builder()
-                        .aiQuestion(aiDescriptionRequestDto.getAiQuestion())
-                        .aiAnswer(aiAnswer)
-                        .menu(menu)
-                        .build()
+            AiDescription.builder()
+                .aiQuestion(aiDescriptionRequestDto.getAiQuestion())
+                .aiAnswer(aiAnswer)
+                .menu(menu)
+                .build()
         );
 
         return new AiDescriptionClientResponseDto(aiDescriptionRequestDto, aiAnswer);
