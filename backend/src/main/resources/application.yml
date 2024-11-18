@@ -28,11 +28,11 @@ spring:
       max-file-size: 10MB  # 단일 파일 최대 크기
       max-request-size: 10MB  # 요청당 최대 크기
 
-
-
 jwt:
   secret:
     key: ZGVsaXZlcnktcGxhdGZvcm0tcHJvamVjdC1UZWFtIOu5vOu5vOuhnOyhsOyeheuLiOuLpC4=
 
-
-
+google:
+  ai:
+    url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+    key: ${GOOGLE_KEY} 
