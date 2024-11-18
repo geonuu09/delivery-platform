@@ -38,7 +38,7 @@ public class UserController implements UserControllerSwagger {
 
     public ResponseEntity<SignupResponseDto> signup(
         @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-        @RequestPart(value = "user", required = true) @Valid SignupRequestDto requestDto) {
+        @RequestPart(value = "user") @Valid SignupRequestDto requestDto) {
         SignupResponseDto responseDto = userService.signup(requestDto, profileImage);
 
         return ResponseEntity.ok(responseDto);

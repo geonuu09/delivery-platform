@@ -25,8 +25,8 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: # 업로드할 수 있는 개별 파일의 최대 크기. 기본 1MB
-      max-request-size: # multipart/form-data 요청의 최대 허용 크기. 기본 10MB
+      max-file-size: 10MB  # 단일 파일 최대 크기
+      max-request-size: 10MB  # 요청당 최대 크기
 
 
 
