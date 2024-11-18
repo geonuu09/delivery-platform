@@ -46,7 +46,7 @@ public class OrderCreateService {
                  .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_STORE));
 
         // 장바구니 확인
-        List<Cart> cartList = cartRepository.findByCartStatus(Cart.CartStatus.PENDING);
+        List<Cart> cartList = cartRepository.findByUser_UserIdAndCartStatus(user.getUserId(), Cart.CartStatus.PENDING);
 
         if (cartList.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_CART);
