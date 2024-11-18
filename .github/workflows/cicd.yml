@@ -135,8 +135,6 @@ jobs:
             cd /home/ubuntu/deploy/backend-build
             nohup java -jar *.jar > /home/ubuntu/app.log 2>&1 &
 
-            # 프론트엔드 배포 (Nginx 사용 시)
+            # 프론트엔드 배포
             sudo cp -r /home/ubuntu/deploy/frontend-build/* /var/www/html/
             sudo systemctl reload nginx
-            
-            echo "배포 완료"
