@@ -48,7 +48,7 @@ public class Order extends Timestamped {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.RECEIVED;
+    private OrderStatus orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

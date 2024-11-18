@@ -40,21 +40,19 @@ public interface OrderControllerSwagger {
             @RequestParam(defaultValue = "false") boolean isAsc
     );
 
-//    @Operation(
-//            summary = "주문 목록 검색 조회",
-//            description = "주문 목록을 검색하여 조회합니다."
-//    )
-//    @GetMapping("/search")
-//    ResponseEntity<Page<OrderListResponseDto>> searchOrderList(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "createdAt") String sortBy,
-//            @RequestParam(defaultValue = "false") boolean isAsc,
-//            @RequestParam(required = false) String storeName,
-//            @RequestParam(required = false) String menuName,
-//            @RequestParam(required = false) String userEmail
-//    );
+    @Operation(
+            summary = "주문 목록 검색 조회",
+            description = "주문 목록을 검색하여 조회합니다."
+    )
+    @GetMapping("/search")
+    public ResponseEntity<Page<OrderListResponseDto>> searchOrderList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "false") boolean isAsc,
+            @RequestParam String keyword
+    );
 
     @Operation(
             summary = "주문 상세내역 조회",

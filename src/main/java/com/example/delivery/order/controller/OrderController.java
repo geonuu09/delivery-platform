@@ -61,9 +61,9 @@ public class OrderController {
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
             orderList = orderGetService.getOrderListByAdmin(page, size, sortBy, isAsc);
         } else if (userRole == UserRoleEnum.OWNER){
-            orderList = orderGetService.getOrderListByOwner(userId, page, size, sortBy, isAsc);
+            orderList = orderGetService.getOrderListByOwner(userId, page-1, size, sortBy, isAsc);
         } else {
-        orderList = orderGetService.getOrderList(userId, page, size, sortBy, isAsc);
+        orderList = orderGetService.getOrderList(userId, page-1, size, sortBy, isAsc);
         }
         return ResponseEntity.ok(orderList);
     }
@@ -80,7 +80,7 @@ public class OrderController {
         Long userId = userDetails.getUser().getUserId();
         UserRoleEnum userRole = userDetails.getUser().getRole();
 
-        Page<OrderListResponseDto> orderList = orderGetService.searchOrderListByKeyword(page, size, sortBy, isAsc, userId, userRole, keyword);
+        Page<OrderListResponseDto> orderList = orderGetService.searchOrderListByKeyword(page-1, size, sortBy, isAsc, userId, userRole, keyword);
         return ResponseEntity.ok(orderList);
     }
 

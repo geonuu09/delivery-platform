@@ -25,10 +25,10 @@ public class OrderRepositoryQueryImpl implements OrderRepositoryQuery {
 
         BooleanBuilder whereClause = new BooleanBuilder();
 
-        // 가게 이름 또는 메뉴 이름에 키워드 포함
+        // 가게 이름 또는 주문 메뉴 이름에 키워드 포함
         whereClause.and(
                 order.store.storeName.containsIgnoreCase(keyword)
-                        .or(order.store.menus.any().menuName.containsIgnoreCase(keyword))
+                        .or( order.carts.any().menu.menuName.containsIgnoreCase(keyword))
         );
 
         // 권한별 조건 추가
@@ -55,7 +55,11 @@ public class OrderRepositoryQueryImpl implements OrderRepositoryQuery {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = orders.size();
+        // 검색된 총 주문 개수
+        long total = jpaQueryFactory
+                .selectFrom(order)
+                .where(whereClause)
+                .fetchCount();
 
         return new PageImpl<>(orders, pageable, total);
     }
