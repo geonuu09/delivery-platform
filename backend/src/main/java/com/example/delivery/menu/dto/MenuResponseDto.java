@@ -36,12 +36,12 @@ public class MenuResponseDto {
     @Schema(description = "AI 설명 리스트 (관리자/가게 주인 전용)")
     private List<AiDto> aiDescriptions;
 
-    public MenuResponseDto(Menu menu) {
+    public MenuResponseDto(Menu menu, String menuImagePath) {
         this.menuId = menu.getMenuId();
         this.menuName = menu.getMenuName();
         this.menuPrice = menu.getMenuPrice();
         this.menuDescription = menu.getMenuDescription();
-        this.menuImage = menu.getMenuImage();
+        this.menuImage = menuImagePath;
     }
 
     public MenuResponseDto(Menu menu, boolean isOwnerOrAdmin) {

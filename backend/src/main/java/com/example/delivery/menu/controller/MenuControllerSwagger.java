@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -24,7 +25,8 @@ public interface MenuControllerSwagger {
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
     ResponseEntity<String> createMenu(
             @Parameter(description = "가게 ID") @PathVariable UUID storeId,
-            @Valid @RequestBody MenuRequestDto menuRequestDto
+            @RequestPart("menuRequestDto") @Valid MenuRequestDto menuRequestDto,
+            @RequestPart(value = "menuImage", required = false) MultipartFile image
     );
 
     @Operation(
@@ -48,7 +50,8 @@ public interface MenuControllerSwagger {
     ResponseEntity<String> updateMenu(
             @Parameter(description = "가게 ID") @PathVariable UUID storeId,
             @Parameter(description = "메뉴 ID") @PathVariable UUID menuId,
-            @Valid @RequestBody MenuRequestDto menuRequestDto
+            @RequestPart("menuRequestDto") @Valid MenuRequestDto menuRequestDto,
+            @RequestPart(value = "menuImage", required = false) MultipartFile image
     );
 
     @Operation(

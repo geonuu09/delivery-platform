@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -25,8 +26,12 @@ public class MenuController implements MenuControllerSwagger{
     @Override
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
-    public ResponseEntity<String> createMenu(@PathVariable UUID storeId, @Valid @RequestBody MenuRequestDto menuRequestDto) {
-        menuService.createMenu(storeId, menuRequestDto);
+    public ResponseEntity<String> createMenu(
+            @PathVariable UUID storeId,
+            @RequestPart("menuRequestDto") @Valid MenuRequestDto menuRequestDto,
+            @RequestPart(value = "menuImage", required = false) MultipartFile image) {
+
+        menuService.createMenu(storeId, menuRequestDto, image);
         return ResponseEntity.status(HttpStatus.CREATED).body("메뉴가 성공적으로 등록되었습니다.");
     }
 
@@ -44,8 +49,12 @@ public class MenuController implements MenuControllerSwagger{
     @Override
     @PutMapping("/{menuId}/update")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
-    public ResponseEntity<String> updateMenu(@PathVariable UUID storeId, @PathVariable UUID menuId, @Valid @RequestBody MenuRequestDto menuRequestDto) {
-        menuService.updateMenu(storeId, menuId, menuRequestDto);
+    public ResponseEntity<String> updateMenu(
+            @PathVariable UUID storeId,
+            @PathVariable UUID menuId,
+            @RequestPart("menuRequestDto") @Valid MenuRequestDto menuRequestDto,
+            @RequestPart(value = "menuImage", required = false) MultipartFile image) {
+        menuService.updateMenu(storeId, menuId, menuRequestDto, image);
         return ResponseEntity.ok("메뉴가 성공적으로 수정되었습니다.");
     }
 

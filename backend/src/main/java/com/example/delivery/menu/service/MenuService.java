@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -39,17 +40,26 @@ public class MenuService {
     @Value("${google.ai.url}")
     private String googleApiUrl;
 
+    private final S3Service s3Service;
+
+    private String processProfileImage(MultipartFile menuImage) {
+        return s3Service.uploadFile(menuImage);
+    }
+
     // 메뉴 등록
     @Transactional
-    public MenuResponseDto createMenu(UUID storeId, MenuRequestDto menuRequestDto) {
+    public MenuResponseDto createMenu(UUID storeId, MenuRequestDto menuRequestDto, MultipartFile menuImage) {
 
         Store store = storeRepository.findByStoreIdAndDeletedFalse(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
+        String menuImagePath = processProfileImage(menuImage);
+
         Menu menu = menuRequestDto.toEntity(store);
+
         menu = menuRepository.save(menu);
 
-        return new MenuResponseDto(menu);
+        return new MenuResponseDto(menu, menuImagePath);
     }
 
     // 메뉴 상세 조회
@@ -71,10 +81,15 @@ public class MenuService {
 
     // 메뉴 수정
     @Transactional
-    public void updateMenu(UUID storeId, UUID menuId, MenuRequestDto menuRequestDto) {
+    public void updateMenu(UUID storeId, UUID menuId, MenuRequestDto menuRequestDto, MultipartFile menuImage) {
 
         Menu menu = menuRepository.findByMenuIdAndStore_StoreIdAndDeletedFalse(menuId, storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
+
+        if (menuImage != null && !menuImage.isEmpty()) {
+            String menuImagePath = processProfileImage(menuImage);
+            menuRequestDto.setMenuImage(menuImagePath);
+        }
 
         menu.update(menuRequestDto);
 
