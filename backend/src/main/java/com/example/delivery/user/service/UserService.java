@@ -56,8 +56,7 @@ public class UserService {
             .detailAddress(requestDto.getDetailAddress())
             .phoneNum(requestDto.getPhoneNum())
             .role(requestDto.getRole())
-            //test
-//            .profileImagePath(profileImagePath)
+            .profileImagePath(profileImagePath)
             .status(requestDto.getStatus())
             .build();
         User savedUser = userRepository.save(user);
