@@ -31,6 +31,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
 
+
     private String processProfileImage(MultipartFile profileImage) {
         return s3Service.uploadFile(profileImage);
     }
