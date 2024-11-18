@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    // test commit
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -57,7 +56,8 @@ public class UserService {
             .detailAddress(requestDto.getDetailAddress())
             .phoneNum(requestDto.getPhoneNum())
             .role(requestDto.getRole())
-            .profileImagePath(profileImagePath)
+            //test
+//            .profileImagePath(profileImagePath)
             .status(requestDto.getStatus())
             .build();
         User savedUser = userRepository.save(user);

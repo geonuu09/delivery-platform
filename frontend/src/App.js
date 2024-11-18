@@ -4,7 +4,6 @@ import Router from "./utils/Router";
 
 function App() {
     return (
-        // test
         <div className="App">
             <Router />
         </div>

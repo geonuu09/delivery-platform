@@ -22,6 +22,8 @@ const Router = () => {
                     <Route path="/bookmark" element={<BookMark />} />
                     <Route path="/myInfo" element={<Myinfo />} />
                     <Route path="/order" element={<Order />} />
+                  {/*//test */}
+                    <Route path="/order" element={<Order />} />
                 </Route>
             </Routes>
             <Navbar />
