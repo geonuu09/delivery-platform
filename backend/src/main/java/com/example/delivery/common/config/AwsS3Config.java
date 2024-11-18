@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class AwsS3Config {
+
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 

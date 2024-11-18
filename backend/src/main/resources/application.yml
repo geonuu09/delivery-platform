@@ -4,7 +4,7 @@ cloud:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
     region:
-      static: ap-northeast-2  # 버킷의 리전
+      static: ap-northeast-2
     s3:
       bucket: dp-image-save-bucket
     stack:

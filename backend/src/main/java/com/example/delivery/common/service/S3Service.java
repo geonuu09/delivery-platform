@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+
     private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -42,7 +43,9 @@ public class S3Service {
     }
 
     public void deleteFile(String fileUrl) {
-        if (fileUrl == null) return;
+        if (fileUrl == null) {
+            return;
+        }
 
         try {
             String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
