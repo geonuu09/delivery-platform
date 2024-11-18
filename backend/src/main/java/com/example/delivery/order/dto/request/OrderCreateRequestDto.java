@@ -37,7 +37,7 @@ public class OrderCreateRequestDto {
                 .requirements(this.requirements)
                 .totalCount(this.totalCount)
                 .totalPrice(this.totalPrice)
-                .orderStatus(this.orderStatus)
+                .orderStatus(Order.OrderStatus.RECEIVED)
                 .build();
     }
 }
