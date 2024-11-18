@@ -3,6 +3,7 @@ package com.example.delivery.user.service;
 import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
+import com.example.delivery.common.service.S3Service;
 import com.example.delivery.user.dto.SignupRequestDto;
 import com.example.delivery.user.dto.SignupResponseDto;
 import com.example.delivery.user.dto.UserResponseDto;
@@ -14,7 +15,6 @@ import com.example.delivery.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +29,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     private String processProfileImage(MultipartFile profileImage) {
-        String profileImagePath = null;
-        if (profileImage != null && !profileImage.isEmpty()) {
-            profileImagePath = UUID.randomUUID() + "_" + profileImage.getOriginalFilename();
-        }
-        return profileImagePath;
+        return s3Service.uploadFile(profileImage);
     }
 
     public SignupResponseDto signup(@Valid SignupRequestDto requestDto,
