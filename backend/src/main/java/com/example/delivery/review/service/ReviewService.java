@@ -5,6 +5,7 @@ import com.example.delivery.cart.entity.Cart;
 import com.example.delivery.common.Util.PagingUtil;
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
+import com.example.delivery.common.service.S3Service;
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.order.repository.OrderRepository;
 import com.example.delivery.review.dto.request.ReviewEditRequestDTO;
@@ -33,7 +34,11 @@ import java.util.*;
 public class ReviewService {
   private final ReviewRepository reviewRepository;
   private final OrderRepository orderRepository;
+  private final S3Service s3Service;
 
+  private String processProfileImage(MultipartFile profileImage) {
+    return s3Service.uploadFile(profileImage);
+  }
 
   // 리뷰 등록
   public boolean reviewRegister(ReviewRegisterRequestDTO reviewRegisterRequestDTO, UserDetailsImpl userDetails, MultipartFile reviewImage) {
@@ -43,7 +48,7 @@ public class ReviewService {
     // 주문이 배달 완료 상태일때 리뷰 등록 가능
     if (order.getOrderStatus().equals(Order.OrderStatus.DELIVERED)) {
       // 파일명 변경
-      String reviewImagePath = uploadReviewImage(reviewImage);
+      String reviewImagePath = processProfileImage(reviewImage);
       Review entity = reviewRegisterRequestDTO.toEntity(userDetails.getUser(), order, reviewImagePath);
       reviewRepository.save(entity);
       return true;
@@ -79,6 +84,7 @@ public class ReviewService {
               .reviewImage(review.getReviewImage())
               .userName(user.getUserName())
               .menuNameList(menuNameMap.get(review.getId()))
+              .reviewImage(review.getReviewImage())
               .build());
 
   }
@@ -105,6 +111,7 @@ public class ReviewService {
             .createdAt(review.getCreatedAt())
             .reviewImage(review.getReviewImage())
             .userName(user.getUserName())
+            .reviewImage(review.getReviewImage())
             .menuNameList(menuNameMap.get(review.getId()))
             .build()
     );
@@ -121,7 +128,7 @@ public class ReviewService {
 
     if (review.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
       User user = userDetails.getUser();
-      String uploadReviewImage = uploadReviewImage(reviewImage);
+      String uploadReviewImage = processProfileImage(reviewImage);
 
       review = reviewRepository.save(reviewEditRequestDTO.toEntity(user, uploadReviewImage, review));
       return new ReviewEditResponseDTO(review);
