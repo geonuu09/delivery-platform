@@ -43,6 +43,8 @@ public enum ErrorCode {
     STORE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "가게 정보를 업데이트할 수 없습니다."),
     STORE_DELETE_FAILED(HttpStatus.BAD_REQUEST, "가게 삭제에 실패했습니다."),
     INVALID_STORE_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 가게 상태입니다."),
+    STORE_PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "해당 가게에 대한 접근 권한이 없습니다."),
+    STORE_CREATE_DENIED(HttpStatus.BAD_REQUEST, "해당 사용자는 가게에 대한 접근 권한이 없습니다."),
 
     // Category 관련 에러
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),

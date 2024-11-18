@@ -1,11 +1,9 @@
 package com.example.delivery.store.controller;
 
 import com.example.delivery.auth.security.UserDetailsImpl;
-import com.example.delivery.store.dto.GetStoreDetailsResponseDto;
-import com.example.delivery.store.dto.GetStoresResponseDto;
-import com.example.delivery.store.dto.StoreRequestDto;
-import com.example.delivery.store.dto.StoreResponseDto;
+import com.example.delivery.store.dto.*;
 import com.example.delivery.store.service.StoreService;
+import com.example.delivery.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,11 +18,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/stores")
 @RequiredArgsConstructor
-public class StoreController {
+public class StoreController implements StoreControllerSwagger{
 
     private final StoreService storeService;
 
     // 가게 등록
+    @Override
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> createStore(@Valid @RequestBody StoreRequestDto storeRequestDto) {
@@ -33,6 +32,7 @@ public class StoreController {
     }
 
     //가게 전체 페이지(키워드 및 카테고리 검색)
+    @Override
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<GetStoresResponseDto>> getStores(
@@ -43,34 +43,39 @@ public class StoreController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryName", required = false) String categoryName) {
 
-        Page<GetStoresResponseDto> result = storeService.getStores(page-1, size, sortBy, isAsc, keyword, categoryName);
+        Page<GetStoresResponseDto> result = storeService.getStores(page, size, sortBy, isAsc, keyword, categoryName);
         return ResponseEntity.ok(result);
     }
 
     //가게 상세 페이지 조회(가게정보 및 메뉴(메뉴이름, 메뉴사진, 가격)리스트)
+    @Override
     @GetMapping("/{storeId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetStoreDetailsResponseDto> getStoreDetails(
             @PathVariable UUID storeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc,
             @RequestParam(value = "keyword", required = false) String keyword) {
 
-        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, page-1, size, sortBy, isAsc, keyword);
+        User user = userDetails.getUser();
+        GetStoreDetailsResponseDto storeResponseDto = storeService.getStoreDetails(storeId, user, page, size, sortBy, isAsc, keyword);
         return ResponseEntity.ok(storeResponseDto);
     }
 
     // 가게 수정
+    @Override
     @PutMapping("/{storeId}/update")
-    @PreAuthorize("hasAnyRole('OWNER', 'MANAGER', 'MASTER')")
-    public ResponseEntity<String> updateStore(@PathVariable UUID storeId, @Valid @RequestBody StoreRequestDto storeRequestDto) {
-        storeService.updateStore(storeRequestDto, storeId);
+    @PreAuthorize("hasAnyRole('MANAGER', 'MASTER') or @authService.isStoreOwner(principal, #storeId)")
+    public ResponseEntity<String> updateStore(@PathVariable UUID storeId, @Valid @RequestBody StoreUpdateDto storeUpdateDto) {
+        storeService.updateStore(storeUpdateDto, storeId);
         return ResponseEntity.ok("가게 정보가 성공적으로 수정되었습니다.");
     }
 
     // 가게 삭제
+    @Override
     @DeleteMapping("/{storeId}/delete")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> deleteStore(@PathVariable UUID storeId, @RequestBody StoreRequestDto storeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
