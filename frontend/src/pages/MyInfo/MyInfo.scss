@@ -1,0 +1,42 @@
+.my-Info-container {
+    .my-Info-wrap {
+        margin: 15px;
+        h1 {
+            font-size: 15px;
+            margin-bottom: 20px;
+            margin-left: 5px;
+        }
+        .my-Info-box {
+            display: flex;
+            align-items: center;
+            .my-Info-profile {
+                border: 1px solid #000;
+                width: 80px;
+                height: 80px;
+                border-radius: 80px;
+                margin-right: 10px;
+            }
+            .my-Info-box-wrap {
+                p {
+                    font-size: 20px;
+                    font-weight: 700;
+                    margin-bottom: 5px;
+                }
+                .my-Info-btn-box {
+                    display: flex;
+                    align-items: center;
+                    color: #585858;
+                    font-size: 15px;
+                    .my-Info-btn {
+                        margin-right: 10px;
+                        &::after {
+                            content: "|";
+                            margin-left: 10px;
+                        }
+                    }
+                }
+            }
+            margin-bottom: 20px;
+        }
+    }
+}

@@ -38,4 +38,10 @@ out/
 .vscode/
 
 # YAML files
-*.yml
+application.yml
+
+
+/build
+
+/node_modules
+
