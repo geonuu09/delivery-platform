@@ -2,6 +2,7 @@ package com.example.delivery.menu.service;
 
 import com.example.delivery.common.exception.CustomException;
 import com.example.delivery.common.exception.code.ErrorCode;
+import com.example.delivery.common.service.S3Service;
 import com.example.delivery.menu.dto.*;
 import com.example.delivery.menu.entity.AiDescription;
 import com.example.delivery.menu.entity.Menu;
@@ -38,6 +39,7 @@ public class MenuService {
     private String googleApiKey;
     @Value("${google.ai.url}")
     private String googleApiUrl;
+    private final S3Service s3Service;
 
     // 메뉴 등록
     @Transactional
