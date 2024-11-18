@@ -1,5 +1,6 @@
 package com.example.delivery.menu.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ public class AiDescriptionResponseDto {
 
     @Getter
     public static class Part {
+        @Schema(description = "텍스트 내용", example = "추천 메뉴는 폭탄 김치볶음밥입니다.")
         private String text;
     }
 

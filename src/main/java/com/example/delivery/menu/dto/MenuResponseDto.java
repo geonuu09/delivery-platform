@@ -3,6 +3,7 @@ package com.example.delivery.menu.dto;
 import com.example.delivery.menu.entity.AiDescription;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.entity.MenuOption;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,12 +15,25 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class MenuResponseDto {
 
+    @Schema(description = "메뉴 ID", example = "123e4567-e89b-12d3-a456-426614174000")
     private UUID menuId;
+
+    @Schema(description = "메뉴 이름", example = "김치볶음밥")
     private String menuName;
+
+    @Schema(description = "메뉴 가격", example = "10000")
     private int menuPrice;
+
+    @Schema(description = "메뉴 설명", example = "매콤하고 맛있는 김치볶음밥")
     private String menuDescription;
+
+    @Schema(description = "메뉴 이미지 URL", example = "http://example.com/images/menu1.png")
     private String menuImage;
+
+    @Schema(description = "메뉴 옵션 리스트")
     private List<MenuOptionDto> menuOptions;
+
+    @Schema(description = "AI 설명 리스트 (관리자/가게 주인 전용)")
     private List<AiDto> aiDescriptions;
 
     public MenuResponseDto(Menu menu) {
