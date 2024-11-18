@@ -1,0 +1,38 @@
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: dp-image-save-bucket
+    stack:
+      auto: false
+
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: jdbc:postgresql://database-1.cr6cg0ciiz5s.ap-northeast-2.rds.amazonaws.com:5432/dp_DB
+    username: postgres
+    password: test1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+
+  servlet:
+    multipart:
+      max-file-size: 10MB  # 단일 파일 최대 크기
+      max-request-size: 10MB  # 요청당 최대 크기
+
+
+
+jwt:
+  secret:
+    key: ZGVsaXZlcnktcGxhdGZvcm0tcHJvamVjdC1UZWFtIOu5vOu5vOuhnOyhsOyeheuLiOuLpC4=
+
+
+
