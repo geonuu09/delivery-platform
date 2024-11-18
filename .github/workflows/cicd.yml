@@ -108,7 +108,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
+          port: 22
           script: |
             cd /home/ubuntu/build/libs/
             JAR_NAME="TransferStay-0.0.1-SNAPSHOT.jar"
