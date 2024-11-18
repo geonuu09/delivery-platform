@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
+    // test commit
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
