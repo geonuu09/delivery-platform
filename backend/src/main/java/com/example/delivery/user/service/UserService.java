@@ -37,6 +37,10 @@ public class UserService {
         return profileImagePath;
     }
 
+    private String  test() {
+        return "test1";
+    }
+
     public SignupResponseDto signup(@Valid SignupRequestDto requestDto,
         MultipartFile profileImage) {
         String encodePassword = passwordEncoder.encode(requestDto.getPassword());
