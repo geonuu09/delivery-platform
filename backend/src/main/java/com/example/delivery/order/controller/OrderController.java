@@ -59,19 +59,11 @@ public class OrderController {
         Page<OrderListResponseDto> orderList;
 
         if (userRole == UserRoleEnum.MANAGER || userRole == UserRoleEnum.MASTER) {
-<<<<<<< HEAD:src/main/java/com/example/delivery/order/controller/OrderController.java
             orderList = orderGetService.getOrderListByAdmin(page, size, sortBy, isAsc);
         } else if (userRole == UserRoleEnum.OWNER){
             orderList = orderGetService.getOrderListByOwner(userId, page-1, size, sortBy, isAsc);
         } else {
         orderList = orderGetService.getOrderList(userId, page-1, size, sortBy, isAsc);
-=======
-            orderList = orderService.getOrderListByAdmin(page-1, size, sortBy, isAsc);
-        } else if (userRole == UserRoleEnum.OWNER){
-            orderList = orderService.getOrderListByOwner(userId, page-1, size, sortBy, isAsc);
-        } else {
-        orderList = orderService.getOrderList(userId, page-1, size, sortBy, isAsc);
->>>>>>> 4b7e0f92f3d8b7cff3edd3349fe779cfe0209291:backend/src/main/java/com/example/delivery/order/controller/OrderController.java
         }
         return ResponseEntity.ok(orderList);
     }
