@@ -38,7 +38,7 @@ public class UserController implements UserControllerSwagger {
 
     public ResponseEntity<SignupResponseDto> signup(
         @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-        @RequestPart(value = "user", required = true) @Valid SignupRequestDto requestDto) {
+        @RequestPart(value = "user") @Valid SignupRequestDto requestDto) {
         SignupResponseDto responseDto = userService.signup(requestDto, profileImage);
 
         return ResponseEntity.ok(responseDto);
@@ -60,7 +60,7 @@ public class UserController implements UserControllerSwagger {
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") boolean isAsc) {
-        Page<UserResponseDto> users = userService.getAllUsers(page-1, size, sortBy, isAsc);
+        Page<UserResponseDto> users = userService.getAllUsers(page - 1, size, sortBy, isAsc);
 
         return ResponseEntity.ok(users);
     }

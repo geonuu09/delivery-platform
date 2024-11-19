@@ -7,5 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface MenuRepositoryCustom {
-//    Page<Menu> findMenusByStoreIdAndKeyword(UUID storeId, String keyword, Pageable pageable);
+
+    Page<Menu> findMenusByKeyword(UUID storeId, String keyword, Pageable pageable, boolean isOwnerOrAdmin);
+
 }

@@ -15,11 +15,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryController implements CategoryControllerSwagger{
 
     private final CategoryService categoryService;
 
     // 가게 카테고리 등록
+    @Override
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto) {
@@ -28,6 +29,7 @@ public class CategoryController {
     }
 
     // 가게 카테고리 수정
+    @Override
     @PutMapping("{categoryId}/update")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> updateCategory(@PathVariable UUID categoryId,@Valid @RequestBody CategoryRequestDto categoryRequestDto) {
@@ -37,6 +39,7 @@ public class CategoryController {
     }
 
     // 가게 카테고리 삭제
+    @Override
     @DeleteMapping("{categoryId}/delete")
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public ResponseEntity<String> deleteCategory(@PathVariable UUID categoryId, @Valid @RequestBody CategoryRequestDto categoryRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {

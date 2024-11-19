@@ -9,5 +9,8 @@ public interface MenuOptionRepository extends JpaRepository<MenuOption, UUID> {
 
     Optional<MenuOption> findByMenuOptionIdAndDeletedFalse(UUID menuOptionId);
 
+    // 테스트용
+    Optional<MenuOption> findByOptionNameAndMenu_MenuIdAndDeletedFalse(String optionName, UUID menuId);
+
 }
 

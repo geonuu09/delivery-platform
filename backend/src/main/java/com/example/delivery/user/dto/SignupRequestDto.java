@@ -32,7 +32,7 @@ public class SignupRequestDto {
     @NotBlank
     @Pattern(regexp = "^[A-Za-z\\d@$!%*?&]{8,15}$",
         message = "비밀번호는 8~15자의 영문 대/소문자, 숫자, 특수문자를 사용할 수 있습니다.")
-    @Schema(description = "사용자 비밀번호", example = "Password123!",
+    @Schema(description = "사용자 비밀번호", example = "pass1234",
         pattern = "^[A-Za-z\\d@$!%*?&]{8,15}$")
     private String password;
 
@@ -48,7 +48,7 @@ public class SignupRequestDto {
     @Schema(description = "사용자 전화번호", example = "010-1234-5678")
     private String phoneNum;
 
-    @Schema(description = "사용자 역할", example = "USER")
+    @Schema(description = "사용자 역할", example = "CUSTOMER")
     private UserRoleEnum role;
 
     @Schema(description = "사용자 상태", example = "ACTIVE")

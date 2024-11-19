@@ -18,7 +18,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     // 카테고리 등록
-    @Transactional
     public void createCategory(CategoryRequestDto categoryRequestDto) {
         Category category = categoryRequestDto.toEntity();
         categoryRepository.save(category);
@@ -27,9 +26,8 @@ public class CategoryService {
     // 카테고리 수정
     @Transactional
     public void updateCategory(CategoryRequestDto categoryRequestDto) {
-        UUID categoryId = categoryRequestDto.getCategoryId();
 
-        Category category = categoryRepository.findById(categoryId)
+        Category category = categoryRepository.findByCategoryIdAndDeletedFalse(categoryRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         category.update(categoryRequestDto);
@@ -39,10 +37,13 @@ public class CategoryService {
     // 카테고리 삭제
     @Transactional
     public void deleteCategory(CategoryRequestDto categoryRequestDto, String username) {
-        UUID categoryId = categoryRequestDto.getCategoryId();
 
-        Category category = categoryRepository.findById(categoryId)
+        Category category = categoryRepository.findByCategoryIdAndDeletedFalse(categoryRequestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        if (category.getStores() != null && !category.getStores().isEmpty()) {
+            throw new CustomException(ErrorCode.CATEGORY_DELETE_FAILED);
+        }
 
         category.delete(username);
 
