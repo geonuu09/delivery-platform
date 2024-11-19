@@ -68,6 +68,7 @@ public class CartUpdateService {
                 updatedMenuOptions.add(menuOption);
             }
         }
+        cart.setMenuOptions(updatedMenuOptions);
 
         // 가격
         int menuPrice = menu.getMenuPrice() * cart.getCount();
