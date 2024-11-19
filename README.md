@@ -26,7 +26,8 @@
 </br>
 
 ## System Architecture
-![image](https://github.com/user-attachments/assets/6566503b-ae83-4b95-a7b6-b55fe53a8ecd)
+![image](https://github.com/user-attachments/assets/41c63db1-e491-432a-8089-7314fc07e923)
+
 </br>
 
 ## API docs
