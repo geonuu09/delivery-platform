@@ -26,7 +26,7 @@
 </br>
 
 ## System Architecture
-![image](https://github.com/user-attachments/assets/41c63db1-e491-432a-8089-7314fc07e923)
+<img src="https://github.com/user-attachments/assets/41c63db1-e491-432a-8089-7314fc07e923" width="800"/>
 
 </br>
 
