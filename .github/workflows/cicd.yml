@@ -2,52 +2,13 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, dev]
+    branches: main
 
 env:
-  FRONTEND_PATH: './frontend'
-  BACKEND_PATH: './backend'
-  NODE_VERSION: '22'
+  PATH: './backend'
   JAVA_VERSION: '17'
 
 jobs:
-  frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Node.js 설정
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: ${{ env.FRONTEND_PATH }}/package-lock.json
-
-      - name: 캐시 설정
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ env.FRONTEND_PATH }}/node_modules
-            ${{ env.FRONTEND_PATH }}/.next/cache
-          key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-frontend-
-
-      - name: 의존성 설치 및 빌드
-        working-directory: ${{ env.FRONTEND_PATH }}
-        env:
-          CI: false
-        run: |
-          npm ci
-          npm run build
-
-      - name: Node 빌드 저장
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: ${{ env.FRONTEND_PATH }}/build
-          retention-days: 1
-
   backend:
     runs-on: ubuntu-latest
     steps:
@@ -84,7 +45,7 @@ jobs:
           retention-days: 1
 
   deploy:
-    needs: [ frontend, backend ]
+    needs: backend
     runs-on: ubuntu-latest
     steps:
       - name: Download builds
