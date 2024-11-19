@@ -22,7 +22,7 @@
 </br>
 
 ## ERD
-![스크린샷 2024-11-18 162430](https://github.com/user-attachments/assets/d8f8bd36-6baa-4495-b973-9665d8a940fd)
+![ERD](https://github.com/user-attachments/assets/32c356fb-8c6d-475d-a889-89dedfa61dde)
 </br>
 
 ## System Architecture
